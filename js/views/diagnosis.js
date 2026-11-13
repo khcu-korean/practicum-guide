@@ -37,7 +37,7 @@ function resultHTML(results, currentTypeId) {
     <div class="type-card ${r.ok ? '' : 'disabled'} ${currentTypeId === r.type.id ? 'selected' : ''}">
       <div class="row">
         <h3 class="grow">${esc(r.type.name)}</h3>
-        ${currentTypeId === r.type.id ? '<span class="badge badge-done">확정됨</span>' : ''}
+        ${currentTypeId === r.type.id ? '<span class="badge badge-done">내 배정 유형</span>' : ''}
       </div>
       <p><b>${esc(r.type.summary)}</b></p>
       <p class="muted">${esc(r.type.description)}</p>
@@ -48,7 +48,6 @@ function resultHTML(results, currentTypeId) {
           : '<p class="tiny muted">실습 기관: 실습생이 직접 섭외</p>'
       }
       <ul class="bullets tiny">${r.reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-      ${r.ok ? `<button class="btn ${currentTypeId === r.type.id ? '' : 'primary'}" data-pick="${r.type.id}">${currentTypeId === r.type.id ? '이 유형으로 확정됨' : '배정된 유형으로 확정하기'}</button>` : ''}
     </div>`;
   return `
   <section class="card">
@@ -59,17 +58,23 @@ function resultHTML(results, currentTypeId) {
       <b>📌 실제 신청은 이렇게 합니다</b>
       <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     </div>
-    <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다. <b>확정 명단이 발표되면</b> 배정된 유형으로 확정하세요. 그러면 그 유형에 맞는 타임라인이 만들어집니다. 확정한 뒤에도 바꿀 수 있습니다.</p>
+    <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다.</p>
+  </section>
+  <section class="card next">
+    <p class="muted">확정 명단이 발표되면</p>
+    <h2>STEP 3. 배정된 유형과 기관을 입력하세요</h2>
+    <p class="tiny">입력한 유형에 맞춰 맞춤 타임라인이 만들어집니다.</p>
+    <a class="btn primary" href="#/assign">배정 유형·기관 입력하기 →</a>
   </section>`;
 }
 
 export default {
-  title: '실습 유형 진단',
+  title: '실습 기관·유형 살펴보기',
   render() {
     const s = sem();
     const a = s.diagnosis?.answers || {};
     return `
-    <h1 class="page-title">STEP 2. 실습 유형 진단</h1>
+    <h1 class="page-title">STEP 2. 실습 기관·유형 살펴보기</h1>
     <p class="muted">나의 상황과 여건을 입력하면 고를 수 있는 실습 기관과 유형을 추천해 드려요.</p>
     <p class="notice tiny">${esc(DIAGNOSIS_INTRO)}</p>
     <details class="card soft">
@@ -107,15 +112,6 @@ export default {
       const recommended = recommend(a).filter((r) => r.ok).map((r) => r.type.id);
       update((s) => (s.diagnosis = { answers: a, recommended, at: new Date().toISOString() }));
       requestAnimationFrame(() => document.querySelector('#result')?.scrollIntoView({ behavior: 'smooth' }));
-    });
-    root.addEventListener('click', (e) => {
-      const id = e.target.closest('[data-pick]')?.dataset.pick;
-      if (!id) return;
-      const cur = sem().typeId;
-      if (cur && cur !== id && !confirm('실습 유형을 변경하면 타임라인이 새 유형에 맞게 바뀝니다. 변경할까요?\n(공통 과업 체크 기록은 유지됩니다)')) return;
-      update((s) => (s.typeId = id));
-      toast('실습 유형을 확정했습니다. 맞춤 타임라인을 확인하세요!');
-      location.hash = '#/timeline';
     });
   },
 };

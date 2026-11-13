@@ -39,14 +39,14 @@ export default {
     const type = getType(s.typeId);
     if (!type) {
       return `<h1 class="page-title">맞춤 타임라인</h1>
-      <section class="card next"><p>실습 유형을 확정하면 나에게 필요한 일정과 과업이 자동으로 만들어져요.</p>
-      <a class="btn primary" href="#/diagnosis">실습 유형 진단하러 가기 →</a></section>`;
+      <section class="card next"><p>확정 명단이 발표된 뒤 배정된 유형과 기관을 입력하면, 나에게 필요한 일정과 과업이 자동으로 만들어져요.</p>
+      <a class="btn primary" href="#/assign">배정 유형·기관 입력하기 →</a></section>`;
     }
     const list = myTasks().sort((a, b) => a.task.week - b.task.week || (a.due || '9').localeCompare(b.due || '9'));
     const weeks = [...new Set(list.map((t) => t.task.week))];
     return `
     <h1 class="page-title">맞춤 타임라인</h1>
-    <p class="muted"><b>${esc(type.name)}</b> · ${esc(type.summary)} <a class="link" href="#/diagnosis">변경</a></p>
+    <p class="muted"><b>${esc(type.name)}</b> · ${esc(type.summary)}<br/>🏫 ${s.institution ? esc(s.institution.name) : '실습 기관 미입력'} <a class="link" href="#/assign">수정</a></p>
     <div class="legend tiny">
       <span class="badge badge-urgent">D-3 이내</span><span class="badge badge-soon">D-7 이내</span>
       <span class="badge badge-tbd">미정</span><span class="badge badge-done">완료</span>

@@ -9,6 +9,7 @@ import home from './views/home.js';
 import login from './views/login.js';
 import eligibility from './views/eligibility.js';
 import diagnosis from './views/diagnosis.js';
+import assign from './views/assign.js';
 import timeline from './views/timeline.js';
 import task from './views/task.js';
 import progress from './views/progress.js';
@@ -20,6 +21,7 @@ const ROUTES = {
   login,
   eligibility,
   diagnosis,
+  assign,
   timeline,
   task,
   progress,
