@@ -1,5 +1,5 @@
 // ③ 실습 유형 진단 및 추천 → 유형 확정
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY } from '../data/types.js';
 import { sem, update } from '../store.js';
 import { esc, toast } from '../utils.js';
 
@@ -12,16 +12,18 @@ function questionHTML(q, a) {
   let body = '';
   if (q.type === 'single' || q.type === 'multi') {
     const inputType = q.type === 'single' ? 'radio' : 'checkbox';
-    body = `<div class="choices">${q.options
-      .map((o) => {
-        const checked = q.type === 'single' ? a[q.id] === o.value : (a[q.id] || []).includes(o.value);
-        return `<label class="choice"><input type="${inputType}" name="${q.id}" value="${esc(o.value)}" ${checked ? 'checked' : ''}/><span>${esc(o.label)}</span></label>`;
-      })
-      .join('')}</div>`;
+    const opt = (o) => {
+      const checked = q.type === 'single' ? a[q.id] === o.value : (a[q.id] || []).includes(o.value);
+      return `<label class="choice"><input type="${inputType}" name="${q.id}" value="${esc(o.value)}" ${checked ? 'checked' : ''}/><span>${esc(o.label)}${o.note ? `<small class="note">${esc(o.note)}</small>` : ''}</span></label>`;
+    };
+    const groups = [...new Set(q.options.map((o) => o.group || ''))];
+    body = groups
+      .map((g) => `${g ? `<p class="group-title">${esc(g)}</p>` : ''}<div class="choices ${g ? 'col' : ''}">${q.options.filter((o) => (o.group || '') === g).map(opt).join('')}</div>`)
+      .join('');
   } else {
     body = `<input type="text" name="${q.id}" value="${esc(a[q.id] || '')}" />`;
   }
-  return `<section class="card q"><h3>${esc(q.text)}</h3>${body}</section>`;
+  return `<section class="card q"><h3>${esc(q.text)}</h3>${q.help ? `<p class="tiny muted">${esc(q.help)}</p>` : ''}${body}</section>`;
 }
 
 function recommend(a) {
@@ -39,6 +41,12 @@ function resultHTML(results, currentTypeId) {
       </div>
       <p><b>${esc(r.type.summary)}</b></p>
       <p class="muted">${esc(r.type.description)}</p>
+      <p class="tiny">활동: ${r.type.activities.map((x) => `<span class="tag">${esc(x)}</span>`).join(' ')}</p>
+      ${
+        r.type.institutions
+          ? `<ul class="inst tiny">${r.type.institutions.map((i) => `<li>${esc(i.name)} <span class="muted">${esc(i.region)}${i.schedule ? ` · ${esc(i.schedule)}` : ''}</span></li>`).join('')}</ul>`
+          : '<p class="tiny muted">실습 기관: 실습생이 직접 섭외</p>'
+      }
       <ul class="bullets tiny">${r.reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
       ${r.ok ? `<button class="btn ${currentTypeId === r.type.id ? '' : 'primary'}" data-pick="${r.type.id}">${currentTypeId === r.type.id ? '이 유형으로 확정됨' : '이 유형으로 확정하기'}</button>` : ''}
     </div>`;
@@ -58,7 +66,11 @@ export default {
     const a = s.diagnosis?.answers || {};
     return `
     <h1 class="page-title">STEP 2. 실습 유형 진단</h1>
-    <p class="muted">나의 상황과 여건을 입력하면 선택 가능한 실습 유형을 추천해 드려요.</p>
+    <p class="muted">나의 상황과 여건을 입력하면 선택할 수 있는 실습 유형을 추천해 드려요.</p>
+    <details class="card soft">
+      <summary><b>📖 먼저 알아 두면 좋은 용어</b></summary>
+      <dl class="glossary">${GLOSSARY.map((g) => `<dt>${esc(g.term)}</dt><dd>${esc(g.definition)}</dd>`).join('')}</dl>
+    </details>
     <form id="diagForm" class="stack">
       <div id="questions">${Q.map((q) => questionHTML(q, a)).join('')}</div>
       <button class="btn primary big" type="submit">추천 받기</button>

@@ -202,3 +202,9 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 .extra { margin-top: 10px; font-weight: 500; color: var(--muted); }
 .sub { margin-top: 4px; font-size: .85rem; }
 details.card summary { color: var(--text); margin: 0; }
+.choices.col { flex-direction: column; }
+.group-title { font-size: .82rem; font-weight: 700; color: var(--brand); margin: 12px 0 6px; }
+.choice .note { display: block; font-size: .78rem; color: var(--muted); font-weight: 400; }
+.inst { margin: 6px 0; padding-left: 1.2em; }
+.glossary dt { font-weight: 700; margin-top: 10px; color: var(--brand); }
+.glossary dd { margin: 2px 0 0; font-size: .92rem; }
