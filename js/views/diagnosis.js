@@ -35,10 +35,10 @@ function resultHTML(results, currentTypeId) {
   const ok = results.filter((r) => r.ok);
   const no = results.filter((r) => !r.ok);
   const card = (r) => `
-    <div class="type-card ${r.ok ? '' : 'disabled'} ${currentTypeId === r.type.id ? 'selected' : ''}">
+    <div class="type-card ${r.ok ? '' : 'disabled'}">
       <div class="row">
         <h3 class="grow">${esc(r.type.name)}</h3>
-        ${currentTypeId === r.type.id ? '<span class="badge badge-done">나의 확정 유형</span>' : ''}
+        ${r.ok ? '<span class="badge badge-soon">추천 유형</span>' : ''}
       </div>
       <p><b>${esc(r.type.summary)}</b></p>
       <p class="muted">${esc(r.type.description)}</p>
