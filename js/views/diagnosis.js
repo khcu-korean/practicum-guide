@@ -59,7 +59,7 @@ function resultHTML(results, currentTypeId) {
       <b>실습 신청은 이렇게 합니다</b>
       <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     </div>`
-        : '<p class="notice">입력한 조건으로 해당하는 유형이 없습니다. 직접 섭외가 어렵다면 위의 지정 기관 중 한 곳을 고르세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>'
+        : '<p class="notice">입력한 조건으로 해당하는 유형이 없습니다. 담당 교수(조교)에게 문의하세요.</p>'
     }
     <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다.</p>
   </section>

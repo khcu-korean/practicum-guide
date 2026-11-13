@@ -132,7 +132,6 @@ export const DIAGNOSIS_QUESTIONS = [
     options: [
       { value: 'secured', label: '이미 섭외했다' },
       { value: 'can', label: '아직 없지만 섭외할 수 있다' },
-      { value: 'cannot', label: '섭외하기 어렵다' },
     ],
   },
   {
