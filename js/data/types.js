@@ -134,6 +134,16 @@ export const DIAGNOSIS_QUESTIONS = [
     ],
   },
   {
+    id: 'orgRegion',
+    text: '직접 섭외하려는(섭외한) 기관은 어디에 있나요?',
+    type: 'single',
+    showIf: { org: ['secured', 'can'] },
+    options: [
+      { value: 'domestic', label: '국내' },
+      { value: 'overseas', label: '해외(국외)' },
+    ],
+  },
+  {
     id: 'teachAtOrg',
     text: '섭외한 기관에서 강의참관뿐 아니라 직접 강의실습(한 차시 수업)까지 할 수 있나요?',
     type: 'single',
@@ -165,8 +175,8 @@ export const PRACTICUM_TYPES = [
   {
     id: '1',
     name: '실습 유형 1',
-    summary: '지정 기관 강의참관 + 모의수업',
-    description: '아래 현장 실습 기관 중 한 곳에서 강의를 참관하고, 모의수업을 합니다.',
+    summary: '국내외 현장 실습 기관에서 강의참관 + 모의수업',
+    description: '국내 또는 해외의 현장 실습 기관에서 강의참관을 하고, 모의수업을 하는 유형입니다.',
     activities: ['강의참관', '모의수업'],
     institutions: instOf('1'),
     match: (a) => {
@@ -179,9 +189,9 @@ export const PRACTICUM_TYPES = [
   {
     id: '1-1',
     name: '실습 유형 1-1',
-    summary: '지정 기관 강의참관(오프라인 + 온라인, 총 9시간) + 모의수업',
-    description: '아래 현장 실습 기관 중 한 곳에서 오프라인 참관과 온라인 참관을 합쳐 최소 9시간 이상 강의참관을 하고, 모의수업을 합니다. 강의참관 지도(1시간 이상)는 9시간과 별도로 진행됩니다. 기관마다 참관 일정이 다릅니다.',
-    activities: ['강의참관 (오프라인 + 온라인, 총 9시간)', '모의수업'],
+    summary: '국내외 현장 실습 기관에서 강의참관(온라인 병행) + 모의수업',
+    description: '국내외 현장 실습 기관에서 강의참관을 하되 온라인 참관을 병행하고, 모의수업을 하는 유형입니다. 오프라인과 온라인을 합쳐 최소 9시간 이상 강의참관을 하며, 강의참관 지도(1시간 이상)는 9시간과 별도로 진행됩니다. 기관마다 참관 일정이 다릅니다.',
+    activities: ['강의참관 (오프라인 + 온라인 병행, 총 9시간)', '모의수업'],
     institutions: instOf('1-1'),
     match: (a) => {
       const p = picked(a, '1-1');
@@ -196,8 +206,8 @@ export const PRACTICUM_TYPES = [
   {
     id: '2',
     name: '실습 유형 2',
-    summary: '직접 섭외한 기관에서 강의참관 + 강의실습',
-    description: '실습생이 직접 섭외한 실습 기관에서 강의참관과 강의실습을 합니다. 일부 일정은 실습 기관의 일정을 따릅니다.',
+    summary: '직접 섭외한 국내외 기관에서 강의참관 + 강의실습',
+    description: '실습생이 국내 또는 해외의 기관을 직접 섭외하여 강의참관과 강의실습까지 하는 유형입니다. 일부 일정은 실습 기관의 일정을 따릅니다.',
     activities: ['강의참관', '강의실습'],
     institutions: null,
     match: (a) => {
@@ -214,8 +224,8 @@ export const PRACTICUM_TYPES = [
   {
     id: '2-1',
     name: '실습 유형 2-1',
-    summary: '베트남 예르생달랏대학교에서 강의참관 + 강의실습',
-    description: '베트남 예르생달랏대학교에서 강의참관과 강의실습을 합니다. 일정은 현지 학사 일정을 따릅니다.',
+    summary: '해외 협약 대학에서 강의참관 + 강의실습',
+    description: '해외 협약 대학(베트남 예르생달랏대학교)에서 강의참관과 강의실습을 모두 하는 유형입니다. 일정은 현지 학사 일정을 따릅니다.',
     activities: ['강의참관', '강의실습'],
     institutions: instOf('2-1'),
     match: (a) => {
@@ -226,13 +236,15 @@ export const PRACTICUM_TYPES = [
   {
     id: '3',
     name: '실습 유형 3',
-    summary: '직접 섭외한 기관에서 강의참관 + 모의수업',
-    description: '실습생이 직접 섭외한 실습 기관에서 강의를 참관하고, 모의수업을 합니다.',
+    summary: '직접 섭외한 해외(국외) 기관에서 강의참관 + 모의수업',
+    description: '실습생이 해외(국외) 기관을 직접 섭외하여 강의참관만 하고, 모의수업을 하는 유형입니다.',
     activities: ['강의참관', '모의수업'],
     institutions: null,
     match: (a) => {
-      const ok = ['secured', 'can'].includes(a.org);
-      return { ok, reasons: [ok ? '실습 기관 섭외 가능' : '실습 기관을 직접 섭외해야 합니다'] };
+      const r = [];
+      if (!['secured', 'can'].includes(a.org)) r.push('해외(국외) 기관을 직접 섭외해야 합니다');
+      else if (a.orgRegion !== 'overseas') r.push('유형 3은 해외(국외) 기관만 해당합니다');
+      return r.length ? { ok: false, reasons: r } : { ok: true, reasons: ['해외(국외) 기관 섭외 가능'] };
     },
   },
 ];
@@ -249,5 +261,8 @@ export const APPLICATION_NOTICE = [
   '특정 유형에 우선순위는 없으며, 신청자 수와 실습 기간의 상황 등을 고려하여 배정합니다.',
   '실습 기간은 매 학기 학사 일정에 따라 달라집니다.',
 ];
+
+// 실습 유형 안내 머리말 (STEP 2·3에서 접어 두었다가 펼쳐 보기)
+export const TYPE_GUIDE_INTRO = '실습 유형은 경희사이버대학교가 운영 방식에 따라 정한 구분입니다.';
 
 export const getType = (id) => PRACTICUM_TYPES.find((t) => t.id === id);

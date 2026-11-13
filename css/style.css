@@ -354,3 +354,9 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
   .stepnav-in { max-width: none; justify-content: center; }
 }
 #summary { scroll-margin-top: 110px; }
+.type-guide summary .muted { font-weight: 400; margin-left: 4px; }
+.type-list dt { font-weight: 700; margin-top: 14px; color: var(--brand); }
+.type-list dt .muted { display: block; font-weight: 500; font-size: .86rem; color: var(--text); }
+.type-list dd { margin: 4px 0 0; font-size: .9rem; }
+.type-list dd .tiny { margin-top: 4px; color: var(--muted); }
+.guide-sub { font-size: .95rem; margin: 14px 0 4px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }

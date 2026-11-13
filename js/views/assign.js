@@ -2,6 +2,7 @@
 import { PRACTICUM_TYPES, getType, instLine, termOf } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
+import { typeGuideHTML } from './typeGuide.js';
 
 function institutionHTML(typeId, saved) {
   const type = getType(typeId);
@@ -42,6 +43,7 @@ export default {
     <h1 class="page-title">STEP 3. 확정된 실습 유형 및 실습 기관 입력</h1>
     <p class="muted">학과 게시판에 확정 명단이 발표되면, 나의 실습 유형과 실습 기관을 입력하세요. 입력한 유형에 맞춰 <b>유형별 과제 타임라인</b>이 만들어집니다.</p>
 
+    ${typeGuideHTML()}
     <form id="assignForm" class="stack">
       <section class="card">
         <h2>확정된 실습 유형</h2>

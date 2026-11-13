@@ -2,6 +2,7 @@
 import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY, APPLICATION_NOTICE, DIAGNOSIS_INTRO, instLine } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
+import { typeGuideHTML } from './typeGuide.js';
 
 const visible = (q, a) =>
   !q.showIf ||
@@ -77,10 +78,7 @@ export default {
     <h1 class="page-title">STEP 2. 실습 기관·유형 살펴보기</h1>
     <p class="muted">나의 상황과 여건을 입력하면 고를 수 있는 실습 기관과 유형을 추천해 드려요.</p>
     <p class="notice tiny">${esc(DIAGNOSIS_INTRO)}</p>
-    <details class="card soft">
-      <summary><b>먼저 알아 두면 좋은 용어</b></summary>
-      <dl class="glossary">${GLOSSARY.map((g) => `<dt>${esc(g.term)}</dt><dd>${esc(g.definition)}</dd>`).join('')}</dl>
-    </details>
+    ${typeGuideHTML({ withGlossary: true })}
     <form id="diagForm" class="stack">
       <div id="questions">${Q.map((q) => questionHTML(q, a)).join('')}</div>
       <button class="btn primary big" type="submit">추천 받기</button>
