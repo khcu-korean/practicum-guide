@@ -1,6 +1,6 @@
 // 앱 시작점: 화면 전환(라우터), 공통 레이아웃, 로그인 확인
 import { CONFIG, getSemester, isServerMode } from './config.js';
-import { STEPS, stepOf } from './steps.js';
+import { STEPS, GROUPS, stepOf } from './steps.js';
 import { initStore, subscribe, getUser, semesterId } from './store.js';
 import { upcoming } from './selectors.js';
 import { notifyDueTasks } from './notify.js';
@@ -47,9 +47,14 @@ function stepNav(path) {
   const activePath = path === 'task' ? 'timeline' : path;
   const item = (href, label, active, no) =>
     `<a href="#/${href}" class="${active ? 'active' : ''}" ${active ? 'aria-current="page"' : ''}>${no ? `<span class="no">${no}</span>` : ''}${label}</a>`;
+  const group = (g, joiner) =>
+    `<span class="navgroup ${g}"><span class="navlabel">${GROUPS[g].label}</span>${STEPS.filter((x) => x.group === g)
+      .map((x) => item(x.path, x.short, activePath === x.path, x.no))
+      .join(joiner)}</span>`;
   return `<nav class="stepnav" aria-label="전체 메뉴"><div class="stepnav-in">
     ${item('', '홈', activePath === '')}
-    ${STEPS.map((x) => item(x.path, x.short, activePath === x.path, x.no)).join('')}
+    ${group('prep', '<span class="sep" aria-hidden="true">·</span>')}
+    ${group('flow', '<span class="sep" aria-hidden="true">›</span>')}
     ${item('settings', '더보기', activePath === 'settings')}
   </div></nav>`;
 }

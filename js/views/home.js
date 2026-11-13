@@ -2,7 +2,7 @@
 import { CONFIG } from '../config.js';
 import { getType } from '../data/types.js';
 import { sem } from '../store.js';
-import { STEPS } from '../steps.js';
+import { STEPS, GROUPS } from '../steps.js';
 import { progressStats, upcoming, myTasks } from '../selectors.js';
 import { esc, ddayLabel, ddayClass, fmtDate } from '../utils.js';
 
@@ -64,16 +64,27 @@ export default {
 
     <section class="card">
       <h2>이렇게 이용하세요</h2>
-      <ol class="menu-list">
-        ${STEPS.map(
-          (x) => `<li class="${done[x.path] ? 'done' : ''} ${x === next ? 'current' : ''}">
-            <a href="#/${x.path}">
-              <span class="dot">${done[x.path] ? '✓' : x.no}</span>
-              <span class="grow"><b>${esc(x.title).replace(/(&lt;.+?&gt;)/, '<span class="nowrap">$1</span>')}</b><small>${esc(x.desc)}</small></span>
-              <span class="arrow" aria-hidden="true">›</span>
-            </a></li>`
-        ).join('')}
-      </ol>
+      ${['prep', 'flow']
+        .map(
+          (g) => `
+        <div class="mgroup ${g}">
+          <p class="mgroup-title"><span class="chip">${GROUPS[g].label}</span> ${esc(GROUPS[g].title)}</p>
+          <p class="tiny muted">${esc(GROUPS[g].desc)}</p>
+          <ol class="menu-list">
+            ${STEPS.filter((x) => x.group === g)
+              .map(
+                (x) => `<li class="${done[x.path] ? 'done' : ''} ${x === next ? 'current' : ''}">
+              <a href="#/${x.path}">
+                <span class="dot">${done[x.path] ? '✓' : x.no}</span>
+                <span class="grow"><b>${esc(x.title).replace(/(&lt;.+?&gt;)/, '<span class="nowrap">$1</span>')}</b><small>${esc(x.desc)}</small></span>
+                <span class="arrow" aria-hidden="true">›</span>
+              </a></li>`
+              )
+              .join('')}
+          </ol>
+        </div>`
+        )
+        .join('')}
       <a class="btn primary big" href="#/${next.path}">${next === STEPS[0] && !done.eligibility ? '시작하기' : `이어서 하기: ${esc(next.short)}`} →</a>
     </section>
 

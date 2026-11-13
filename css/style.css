@@ -323,3 +323,33 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 .sticky-sum.ok .muted { color: #d7eee0; }
 .nowrap { white-space: nowrap; }
 @media (max-width: 520px) { .band .sem { display: none; } }
+
+/* 단계 묶음: 언제든 확인(prep) / 순서대로 진행(flow) */
+.navgroup { display: flex; align-items: center; flex: none; margin: 6px 4px; padding: 0 4px; border-radius: 10px; position: relative; }
+.navgroup.prep { background: #f3f1ed; }
+.navgroup.flow { background: var(--brand-soft); }
+.navgroup .navlabel {
+  font-size: .64rem; font-weight: 700; letter-spacing: .02em; color: var(--muted);
+  padding: 0 4px 0 6px; white-space: nowrap; writing-mode: horizontal-tb;
+}
+.navgroup.flow .navlabel { color: var(--brand); }
+.navgroup a { padding: 8px 6px 6px; }
+.navgroup .sep { color: var(--muted); font-size: .9rem; flex: none; }
+.navgroup.flow .sep { color: var(--brand); font-weight: 700; }
+
+.mgroup { border-radius: 10px; padding: 12px 14px 4px; margin-bottom: 12px; }
+.mgroup.prep { background: #f7f5f1; }
+.mgroup.flow { background: var(--brand-soft); }
+.mgroup-title { font-weight: 700; margin: 0; }
+.mgroup .menu-list { margin-bottom: 4px; }
+.mgroup .menu-list li a { border-bottom-color: rgba(0,0,0,.07); }
+.chip { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: #fff; color: var(--muted); border: 1px solid var(--line); margin-right: 4px; }
+.mgroup.flow .chip { color: var(--brand); border-color: #e6c3cd; }
+/* 순서대로 진행: 번호 사이를 세로선으로 이어 순서를 표시 */
+.mgroup.flow .menu-list li { position: relative; }
+.mgroup.flow .menu-list li:not(:last-child)::after {
+  content: ''; position: absolute; left: 14px; top: calc(50% + 17px); height: calc(100% - 34px); width: 2px; background: #e2b9c5;
+}
+@media (min-width: 820px) {
+  .stepnav-in { max-width: none; justify-content: center; }
+}
