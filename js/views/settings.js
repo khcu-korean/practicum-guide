@@ -32,7 +32,7 @@ export default {
     <section class="card soft">
       <h2>바로가기</h2>
       <ul class="bullets">
-        <li><a href="#/eligibility">수강 자격 자가진단 다시 하기</a></li>
+        <li><a href="#/eligibility">수강 자격·이수 현황 점검</a></li>
         <li><a href="#/diagnosis">실습 기관·유형 살펴보기</a></li>
         <li><a href="#/assign">배정 유형·기관 입력 / 수정</a></li>
         <li><a href="#/complete">이수 완료 점검</a></li>

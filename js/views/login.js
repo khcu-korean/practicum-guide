@@ -36,8 +36,8 @@ export default {
 
     <section class="card soft">
       <h3>수강 신청 전이신가요?</h3>
-      <p class="muted">회원가입 없이 수강 자격을 먼저 확인할 수 있어요.</p>
-      <a class="btn" href="#/eligibility">수강 자격 자가진단 하기 →</a>
+      <p class="muted">회원가입 없이 실습 수강 자격과 자격증 영역별 이수 현황을 확인할 수 있어요.</p>
+      <a class="btn" href="#/eligibility">수강 자격·이수 현황 점검하기 →</a>
     </section>`;
   },
 

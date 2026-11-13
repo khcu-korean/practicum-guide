@@ -278,3 +278,31 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 @media (min-width: 820px) { .toast { bottom: 32px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* 자격증 영역별 이수 현황 */
+.areas { display: grid; grid-template-columns: repeat(auto-fit, minmax(122px, 1fr)); gap: 8px; margin: 10px 0; }
+.area {
+  display: flex; flex-direction: column; gap: 3px; min-width: 0;
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fff;
+}
+.area.ok { border-color: #bfe0cc; }
+.area .aname { font-size: .8rem; font-weight: 600; line-height: 1.35; min-height: 2.2em; }
+.area .num { font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.area .num small { font-size: .78rem; font-weight: 400; color: var(--muted); }
+.area .bar { height: 6px; margin: 2px 0 4px; }
+.area.ok .bar span { background: var(--ok); }
+.area .badge { align-self: flex-start; }
+.check .note { display: block; font-size: .78rem; color: var(--muted); font-weight: 400; }
+.section-title { margin: 14px 0 0; font-size: 1.1rem; }
+.card .label { margin-bottom: 4px; }
+.sticky-sum {
+  position: fixed; left: 12px; right: 12px; bottom: calc(68px + env(safe-area-inset-bottom)); z-index: 15;
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px;
+  max-width: 704px; margin: 0 auto; padding: 9px 14px; border-radius: 10px;
+  background: var(--text); color: #fff; font-size: .84rem; box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+.sticky-sum .muted { color: #c9ced6; }
+.sticky-sum.ok { background: var(--ok); }
+.sticky-sum.ok .muted { color: #d7eee0; }
+body:not(:has(.mainnav)) .sticky-sum { bottom: calc(12px + env(safe-area-inset-bottom)); }
+@media (min-width: 820px) { .sticky-sum { bottom: 16px; } }
