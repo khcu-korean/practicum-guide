@@ -25,7 +25,7 @@ export default {
     <section class="card row">
       <span class="badge big ${ddayClass(left, r.done)}">${r.done ? '완료' : ddayLabel(left)}</span>
       <div class="grow">
-        <p>${task.start && !r.customDue ? '기간' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : '미정'}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
+        <p>${task.start && !r.customDue ? '기간' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : esc(task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
         ${task.due === null ? `<p class="tiny muted">${esc(SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
       </div>
     </section>

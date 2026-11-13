@@ -18,7 +18,6 @@
 // =====================================================================
 
 const TBD = '(내용 입력 예정)';
-const CHECK = '(확인 필요)';
 
 const guide = (intro = TBD, extra = {}) => ({
   intro,
@@ -44,11 +43,35 @@ export const TASKS = {
   // ---------------- 모든 유형 ----------------
   orientation: {
     title: '한국어교육현장실습 교과목 오리엔테이션 참가',
+    due: null,
+    dueText: '2월 중 (개강 전)',
+    schedule: 'course',
+    guide: guide('개강 전 방학 중에 진행하는 한국어교육현장실습 교과목 오리엔테이션입니다. 실습계획서와 교안을 작성할 때 오리엔테이션 자료집을 참고하므로 꼭 참가하세요.', {
+      submit: { method: '오리엔테이션 참가', where: '학과 공지 확인', deadlineText: '2월 중 (날짜는 추후 공지)' },
+    }),
+  },
+  'seminar-1': {
+    title: '1차 온라인 세미나 참여',
     due: { week: 2, day: 'thu' },
     time: '19:00',
-    note: '1차 온라인 개강 세미나',
-    guide: guide('자기소개, 학사 일정, 실습 관련 안내 사항, 각종 작성 양식 설명 등을 다루는 온라인 개강 세미나입니다.', {
-      submit: { method: '온라인 세미나 참여', where: '접속 방법은 반별 공지 확인', deadlineText: '개강 2주차 목요일 19:00' },
+    guide: guide('자기소개, 학사 일정, 실습 관련 안내 사항, 각종 작성 양식 설명 등을 다루는 첫 온라인 세미나입니다.', {
+      submit: { method: '온라인 세미나 참여', where: '접속 방법은 반별 공지 확인', deadlineText: '3월 둘째 주 목요일' },
+    }),
+  },
+  'seminar-2': {
+    title: '2차 온라인 세미나 참여',
+    due: { week: 3, day: 'thu' },
+    time: '19:00',
+    guide: guide('교안 작성 방법을 다루는 온라인 세미나입니다.', {
+      submit: { method: '온라인 세미나 참여', where: '접속 방법은 반별 공지 확인', deadlineText: '3월 셋째 주 목요일' },
+    }),
+  },
+  'seminar-3': {
+    title: '3차 온라인 세미나 참여',
+    due: { week: 7, day: 'thu' },
+    time: '19:00',
+    guide: guide('교안 작성 방법을 다루는 온라인 세미나입니다.', {
+      submit: { method: '온라인 세미나 참여', where: '접속 방법은 반별 공지 확인', deadlineText: '4월 셋째 주 목요일' },
     }),
   },
   'lms-log-4': {
@@ -57,7 +80,7 @@ export const TASKS = {
     due: { week: 6, day: 'sun' },
     guide: guide('온라인 강의실 4차시의 한국어 수업(초급 문법 수업)을 관찰하고 참관 일지를 작성하여 제출합니다.', {
       important: ['4차시 1강을 참관하고 참관 일지를 작성합니다.', MOCK_BLOCK],
-      submit: { method: '참관 일지 제출', where: `온라인 강의실 ${CHECK}`, deadlineText: '4차시 강의 기간 시작 ~ 6주차 일요일' },
+      submit: { method: '참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '4차시 강의 기간 시작 ~ 6주차 일요일' },
     }),
   },
   'lms-log-5': {
@@ -66,31 +89,29 @@ export const TASKS = {
     due: { week: 7, day: 'sun' },
     guide: guide('온라인 강의실 5차시의 한국어 수업(초급 말하기 수업)을 관찰하고 참관 일지를 작성하여 제출합니다.', {
       important: ['5차시 1강을 참관하고 참관 일지를 작성합니다.', MOCK_BLOCK],
-      submit: { method: '참관 일지 제출', where: `온라인 강의실 ${CHECK}`, deadlineText: '5차시 강의 기간 시작 ~ 7주차 일요일' },
+      submit: { method: '참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '5차시 강의 기간 시작 ~ 7주차 일요일' },
     }),
   },
   'site-observe': {
     title: '현장 실습 기관 강의참관',
     due: null,
     schedule: 'institution',
-    note: '모의수업 전까지 완료',
     guide: guide('배정된 현장 실습 기관에서 한국어 강의를 참관합니다. 기관별 자세한 일정은 강의실 공지 사항으로 안내합니다.', {
       important: [
         '기관에서 정한 현장 참관 비용을 따로 내야 합니다.',
-        '정해진 현장 강의참관을 하지 않으면(결석, 일부만 참관 등) 실습 조건을 충족하지 못해 모의수업에 참가할 수 없습니다.',
+        '정해진 현장 강의참관을 하지 않으면(결석, 일부만 참관 등) 실습 조건을 충족하지 못해 모의수업에 참가할 수 없습니다. (유형 1·1-1·3)',
         '기타 기관에서 참관하는 경우 기관 교육과정을 따르며, 지도교수와 반드시 미리 논의해야 합니다.',
       ],
-      submit: { method: '현장 강의참관', where: '배정된 실습 기관', deadlineText: '기관 일정에 따름 (모의수업 전까지)' },
+      submit: { method: '현장 강의참관', where: '배정된 실습 기관', deadlineText: '기관 일정에 따름 (유형 1·1-1·3은 모의수업 전까지)' },
     }),
   },
   'site-observe-log': {
     title: '현장 강의참관 일지 제출',
     due: null,
     schedule: 'institution',
-    note: '모의수업 전까지 제출',
     guide: guide('현장 실습 기관에서 강의를 참관한 뒤 실습 일지와 참관 일지를 작성하여 제출합니다.', {
-      important: ['제출 방법은 강의실 공지 사항에서 확인하세요.', MOCK_BLOCK],
-      submit: { method: '실습 일지·참관 일지 제출', where: `강의실 공지 사항 확인 ${CHECK}`, deadlineText: '모의수업 전까지' },
+      important: [MOCK_BLOCK],
+      submit: { method: '실습 일지·참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '참관 후 (유형 1·1-1·3은 모의수업 전까지)' },
     }),
   },
 
@@ -105,7 +126,7 @@ export const TASKS = {
         '실습 기관: 소개, 연간 학사 일정, 교육과정, 교재, 학습자 특성 등',
         '실습 계획: 배정 문법, 교안 작성 계획, 실습 계획, 실습에 임하는 자세 등',
       ],
-      submit: { method: '실습계획서 제출', where: `LMS 리포트 게시판 ${CHECK}`, deadlineText: '3주차 일요일까지' },
+      submit: { method: '실습계획서 제출', where: 'LMS 리포트 게시판', deadlineText: '3주차 일요일까지' },
     }),
   },
   group: {
@@ -117,7 +138,7 @@ export const TASKS = {
         '배정받은 문법으로 문법 교안을 작성하고, 그에 맞는 문법 모의수업을 진행합니다.',
         '교재: 《경희한국어》(경희대학교 출판문화원) 초급1~초급2 문법 또는 《세종한국어(2022)》 1A~2B',
       ],
-      submit: { method: '조 편성·배정 문법 확인, 조장 선정', where: `강의실 공지 / 조별 게시판 ${CHECK}`, deadlineText: '2주차 목요일까지' },
+      submit: { method: '조 편성·배정 문법 확인, 조장 선정', where: '강의실 공지 확인, 조별 게시판에서 조장 선정', deadlineText: '2주차 목요일까지' },
     }),
   },
   'draft-plan': {
@@ -159,7 +180,7 @@ export const TASKS = {
         '지도교수 피드백은 8주차 일요일 무렵 게시판에 올라옵니다. 개인별 교안에 수정·보완 사항을 적어 주는 방식이니, 반드시 내려받아 확인하세요.',
         '피드백을 기다리는 동안에도 계속 스스로 수정해 나가세요. 동료 교안에 대한 교수 피드백도 함께 공부하면 좋습니다.',
       ],
-      submit: { method: '교안 제출', where: `LMS 리포트 게시판 ${CHECK}`, deadlineText: '7주차 월요일 ~ 일요일' },
+      submit: { method: '교안 제출', where: 'LMS 리포트 게시판', deadlineText: '7주차 월요일 ~ 일요일' },
     }),
   },
   'revise-2': {
@@ -171,7 +192,7 @@ export const TASKS = {
         '2차 수정 교안으로 모의수업을 진행하므로 수정과 보완을 충실히 하세요.',
         '기한 안에 초벌 교안, 1차 수정 교안, 2차 수정 교안을 내지 않으면 모의수업에 참가할 수 없고, 실습을 이수할 수 없습니다.',
       ],
-      submit: { method: '교안 제출', where: `LMS 리포트 게시판 ${CHECK}`, deadlineText: '11주차 일요일까지' },
+      submit: { method: '교안 제출', where: 'LMS 리포트 게시판', deadlineText: '11주차 일요일까지' },
     }),
   },
   'mock-class': {
@@ -195,7 +216,7 @@ export const TASKS = {
     due: { week: 15, day: 'sun' },
     guide: guide('모의수업 후 받은 교수 피드백과 평가를 반영하여 최종 교안을 작성합니다.', {
       important: ['반드시 "자기성찰"을 포함하여 작성하세요.'],
-      submit: { method: '교안 제출', where: `LMS 리포트 게시판 ${CHECK}`, deadlineText: '15주차 일요일까지' },
+      submit: { method: '교안 제출', where: 'LMS 리포트 게시판', deadlineText: '15주차 일요일까지' },
     }),
   },
 
@@ -256,13 +277,16 @@ export const TASKS = {
 // 유형별 과업 순서
 const SEQ_MOCK = [
   'orientation',
+  'seminar-1',
   'plan',
   'group',
+  'seminar-2',
+  'draft-plan',
   'lms-log-4',
   'lms-log-5',
-  'draft-plan',
   'peer-feedback',
   'site-observe',
+  'seminar-3',
   'revise-1',
   'revise-2',
   'site-observe-log',
@@ -279,15 +303,29 @@ export const SEQUENCES = {
     'org-find',
     'org-apply',
     'org-approval',
+    'seminar-1',
+    'seminar-2',
     'plan-org',
     'lms-log-4',
     'lms-log-5',
+    'seminar-3',
     'site-observe',
     'site-observe-log',
     'teaching',
     'result-report',
   ],
-  '2-1': ['orientation', 'plan-org', 'lms-log-4', 'lms-log-5', 'site-observe', 'site-observe-log', 'teaching'],
+  '2-1': [
+    'orientation',
+    'seminar-1',
+    'seminar-2',
+    'plan-org',
+    'lms-log-4',
+    'lms-log-5',
+    'seminar-3',
+    'site-observe',
+    'site-observe-log',
+    'teaching',
+  ],
 };
 
 // 날짜 미정 과업의 안내 문구

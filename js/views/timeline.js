@@ -11,7 +11,7 @@ export function taskRow(t) {
     <label class="checkbox"><input type="checkbox" data-done="${t.task.id}" ${t.done ? 'checked' : ''} aria-label="완료 체크"/></label>
     <a class="grow" href="#/task/${t.task.id}">
       <span class="title">${esc(t.task.title)}</span>
-      <span class="meta">${t.due ? `${periodLabel(t.task, semesterId(), t.record)}${t.record.customDue ? ' (직접 입력)' : ''}` : '날짜 미정'}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
+      <span class="meta">${t.due ? `${periodLabel(t.task, semesterId(), t.record)}${t.record.customDue ? ' (직접 입력)' : ''}` : esc(t.task.dueText || '날짜 미정')}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
     </a>
     <span class="badge ${ddayClass(t.left, t.done)}">${t.done ? '완료' : ddayLabel(t.left)}</span>
   </li>`;
