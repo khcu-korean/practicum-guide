@@ -68,7 +68,7 @@ function practicumHTML(r) {
 
   return `
   <section class="card ${p.ok ? 'success' : 'alert'}">
-    <p class="label">① 실습 수강 자격</p>
+    <p class="label">실습 수강 자격</p>
     <h2>${p.ok ? '수강 신청 가능 (자가진단 기준)' : '아직 충족하지 않은 요건이 있어요'}</h2>
     <table class="result">
       <tr><th>${names} 합산</th><td>${p.combined.count} / ${p.combined.courses}과목<br/><span class="muted">${p.combined.earned} / ${p.combined.required}학점</span></td><td>${mark(p.combined.ok)}</td></tr>
@@ -82,7 +82,7 @@ function practicumHTML(r) {
 function certHTML(r) {
   return `
   <section class="card">
-    <p class="label">② 한국어교원 ${esc(r.track.grade)} 자격 영역별 이수 현황</p>
+    <p class="label">한국어교원 ${esc(r.track.grade)} 자격 영역별 이수 현황</p>
     <h2>${r.certMet === E.areas.length ? '모든 영역의 필수 이수 학점을 채웠어요' : `${E.areas.length - r.certMet}개 영역이 남았어요`}
       <small>체크한 과목 합계 ${r.totalEarned}학점 · 자격 기준 ${r.certTotal}학점</small></h2>
     <div class="areas">
@@ -109,7 +109,7 @@ function stickyHTML(r) {
   const p = r.practicum;
   return `<a href="#" class="sticky-sum ${p.ok ? 'ok' : ''}" data-top>
     <span><b>실습 자격</b> ${p.ok ? '충족' : '미충족'} <span class="muted">· 1·3영역 ${p.combined.earned}/${p.combined.required}</span></span>
-    <span><b>자격증</b> ${r.totalEarned}/${r.certTotal}학점</span>
+    <span><b>자격증</b> ${r.totalEarned}/${r.certTotal}학점 <span class="muted">· 결과 보기 ↓</span></span>
   </a>`;
 }
 
@@ -128,7 +128,7 @@ export default {
     const track = E.tracks.find((t) => t.id === input.track);
     return `
     <h1 class="page-title">STEP 1. <span class="nowrap">&lt;한국어교육현장실습&gt;</span> 수강 자격 자기점검</h1>
-    <p class="muted">지금까지 이수한 과목에 체크하면 <b>실습 수강 자격</b>과 <b>자격증 영역별 이수 현황</b>을 함께 확인할 수 있어요.</p>
+    <p class="muted">영역별로 이수한 과목에 체크하면, 아래에 <b>실습 수강 자격</b>과 <b>한국어교원 자격 영역별 이수 현황</b> 진단 결과가 나옵니다.</p>
     <p class="notice tiny">${esc(E.basisNote)} 현재 수강 중인 과목은 아직 체크하지 마세요.</p>
     <details class="card soft">
       <summary><b>수강 자격 기준과 근거</b></summary>
@@ -154,21 +154,8 @@ export default {
         </div>
       </section>
 
-      <div id="summary">${summaryHTML(r)}</div>
-
-      <section class="card">
-        <h2>과목으로 확인할 수 없는 요건</h2>
-        <div class="checks">
-          ${E.otherRequirements
-            .map(
-              (o) => `<label class="check"><input type="checkbox" name="other" value="${o.id}" ${input.others[o.id] ? 'checked' : ''}/>
-              <span>${esc(o.label)}<small class="note">${esc(o.help)}</small></span></label>`
-            )
-            .join('')}
-        </div>
-      </section>
-
-      <h2 class="section-title">이수한 과목 체크</h2>
+      <h2 class="section-title">① 영역별 이수 과목 체크</h2>
+      <p class="tiny muted">지금까지 이수한 과목에 모두 체크하세요.</p>
       ${E.areas
         .map(
           (a) => `
@@ -186,6 +173,21 @@ export default {
         </section>`
         )
         .join('')}
+
+      <section class="card">
+        <h2>② 과목으로 확인할 수 없는 요건</h2>
+        <div class="checks">
+          ${E.otherRequirements
+            .map(
+              (o) => `<label class="check"><input type="checkbox" name="other" value="${o.id}" ${input.others[o.id] ? 'checked' : ''}/>
+              <span>${esc(o.label)}<small class="note">${esc(o.help)}</small></span></label>`
+            )
+            .join('')}
+        </div>
+      </section>
+
+      <h2 class="section-title">③ 진단 결과</h2>
+      <div id="summary">${summaryHTML(r)}</div>
     </form>
     <p class="tiny muted">${esc(E.disclaimer)}</p>
     ${stickyHTML(r)}`;

@@ -353,3 +353,4 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 @media (min-width: 820px) {
   .stepnav-in { max-width: none; justify-content: center; }
 }
+#summary { scroll-margin-top: 110px; }
