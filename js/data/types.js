@@ -94,6 +94,15 @@ export const instLine = (inst, semesterId) => {
 
 export const getInstitution = (id) => INSTITUTIONS.find((i) => i.id === id);
 
+// 유형 이름과 할 일 (이름: '유형 1 (국내외 지정 기관)', 할 일: '강의참관 + 모의수업')
+export const TYPE_LABELS = {
+  1: { name: '유형 1 (국내외 지정 기관)', work: '강의참관 + 모의수업' },
+  '1-1': { name: '유형 1-1 (국내외 지정 기관 · 온라인 병행)', work: '강의참관(오프라인 + 온라인) + 모의수업' },
+  2: { name: '유형 2 (국내외 기관 직접 섭외)', work: '강의참관 + 강의실습' },
+  '2-1': { name: '유형 2-1 (해외 협약 대학)', work: '강의참관 + 강의실습' },
+  3: { name: '유형 3 (해외 기관 직접 섭외)', work: '강의참관 + 모의수업' },
+};
+
 const instOf = (typeId) => INSTITUTIONS.filter((i) => i.type === typeId);
 const picked = (a, typeId) => (a.institutions || []).filter((id) => instOf(typeId).some((i) => i.id === id));
 
@@ -105,27 +114,18 @@ export const DIAGNOSIS_QUESTIONS = [
   {
     id: 'institutions',
     text: '아래 기관 중 실습(강의참관)하고 싶고, 직접 방문할 수 있는 곳을 모두 고르세요.',
-    help: '거주 지역과 관계없이 고를 수 있습니다. 해당하는 곳이 없으면 고르지 않아도 됩니다.',
+    help: '거주 지역과 관계없이 고를 수 있습니다. 해당하는 곳이 없으면 고르지 않아도 됩니다. (유형 1·1-1·2-1)',
     type: 'multi',
     options: INSTITUTIONS.map((i) => ({
       value: i.id,
       label: i.name,
       inst: i,
-      group: `${i.region} 기관 (${i.type === '1' ? '유형 1' : i.type === '1-1' ? '유형 1-1' : '유형 2-1'})`,
+      group: `${TYPE_LABELS[i.type].name} · ${TYPE_LABELS[i.type].work}`,
     })),
   },
   {
-    id: 'online',
-    text: '온라인 실시간 활동(Zoom 등)에 참여할 수 있나요?',
-    type: 'single',
-    options: [
-      { value: 'yes', label: '가능' },
-      { value: 'no', label: '불가능' },
-    ],
-  },
-  {
     id: 'org',
-    text: '위 기관 외에, 실습할 기관을 직접 섭외할 수 있나요?',
+    text: '위 기관 외에, 실습할 기관을 직접 섭외할 수 있나요? (유형 2·3)',
     type: 'single',
     options: [
       { value: 'secured', label: '이미 섭외했다' },
@@ -155,12 +155,6 @@ export const DIAGNOSIS_QUESTIONS = [
     ],
   },
   {
-    id: 'days',
-    text: '실습에 참여할 수 있는 요일을 모두 고르세요.',
-    type: 'multi',
-    options: ['월', '화', '수', '목', '금', '토', '일'].map((d) => ({ value: d, label: d })),
-  },
-  {
     id: 'time',
     text: '실습에 참여할 수 있는 시간대를 적어 주세요. (예: 평일 오후 7시 이후)',
     type: 'text',
@@ -174,8 +168,8 @@ export const DIAGNOSIS_QUESTIONS = [
 export const PRACTICUM_TYPES = [
   {
     id: '1',
-    name: '실습 유형 1',
-    summary: '국내외 현장 실습 기관에서 강의참관 + 모의수업',
+    name: TYPE_LABELS['1'].name,
+    summary: TYPE_LABELS['1'].work,
     description: '국내 또는 해외의 현장 실습 기관에서 강의참관을 하고, 모의수업을 하는 유형입니다.',
     activities: ['강의참관', '모의수업'],
     institutions: instOf('1'),
@@ -188,8 +182,8 @@ export const PRACTICUM_TYPES = [
   },
   {
     id: '1-1',
-    name: '실습 유형 1-1',
-    summary: '국내외 현장 실습 기관에서 강의참관(온라인 병행) + 모의수업',
+    name: TYPE_LABELS['1-1'].name,
+    summary: TYPE_LABELS['1-1'].work,
     description: '국내외 현장 실습 기관에서 강의참관을 하되 온라인 참관을 병행하고, 모의수업을 하는 유형입니다. 오프라인과 온라인을 합쳐 최소 9시간 이상 강의참관을 하며, 강의참관 지도(1시간 이상)는 9시간과 별도로 진행됩니다. 기관마다 참관 일정이 다릅니다.',
     activities: ['강의참관 (오프라인 + 온라인 병행, 총 9시간)', '모의수업'],
     institutions: instOf('1-1'),
@@ -197,16 +191,15 @@ export const PRACTICUM_TYPES = [
       const p = picked(a, '1-1');
       const r = [];
       if (!p.length) r.push('유형 1-1 지정 기관 중 방문할 수 있는 곳이 있어야 합니다');
-      if (a.online !== 'yes') r.push('온라인 참관에 참여할 수 있어야 합니다');
       return r.length
         ? { ok: false, reasons: r }
-        : { ok: true, reasons: [`참관 가능 기관: ${p.map((id) => INSTITUTIONS.find((i) => i.id === id).name).join(', ')}`, '온라인 참관 참여 가능'] };
+        : { ok: true, reasons: [`참관 가능 기관: ${p.map((id) => INSTITUTIONS.find((i) => i.id === id).name).join(', ')}`] };
     },
   },
   {
     id: '2',
-    name: '실습 유형 2',
-    summary: '직접 섭외한 국내외 기관에서 강의참관 + 강의실습',
+    name: TYPE_LABELS['2'].name,
+    summary: TYPE_LABELS['2'].work,
     description: '실습생이 국내 또는 해외의 기관을 직접 섭외하여 강의참관과 강의실습까지 하는 유형입니다. 일부 일정은 실습 기관의 일정을 따릅니다.',
     activities: ['강의참관', '강의실습'],
     institutions: null,
@@ -223,8 +216,8 @@ export const PRACTICUM_TYPES = [
   },
   {
     id: '2-1',
-    name: '실습 유형 2-1',
-    summary: '해외 협약 대학에서 강의참관 + 강의실습',
+    name: TYPE_LABELS['2-1'].name,
+    summary: TYPE_LABELS['2-1'].work,
     description: '해외 협약 대학(베트남 예르생달랏대학교)에서 강의참관과 강의실습을 모두 하는 유형입니다. 일정은 현지 학사 일정을 따릅니다.',
     activities: ['강의참관', '강의실습'],
     institutions: instOf('2-1'),
@@ -235,8 +228,8 @@ export const PRACTICUM_TYPES = [
   },
   {
     id: '3',
-    name: '실습 유형 3',
-    summary: '직접 섭외한 해외(국외) 기관에서 강의참관 + 모의수업',
+    name: TYPE_LABELS['3'].name,
+    summary: TYPE_LABELS['3'].work,
     description: '실습생이 해외(국외) 기관을 직접 섭외하여 강의참관만 하고, 모의수업을 하는 유형입니다.',
     activities: ['강의참관', '모의수업'],
     institutions: null,

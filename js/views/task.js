@@ -15,7 +15,7 @@ export default {
     const left = daysLeft(due);
     const g = task.guide || {};
     const typeIds = typesOfTask(task.id);
-    const typeNames = typeIds.length === 5 ? '모든 유형 공통' : typeIds.map((id) => getType(id)?.name.replace('실습 ', '')).join(', ');
+    const typeNames = typeIds.length === 5 ? '모든 유형 공통' : typeIds.map((id) => `유형 ${id}`).join(', ');
 
     return `
     <a href="#/timeline" class="link">← 타임라인</a>

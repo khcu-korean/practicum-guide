@@ -94,6 +94,7 @@ export default {
         ${ring(stats.percent)}
         <div class="grow">
           <p class="label">${esc(type.name)}${s.institution ? ` · ${esc(s.institution.name)}` : ''}</p>
+          <p class="tiny">할 일: <b>${esc(type.summary)}</b></p>
           <h2>과제 진행률</h2>
           <p>${stats.total}개 중 <b>${stats.done}개</b> 완료</p>
           ${tbd.length ? `<p class="tiny muted">날짜 미정 과제 ${tbd.length}개 — 일정이 정해지면 직접 입력하세요.</p>` : ''}
