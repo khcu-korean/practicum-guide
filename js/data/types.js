@@ -139,8 +139,8 @@ export const DIAGNOSIS_QUESTIONS = [
     type: 'single',
     showIf: { org: ['secured', 'can'] },
     options: [
-      { value: 'yes', label: '강의실습까지 가능' },
-      { value: 'no', label: '강의참관만 가능' },
+      { value: 'yes', label: '강의실습까지 가능 (유형 2)' },
+      { value: 'no', label: '강의참관만 가능 (유형 3)' },
       { value: 'unknown', label: '아직 모르겠다' },
     ],
   },
@@ -191,11 +191,11 @@ export const PRACTICUM_TYPES = [
     match: (a) => {
       const r = [];
       if (!['secured', 'can'].includes(a.org)) r.push('실습 기관을 직접 섭외해야 합니다');
-      else if (a.teachAtOrg === 'no') r.push('섭외한 기관에서 강의실습까지 할 수 있어야 합니다');
+      else if (a.teachAtOrg === 'no') r.push('강의참관만 가능하면 유형 3에 해당합니다');
       if (r.length) return { ok: false, reasons: r };
       return {
         ok: true,
-        reasons: [a.teachAtOrg === 'unknown' ? '기관 섭외 가능 — 강의실습 가능 여부를 기관에 꼭 확인하세요' : '기관 섭외 및 강의실습 가능'],
+        reasons: [a.teachAtOrg === 'unknown' ? '기관 섭외 가능 — 강의실습이 가능하면 유형 2, 강의참관만 가능하면 유형 3입니다. 기관에 확인하세요' : '기관 섭외 및 강의실습 가능'],
       };
     },
   },
@@ -221,7 +221,12 @@ export const PRACTICUM_TYPES = [
     match: (a) => {
       const r = [];
       if (!['secured', 'can'].includes(a.org)) r.push('실습 기관을 직접 섭외해야 합니다');
-      return r.length ? { ok: false, reasons: r } : { ok: true, reasons: ['실습 기관 섭외 가능 (강의참관 후 모의수업)'] };
+      else if (a.teachAtOrg === 'yes') r.push('강의실습까지 할 수 있으면 유형 2에 해당합니다');
+      if (r.length) return { ok: false, reasons: r };
+      return {
+        ok: true,
+        reasons: [a.teachAtOrg === 'unknown' ? '기관 섭외 가능 — 강의실습이 가능하면 유형 2, 강의참관만 가능하면 유형 3입니다. 기관에 확인하세요' : '기관 섭외 가능, 강의참관만 가능'],
+      };
     },
   },
 ];
