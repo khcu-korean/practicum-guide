@@ -12,8 +12,8 @@ export default {
   render() {
     if (!sem().typeId) {
       return `<h1 class="page-title">STEP 5. 진행 현황</h1>
-      <section class="card next"><p>배정된 유형을 입력하면 진행 현황을 확인할 수 있어요.</p>
-      <a class="btn primary" href="#/assign">배정 유형·기관 입력하기 →</a></section>`;
+      <section class="card next"><p>STEP 3에서 확정된 실습 유형을 입력하면 진행 현황을 확인할 수 있어요.</p>
+      <a class="btn primary" href="#/assign">확정된 실습 유형·기관 입력하기 →</a></section>`;
     }
     const list = myTasks();
     const stats = progressStats();

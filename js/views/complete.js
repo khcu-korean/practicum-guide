@@ -12,7 +12,7 @@ export default {
     const type = getType(s.typeId);
     if (!type) {
       return `<h1 class="page-title">STEP 6. 이수 완료 점검</h1>
-      <section class="card next"><p>배정된 유형을 먼저 입력해 주세요.</p><a class="btn primary" href="#/assign">배정 유형·기관 입력하기 →</a></section>`;
+      <section class="card next"><p>STEP 3에서 확정된 실습 유형을 먼저 입력해 주세요.</p><a class="btn primary" href="#/assign">확정된 실습 유형·기관 입력하기 →</a></section>`;
     }
     const required = myTasks().filter((t) => t.task.required !== false);
     const missing = required.filter((t) => !t.done);

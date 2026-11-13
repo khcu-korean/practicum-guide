@@ -37,7 +37,7 @@ function resultHTML(results, currentTypeId) {
     <div class="type-card ${r.ok ? '' : 'disabled'} ${currentTypeId === r.type.id ? 'selected' : ''}">
       <div class="row">
         <h3 class="grow">${esc(r.type.name)}</h3>
-        ${currentTypeId === r.type.id ? '<span class="badge badge-done">내 배정 유형</span>' : ''}
+        ${currentTypeId === r.type.id ? '<span class="badge badge-done">나의 확정 유형</span>' : ''}
       </div>
       <p><b>${esc(r.type.summary)}</b></p>
       <p class="muted">${esc(r.type.description)}</p>
@@ -62,9 +62,9 @@ function resultHTML(results, currentTypeId) {
   </section>
   <section class="card next">
     <p class="muted">확정 명단이 발표되면</p>
-    <h2>STEP 3. 배정된 유형과 기관을 입력하세요</h2>
-    <p class="tiny">입력한 유형에 맞춰 맞춤 타임라인이 만들어집니다.</p>
-    <a class="btn primary" href="#/assign">배정 유형·기관 입력하기 →</a>
+    <h2>STEP 3. 확정된 실습 유형 및 실습 기관을 입력하세요</h2>
+    <p class="tiny">입력한 유형에 맞춰 유형별 과제 타임라인이 만들어집니다.</p>
+    <a class="btn primary" href="#/assign">확정된 실습 유형·기관 입력하기 →</a>
   </section>`;
 }
 

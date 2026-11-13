@@ -1,4 +1,4 @@
-// ④ 유형별 맞춤 타임라인 (유형별 과업 순서대로 표시)
+// ④ 유형별 과제 타임라인과 가이드 (유형별 과제 순서대로 표시)
 import { getType } from '../data/types.js';
 import { sem, update } from '../store.js';
 import { myTasks } from '../selectors.js';
@@ -31,18 +31,18 @@ export function bindDoneToggle(root) {
 }
 
 export default {
-  title: '타임라인',
+  title: '유형별 과제 타임라인과 가이드',
   render() {
     const s = sem();
     const type = getType(s.typeId);
     if (!type) {
-      return `<h1 class="page-title">STEP 4. 맞춤 타임라인</h1>
-      <section class="card next"><p>확정 명단이 발표된 뒤 배정된 유형과 기관을 입력하면, 나에게 필요한 일정과 과업이 자동으로 만들어져요.</p>
-      <a class="btn primary" href="#/assign">배정 유형·기관 입력하기 →</a></section>`;
+      return `<h1 class="page-title">STEP 4. 유형별 과제 타임라인과 가이드</h1>
+      <section class="card next"><p>확정 명단이 발표된 뒤 STEP 3에서 실습 유형과 실습 기관을 입력하면, 나에게 필요한 과제와 일정이 자동으로 만들어져요.</p>
+      <a class="btn primary" href="#/assign">확정된 실습 유형·기관 입력하기 →</a></section>`;
     }
     const list = myTasks();
     return `
-    <h1 class="page-title">STEP 4. 맞춤 타임라인</h1>
+    <h1 class="page-title">STEP 4. 유형별 과제 타임라인과 가이드</h1>
     <p class="muted"><b>${esc(type.name)}</b> · ${esc(type.summary)}<br/>실습 기관: ${s.institution ? esc(s.institution.name) : '실습 기관 미입력'} <a class="link" href="#/assign">수정</a></p>
     <div class="legend tiny">
       <span class="badge badge-urgent">D-3 이내</span><span class="badge badge-soon">D-7 이내</span>

@@ -9,7 +9,7 @@ function institutionHTML(typeId, saved) {
   if (type.institutions) {
     return `
     <section class="card">
-      <h2>배정된 실습 기관</h2>
+      <h2>확정된 실습 기관</h2>
       <div class="choices col">
         ${type.institutions
           .map(
@@ -34,17 +34,17 @@ function institutionHTML(typeId, saved) {
 }
 
 export default {
-  title: '배정 유형·기관 입력',
+  title: '확정된 실습 유형 및 실습 기관 입력',
   render() {
     const s = sem();
     const typeId = s.typeId || '';
     return `
-    <h1 class="page-title">STEP 3. 배정 유형·기관 입력</h1>
-    <p class="muted">학과 게시판에 확정 명단이 발표되면, 배정된 실습 유형과 기관을 입력하세요. 입력한 유형에 맞춰 <b>맞춤 타임라인</b>이 만들어집니다.</p>
+    <h1 class="page-title">STEP 3. 확정된 실습 유형 및 실습 기관 입력</h1>
+    <p class="muted">학과 게시판에 확정 명단이 발표되면, 나의 실습 유형과 실습 기관을 입력하세요. 입력한 유형에 맞춰 <b>유형별 과제 타임라인</b>이 만들어집니다.</p>
 
     <form id="assignForm" class="stack">
       <section class="card">
-        <h2>배정된 실습 유형</h2>
+        <h2>확정된 실습 유형</h2>
         <div class="choices col">
           ${PRACTICUM_TYPES.map(
             (t) => `<label class="choice"><input type="radio" name="type" value="${t.id}" ${typeId === t.id ? 'checked' : ''}/>
@@ -55,7 +55,7 @@ export default {
       <div id="instBox">${institutionHTML(typeId, s.institution)}</div>
       <button class="btn primary big" type="submit">저장하고 타임라인 보기</button>
     </form>
-    <p class="tiny muted">배정 결과가 바뀌면 언제든 다시 입력할 수 있습니다. 공통 과업의 완료 기록은 그대로 유지됩니다.</p>`;
+    <p class="tiny muted">확정 결과가 바뀌면 언제든 다시 입력할 수 있습니다. 공통 과업의 완료 기록은 그대로 유지됩니다.</p>`;
   },
 
   mount(root) {
@@ -70,12 +70,12 @@ export default {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const typeId = form.querySelector('input[name=type]:checked')?.value;
-      if (!typeId) return toast('배정된 실습 유형을 선택하세요.');
+      if (!typeId) return toast('확정된 실습 유형을 선택하세요.');
       const type = getType(typeId);
       let institution = null;
       if (type.institutions) {
         const id = form.querySelector('input[name=inst]:checked')?.value;
-        if (!id) return toast('배정된 실습 기관을 선택하세요.');
+        if (!id) return toast('확정된 실습 기관을 선택하세요.');
         const i = type.institutions.find((x) => x.id === id);
         institution = { id: i.id, name: i.name, region: i.region };
       } else {
@@ -89,7 +89,7 @@ export default {
         s.institution = institution;
         s.assignedAt = new Date().toISOString();
       });
-      toast('저장했습니다. 맞춤 타임라인을 확인하세요!');
+      toast('저장했습니다. 유형별 과제 타임라인을 확인하세요!');
       location.hash = '#/timeline';
     });
   },
