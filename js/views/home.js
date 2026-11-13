@@ -37,8 +37,8 @@ export default {
 
     const steps = [
       { key: 'eligibility', no: 1, label: '수강 자격 자가진단', href: '#/eligibility' },
-      { key: 'diagnosis', no: 2, label: '실습 유형 진단', href: '#/diagnosis' },
-      { key: 'type', no: 3, label: '실습 유형 확정', href: '#/diagnosis' },
+      { key: 'diagnosis', no: 2, label: '실습 기관·유형 살펴보기', href: '#/diagnosis' },
+      { key: 'type', no: 3, label: '실습 유형 확정 (명단 발표 후)', href: '#/diagnosis' },
       { key: 'tasks', no: 4, label: '과업 수행', href: '#/timeline' },
     ];
     const nextStep = steps.find((x) => !st[x.key]);

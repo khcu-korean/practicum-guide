@@ -1,5 +1,5 @@
 // ③ 실습 유형 진단 및 추천 → 유형 확정
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY, APPLICATION_NOTICE } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY, APPLICATION_NOTICE, DIAGNOSIS_INTRO } from '../data/types.js';
 import { sem, update } from '../store.js';
 import { esc, toast } from '../utils.js';
 
@@ -48,7 +48,7 @@ function resultHTML(results, currentTypeId) {
           : '<p class="tiny muted">실습 기관: 실습생이 직접 섭외</p>'
       }
       <ul class="bullets tiny">${r.reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-      ${r.ok ? `<button class="btn ${currentTypeId === r.type.id ? '' : 'primary'}" data-pick="${r.type.id}">${currentTypeId === r.type.id ? '이 유형으로 확정됨' : '이 유형으로 확정하기'}</button>` : ''}
+      ${r.ok ? `<button class="btn ${currentTypeId === r.type.id ? '' : 'primary'}" data-pick="${r.type.id}">${currentTypeId === r.type.id ? '이 유형으로 확정됨' : '배정된 유형으로 확정하기'}</button>` : ''}
     </div>`;
   return `
   <section class="card">
@@ -56,10 +56,10 @@ function resultHTML(results, currentTypeId) {
     ${ok.length ? `<p>선택 가능한 실습 유형이 <b>${ok.length}개</b> 있어요.</p>${ok.map(card).join('')}` : '<p class="notice">입력한 조건으로 선택 가능한 유형이 없습니다. 담당 교수(조교)에게 문의하세요.</p>'}
     ${no.length ? `<details><summary>선택이 어려운 유형 보기 (${no.length})</summary>${no.map(card).join('')}</details>` : ''}
     <div class="notice">
-      <b>📌 기관 신청 안내</b>
+      <b>📌 실제 신청은 이렇게 합니다</b>
       <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     </div>
-    <p class="tiny muted">※ 추천 결과는 참고용입니다. 기관 배정 결과가 나오면 해당 유형으로 확정하세요. 확정한 뒤에도 바꿀 수 있습니다.</p>
+    <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다. <b>확정 명단이 발표되면</b> 배정된 유형으로 확정하세요. 그러면 그 유형에 맞는 타임라인이 만들어집니다. 확정한 뒤에도 바꿀 수 있습니다.</p>
   </section>`;
 }
 
@@ -70,7 +70,8 @@ export default {
     const a = s.diagnosis?.answers || {};
     return `
     <h1 class="page-title">STEP 2. 실습 유형 진단</h1>
-    <p class="muted">나의 상황과 여건을 입력하면 선택할 수 있는 실습 유형을 추천해 드려요.</p>
+    <p class="muted">나의 상황과 여건을 입력하면 고를 수 있는 실습 기관과 유형을 추천해 드려요.</p>
+    <p class="notice tiny">${esc(DIAGNOSIS_INTRO)}</p>
     <details class="card soft">
       <summary><b>📖 먼저 알아 두면 좋은 용어</b></summary>
       <dl class="glossary">${GLOSSARY.map((g) => `<dt>${esc(g.term)}</dt><dd>${esc(g.definition)}</dd>`).join('')}</dl>
@@ -113,7 +114,7 @@ export default {
       const cur = sem().typeId;
       if (cur && cur !== id && !confirm('실습 유형을 변경하면 타임라인이 새 유형에 맞게 바뀝니다. 변경할까요?\n(공통 과업 체크 기록은 유지됩니다)')) return;
       update((s) => (s.typeId = id));
-      toast('실습 유형이 확정되었습니다. 맞춤 타임라인을 확인하세요!');
+      toast('실습 유형을 확정했습니다. 맞춤 타임라인을 확인하세요!');
       location.hash = '#/timeline';
     });
   },
