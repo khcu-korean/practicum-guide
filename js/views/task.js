@@ -1,8 +1,8 @@
 // ⑤ 과제 수행 가이드 (과업 상세)
-import { getTask, typesOfTask, SCHEDULE_NOTE } from '../data/tasks.js';
+import { getTask, typesOfTask, SCHEDULE_NOTE, COMMON_GUIDE_NOTES } from '../data/tasks.js';
 import { getType } from '../data/types.js';
 import { sem, semesterId, update } from '../store.js';
-import { esc, resolveDue, daysLeft, ddayLabel, ddayClass, fmtDate, toast } from '../utils.js';
+import { esc, resolveDue, daysLeft, ddayLabel, ddayClass, fmtDate, periodLabel, toast } from '../utils.js';
 
 export default {
   title: '과제 가이드',
@@ -25,7 +25,7 @@ export default {
     <section class="card row">
       <span class="badge big ${ddayClass(left, r.done)}">${r.done ? '완료' : ddayLabel(left)}</span>
       <div class="grow">
-        <p>마감: <b>${fmtDate(due)}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
+        <p>${task.start && !r.customDue ? '기간' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : '미정'}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
         ${task.due === null ? `<p class="tiny muted">${esc(SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
       </div>
     </section>
@@ -47,7 +47,7 @@ export default {
       <p>${esc(g.intro)}</p>
 
       <h2>⚠️ 중요 사항</h2>
-      <ul class="bullets">${(g.important || []).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+      <ul class="bullets">${[...(g.important || []), ...COMMON_GUIDE_NOTES].map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
 
       <h2>📄 작성 양식</h2>
       ${
@@ -62,7 +62,7 @@ export default {
       <table class="result">
         <tr><th>제출 방법</th><td>${esc(g.submit?.method)}</td></tr>
         <tr><th>제출 위치</th><td>${esc(g.submit?.where)}</td></tr>
-        <tr><th>기한</th><td>${esc(g.submit?.deadlineText)}<br/><b>${fmtDate(due)}</b></td></tr>
+        <tr><th>기한</th><td>${esc(g.submit?.deadlineText)}${due ? `<br/><b>${periodLabel(task, semesterId(), r)}</b>` : ''}</td></tr>
       </table>
     </section>
 

@@ -2,7 +2,8 @@
 import { getType } from '../data/types.js';
 import { sem, update } from '../store.js';
 import { myTasks } from '../selectors.js';
-import { esc, ddayLabel, ddayClass, fmtDate } from '../utils.js';
+import { esc, ddayLabel, ddayClass, periodLabel } from '../utils.js';
+import { semesterId } from '../store.js';
 
 export function taskRow(t) {
   return `
@@ -10,7 +11,7 @@ export function taskRow(t) {
     <label class="checkbox"><input type="checkbox" data-done="${t.task.id}" ${t.done ? 'checked' : ''} aria-label="완료 체크"/></label>
     <a class="grow" href="#/task/${t.task.id}">
       <span class="title">${esc(t.task.title)}</span>
-      <span class="meta">${t.due ? `마감 ${fmtDate(t.due)}${t.record.customDue ? ' (직접 입력)' : ''}` : '날짜 미정'}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
+      <span class="meta">${t.due ? `${periodLabel(t.task, semesterId(), t.record)}${t.record.customDue ? ' (직접 입력)' : ''}` : '날짜 미정'}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
     </a>
     <span class="badge ${ddayClass(t.left, t.done)}">${t.done ? '완료' : ddayLabel(t.left)}</span>
   </li>`;

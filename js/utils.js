@@ -20,19 +20,31 @@ export const parseISO = (s) => {
 
 export const todayISO = () => toISO(new Date());
 
-/** 과업의 실제 마감일(ISO) 계산. 학생이 직접 입력한 날짜가 우선. 미정이면 null */
-export function resolveDue(task, semesterId, record) {
-  if (record?.customDue) return record.customDue;
-  const due = task.due;
-  if (!due) return null;
-  if (typeof due === 'string') return due;
+/** { week: 3, day: 'sun' } 또는 'YYYY-MM-DD'를 학기 기준 실제 날짜(ISO)로 변환 */
+export function resolveDate(spec, semesterId) {
+  if (!spec) return null;
+  if (typeof spec === 'string') return spec;
   const start = parseISO(getSemester(semesterId).startDate);
-  // 학기 시작일이 속한 주의 월요일 기준
+  // 개강일이 속한 주의 월요일 기준
   const monday = new Date(start);
   monday.setDate(start.getDate() - ((start.getDay() + 6) % 7));
   const d = new Date(monday);
-  d.setDate(monday.getDate() + (due.week - 1) * 7 + (DAY_INDEX[due.day] ?? 6));
+  d.setDate(monday.getDate() + (spec.week - 1) * 7 + (DAY_INDEX[spec.day] ?? 6));
   return toISO(d);
+}
+
+/** 과업의 실제 마감일(ISO). 학생이 직접 입력한 날짜가 우선. 미정이면 null */
+export function resolveDue(task, semesterId, record) {
+  if (record?.customDue) return record.customDue;
+  return resolveDate(task.due, semesterId);
+}
+
+/** 과업 기간 표시: '3/15(월)~4/4(일)' 또는 '3/21(일)' */
+export function periodLabel(task, semesterId, record) {
+  const due = resolveDue(task, semesterId, record);
+  if (!due) return '';
+  const start = record?.customDue ? null : resolveDate(task.start, semesterId);
+  return `${start ? `${fmtDate(start)}~` : ''}${fmtDate(due)}${task.time ? ` ${task.time}` : ''}`;
 }
 
 /** 남은 일수 (오늘=0, 지남=음수) */

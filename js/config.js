@@ -8,12 +8,12 @@ export const CONFIG = {
   subtitle: '경희사이버대학교 한국어교육실습 수강생 대상',
 
   // 현재 운영 중인 학기 (학기가 바뀌면 여기만 수정)
-  currentSemesterId: '2026-2',
+  currentSemesterId: '2027-1',
 
-  // 학기 목록: startDate = 1주차 시작일(월요일 권장)
+  // 학기 목록: startDate = 개강일(1주차 월요일). 과업 날짜는 이 날짜 기준 'n주차 요일'로 자동 계산됩니다.
   semesters: [
-    { id: '2026-2', label: '2026학년도 2학기', startDate: '2026-09-01' },
-    { id: '2027-1', label: '2027학년도 1학기', startDate: '2027-03-02' },
+    { id: '2026-2', label: '2026학년도 2학기', startDate: '2026-08-31' },
+    { id: '2027-1', label: '2027학년도 1학기', startDate: '2027-03-01' },
   ],
 
   // 마감 며칠 전에 알림/강조할지
