@@ -33,7 +33,6 @@ function recommend(a) {
 
 function resultHTML(results, currentTypeId) {
   const ok = results.filter((r) => r.ok);
-  const no = results.filter((r) => !r.ok);
   const card = (r) => `
     <div class="type-card ${r.ok ? '' : 'disabled'}">
       <div class="row">
@@ -53,12 +52,15 @@ function resultHTML(results, currentTypeId) {
   return `
   <section class="card">
     <h2>추천 결과</h2>
-    ${ok.length ? `<p>선택 가능한 실습 유형이 <b>${ok.length}개</b> 있어요.</p>${ok.map(card).join('')}` : '<p class="notice">입력한 조건으로 선택 가능한 유형이 없습니다. 담당 교수(조교)에게 문의하세요.</p>'}
-    ${no.length ? `<details><summary>선택이 어려운 유형 보기 (${no.length})</summary>${no.map(card).join('')}</details>` : ''}
+    ${
+      ok.length
+        ? `<p>선택할 수 있는 실습 유형이 <b>${ok.length}개</b> 있어요.</p>${ok.map(card).join('')}
     <div class="notice">
-      <b>실제 신청은 이렇게 합니다</b>
+      <b>실습 신청은 이렇게 합니다</b>
       <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-    </div>
+    </div>`
+        : '<p class="notice">입력한 조건으로 선택할 수 있는 유형이 없습니다. 담당 교수(조교)에게 문의하세요.</p>'
+    }
     <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다.</p>
   </section>
   <section class="card next">
