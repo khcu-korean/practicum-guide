@@ -56,10 +56,10 @@ function parseHash() {
   return { path, params };
 }
 
-const schoolMark = () =>
+const brandHTML = () =>
   CONFIG.school.logo
-    ? `<img class="logo" src="${esc(CONFIG.school.logo)}" alt="${esc(CONFIG.school.name)}" />`
-    : `<span class="mark" aria-hidden="true">${esc(CONFIG.school.mark)}</span>`;
+    ? `<img class="logo" src="${esc(CONFIG.school.logo)}" alt="${esc(CONFIG.school.name)}" /><span class="dept">${esc(CONFIG.school.dept)}</span>`
+    : `<span class="mark" aria-hidden="true">${esc(CONFIG.school.mark)}</span><span>${esc(CONFIG.school.name)}<small>${esc(CONFIG.school.dept)}</small></span>`;
 
 function layout(view, path, body) {
   const user = getUser();
@@ -68,7 +68,7 @@ function layout(view, path, body) {
   return `
   <header class="band">
     <div class="band-in">
-      <a href="#/" class="brand">${schoolMark()}<span>${esc(CONFIG.school.name)}<small>${esc(CONFIG.school.dept)}</small></span></a>
+      <a href="#/" class="brand">${brandHTML()}</a>
       ${user ? `<span class="sem">${esc(getSemester(semesterId()).label)}</span>` : view.public ? '<a class="band-link" href="#/login">로그인</a>' : ''}
     </div>
   </header>

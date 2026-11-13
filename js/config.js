@@ -10,9 +10,9 @@ export const CONFIG = {
   // 학교 표시 (logo에 이미지 경로를 넣으면 글자 표시 대신 로고가 나옵니다. 예: 'icons/khcu-logo.png')
   school: {
     name: '경희사이버대학교',
-    dept: '한국어교육전공',
+    dept: '한국어문화학부',
     mark: 'KH',
-    logo: '',
+    logo: 'icons/khcu-logo.png',
   },
 
   // 현재 운영 중인 학기 (학기가 바뀌면 여기만 수정)
