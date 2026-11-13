@@ -104,7 +104,8 @@ export const TYPE_LABELS = {
 };
 
 const instOf = (typeId) => INSTITUTIONS.filter((i) => i.type === typeId);
-const picked = (a, typeId) => (a.institutions || []).filter((id) => instOf(typeId).some((i) => i.id === id));
+// 고른 기관(한 곳)이 이 유형의 기관이면 [id], 아니면 []
+const picked = (a, typeId) => [].concat(a.institutions || []).filter((id) => instOf(typeId).some((i) => i.id === id));
 
 // 진단 문항
 // - type: 'single'(하나 선택) | 'multi'(여러 개 선택) | 'text'(직접 입력)
@@ -113,20 +114,21 @@ const picked = (a, typeId) => (a.institutions || []).filter((id) => instOf(typeI
 export const DIAGNOSIS_QUESTIONS = [
   {
     id: 'institutions',
-    text: '아래 기관 중 실습(강의참관)하고 싶고, 직접 방문할 수 있는 곳을 모두 고르세요.',
-    help: '거주 지역과 관계없이 고를 수 있습니다. 해당하는 곳이 없으면 고르지 않아도 됩니다. (유형 1·1-1·2-1)',
-    type: 'multi',
+    text: '실습(강의참관)하고 싶은 기관을 한 곳 고르세요.',
+    help: '거주 지역과 관계없이 직접 방문할 수 있는 곳을 고르세요. 위 기관이 아니라 직접 섭외하려면 맨 아래 "직접 섭외"를 고르세요.',
+    type: 'single',
     options: INSTITUTIONS.map((i) => ({
       value: i.id,
       label: i.name,
       inst: i,
       group: `${TYPE_LABELS[i.type].name} · ${TYPE_LABELS[i.type].work}`,
-    })),
+    })).concat([{ value: 'self', label: '위 기관이 아닌 곳을 직접 섭외하겠다', group: '직접 섭외 (유형 2 · 유형 3)' }]),
   },
   {
     id: 'org',
-    text: '위 기관 외에, 실습할 기관을 직접 섭외할 수 있나요? (유형 2·3)',
+    text: '실습할 기관을 직접 섭외할 수 있나요?',
     type: 'single',
+    showIf: { institutions: 'self' },
     options: [
       { value: 'secured', label: '이미 섭외했다' },
       { value: 'can', label: '아직 없지만 섭외할 수 있다' },
@@ -141,7 +143,6 @@ export const DIAGNOSIS_QUESTIONS = [
     options: [
       { value: 'yes', label: '강의실습까지 가능 (유형 2)' },
       { value: 'no', label: '강의참관만 가능 (유형 3)' },
-      { value: 'unknown', label: '아직 모르겠다' },
     ],
   },
 ];
@@ -195,7 +196,7 @@ export const PRACTICUM_TYPES = [
       if (r.length) return { ok: false, reasons: r };
       return {
         ok: true,
-        reasons: [a.teachAtOrg === 'unknown' ? '기관 섭외 가능 — 강의실습이 가능하면 유형 2, 강의참관만 가능하면 유형 3입니다. 기관에 확인하세요' : '기관 섭외 및 강의실습 가능'],
+        reasons: ['기관 섭외 가능, 강의실습까지 가능'],
       };
     },
   },
@@ -225,7 +226,7 @@ export const PRACTICUM_TYPES = [
       if (r.length) return { ok: false, reasons: r };
       return {
         ok: true,
-        reasons: [a.teachAtOrg === 'unknown' ? '기관 섭외 가능 — 강의실습이 가능하면 유형 2, 강의참관만 가능하면 유형 3입니다. 기관에 확인하세요' : '기관 섭외 가능, 강의참관만 가능'],
+        reasons: ['기관 섭외 가능, 강의참관만 가능'],
       };
     },
   },
