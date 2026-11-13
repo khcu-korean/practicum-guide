@@ -1,6 +1,7 @@
 // ⑤ 과제 수행 가이드 (과업 상세)
 import { getTask, typesOfTask, SCHEDULE_NOTE, COMMON_GUIDE_NOTES } from '../data/tasks.js';
 import { getType } from '../data/types.js';
+import { instScheduleFor } from '../selectors.js';
 import { sem, semesterId, update } from '../store.js';
 import { esc, resolveDue, daysLeft, ddayLabel, ddayClass, fmtDate, periodLabel, toast } from '../utils.js';
 
@@ -25,10 +26,26 @@ export default {
     <section class="card row">
       <span class="badge big ${ddayClass(left, r.done)}">${r.done ? '완료' : ddayLabel(left)}</span>
       <div class="grow">
-        <p>${task.start && !r.customDue ? '기간' : task.due === null ? '일정' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : esc(task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
-        ${task.due === null ? `<p class="tiny muted">${esc(task.scheduleNote || SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
+        <p>${task.start && !r.customDue ? '기간' : task.due === null ? '일정' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : esc(instScheduleFor(task.id)?.term.period || task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
+        ${task.due === null && !(instScheduleFor(task.id) && !r.customDue) ? `<p class="tiny muted">${esc(task.scheduleNote || SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
       </div>
     </section>
+
+    ${(() => {
+      const mi = instScheduleFor(task.id);
+      return mi
+        ? `<section class="card next">
+        <p class="label">나의 실습 기관 일정 (${esc(mi.inst.name)})</p>
+        <table class="result">
+          <tr><th>기간</th><td>${esc(mi.term.period)}</td></tr>
+          <tr><th>방식</th><td>${esc(mi.term.method)}</td></tr>
+          ${mi.inst.schedule ? `<tr><th>시간 구성</th><td>${esc(mi.inst.schedule)}</td></tr>` : ''}
+          ${mi.term.note ? `<tr><th>참고</th><td>${esc(mi.term.note)}</td></tr>` : ''}
+        </table>
+        <p class="tiny muted">정확한 날짜는 강의실 공지 사항으로 안내합니다. 날짜가 정해지면 아래에 입력하세요.</p>
+      </section>`
+        : '';
+    })()}
 
     ${
       task.due === null

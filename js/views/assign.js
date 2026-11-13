@@ -1,6 +1,6 @@
 // STEP 3. 배정 결과 입력: 확정 명단에 따라 나의 실습 유형과 기관을 입력
-import { PRACTICUM_TYPES, getType } from '../data/types.js';
-import { sem, update } from '../store.js';
+import { PRACTICUM_TYPES, getType, instLine, termOf } from '../data/types.js';
+import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
 
 function institutionHTML(typeId, saved) {
@@ -14,7 +14,7 @@ function institutionHTML(typeId, saved) {
         ${type.institutions
           .map(
             (i) => `<label class="choice"><input type="radio" name="inst" value="${i.id}" ${saved?.id === i.id ? 'checked' : ''} ${type.institutions.length === 1 ? 'checked' : ''}/>
-            <span>${esc(i.name)} <small class="muted">${esc(i.region)}</small>${i.schedule ? `<small class="note">${esc(i.schedule)}</small>` : ''}</span></label>`
+            <span>${esc(i.name)} <small class="muted">${esc(i.location || i.region)}</small><small class="note">${esc(instLine(i, semesterId()))}${termOf(i, semesterId())?.note ? ` · ${esc(termOf(i, semesterId()).note)}` : ''}</small></span></label>`
           )
           .join('')}
       </div>

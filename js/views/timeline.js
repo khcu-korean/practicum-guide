@@ -1,17 +1,18 @@
 // ④ 유형별 과제 타임라인과 가이드 (유형별 과제 순서대로 표시)
 import { getType } from '../data/types.js';
 import { sem, update } from '../store.js';
-import { myTasks } from '../selectors.js';
+import { myTasks, instScheduleFor } from '../selectors.js';
 import { esc, ddayLabel, ddayClass, periodLabel } from '../utils.js';
 import { semesterId } from '../store.js';
 
 export function taskRow(t) {
+  const mi = !t.record.customDue ? instScheduleFor(t.task.id) : null;
   return `
   <li class="task ${t.done ? 'is-done' : ''}">
     <label class="checkbox"><input type="checkbox" data-done="${t.task.id}" ${t.done ? 'checked' : ''} aria-label="완료 체크"/></label>
     <a class="grow" href="#/task/${t.task.id}">
       <span class="title">${esc(t.task.title)}</span>
-      <span class="meta">${t.due ? `${periodLabel(t.task, semesterId(), t.record)}${t.record.customDue ? ' (직접 입력)' : ''}` : esc(t.task.dueText || '날짜 미정')}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
+      <span class="meta">${t.due ? `${periodLabel(t.task, semesterId(), t.record)}${t.record.customDue ? ' (직접 입력)' : ''}` : mi ? `${esc(mi.term.period)} · ${esc(mi.term.method)}` : esc(t.task.dueText || '날짜 미정')}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
     </a>
     <span class="badge ${ddayClass(t.left, t.done)}">${t.done ? '완료' : ddayLabel(t.left)}</span>
   </li>`;

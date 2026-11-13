@@ -22,21 +22,77 @@ export const GLOSSARY = [
   },
 ];
 
-// 유형 1 · 1-1 · 2-1의 지정 기관 (진단 문항과 유형 설명에서 함께 사용)
+// 유형 1 · 1-1 · 2-1의 지정 기관 (진단 문항, 유형 설명, 확정 기관 입력, 타임라인에서 함께 사용)
+// - location: 소재지
+// - schedule: 참관 시간 구성 (학기와 관계없이 같은 내용)
+// - terms: 학기별 참관 기간과 방식 { '2027-1': { period, method } } ← 학기가 바뀌면 새 학기 항목을 추가
 export const INSTITUTIONS = [
   // 유형 1
-  { id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', type: '1' },
-  { id: 'honam', name: '호남대학교', region: '국내', type: '1' },
-  { id: 'tongmyong', name: '동명대학교', region: '국내', type: '1' },
-  { id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', type: '1' },
-  { id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', type: '1' },
-  // 유형 1-1 (schedule: 참관 일정 구성)
-  { id: 'khcu-center', name: '경희사이버대학교 한국어센터', region: '국내', type: '1-1', schedule: '토요일 4시간 + 일요일 2시간 + 온라인 3시간' },
-  { id: 'ammi', name: '암미다문화센터', region: '국내', type: '1-1', schedule: '일요일 2회(회당 4시간) + 온라인 1시간' },
-  { id: 'jecheon', name: '제천폴리텍다솜고등학교', region: '국내', type: '1-1', schedule: '평일 2~3회(총 8시간) + 온라인 1시간' },
+  {
+    id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', location: '서울', type: '1',
+    terms: { '2027-1': { period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
+  },
+  {
+    id: 'honam', name: '호남대학교 한국어교육원', region: '국내', location: '광주광역시', type: '1',
+    terms: { '2027-1': { period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
+  },
+  {
+    id: 'tongmyong', name: '동명대학교 부산국제대학 글로벌한국학과', region: '국내', location: '부산광역시', type: '1',
+    terms: { '2027-1': { period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
+  },
+  {
+    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1',
+    terms: {
+      '2027-1': {
+        period: '2027년 2월 중 (개강 전)',
+        method: '평일 3일 오프라인 참관',
+        note: '태국 대학의 학사 일정에 따라 방학 중에 미리 참관합니다.',
+      },
+    },
+  },
+  {
+    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1',
+    terms: { '2027-1': { period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
+  },
+  // 유형 1-1
+  {
+    id: 'khcu-center', name: '경희사이버대학교 한국어센터', region: '국내', location: '서울', type: '1-1',
+    schedule: '토요일 4시간 + 일요일 2시간 + 온라인 3시간',
+    terms: { '2027-1': { period: '2027년 3~4월 중', method: '토·일 2회 오프라인 참관 + 1회 온라인 참관' } },
+  },
+  {
+    id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1',
+    schedule: '일요일 2회(회당 4시간) + 온라인 1시간',
+    terms: { '2027-1': { period: '2027년 3~4월 중', method: '일요일 2회 오프라인 참관 + 1회 온라인 참관' } },
+  },
+  {
+    id: 'jecheon', name: '제천폴리텍다솜고등학교', region: '국내', location: '제천시', type: '1-1',
+    schedule: '평일 오프라인 총 8시간 + 온라인 1시간',
+    terms: { '2027-1': { period: '2027년 4월 중', method: '평일 3일 오프라인 참관 + 1회 온라인 참관' } },
+  },
   // 유형 2-1
-  { id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', type: '2-1' },
+  {
+    id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', location: '베트남 달랏', type: '2-1',
+    terms: {
+      '2027-1': {
+        period: '2027년 5월 중',
+        method: '평일 3일 오프라인 참관 + 1일 강의실습',
+        note: '현지 체류 일정은 협의할 수 있습니다.',
+      },
+    },
+  },
 ];
+
+/** 기관의 학기별 참관 정보 (없으면 null) */
+export const termOf = (inst, semesterId) => inst?.terms?.[semesterId] || null;
+
+/** 기관 안내 한 줄: '2027년 4월 중 · 평일 3일 오프라인 참관' */
+export const instLine = (inst, semesterId) => {
+  const t = termOf(inst, semesterId);
+  return t ? `${t.period} · ${t.method}` : inst?.schedule || '';
+};
+
+export const getInstitution = (id) => INSTITUTIONS.find((i) => i.id === id);
 
 const instOf = (typeId) => INSTITUTIONS.filter((i) => i.type === typeId);
 const picked = (a, typeId) => (a.institutions || []).filter((id) => instOf(typeId).some((i) => i.id === id));
@@ -54,7 +110,7 @@ export const DIAGNOSIS_QUESTIONS = [
     options: INSTITUTIONS.map((i) => ({
       value: i.id,
       label: i.name,
-      note: i.schedule,
+      inst: i,
       group: `${i.region} 기관 (${i.type === '1' ? '유형 1' : i.type === '1-1' ? '유형 1-1' : '유형 2-1'})`,
     })),
   },

@@ -1,6 +1,6 @@
 // ③ 실습 유형 진단 및 추천 → 유형 확정
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY, APPLICATION_NOTICE, DIAGNOSIS_INTRO } from '../data/types.js';
-import { sem, update } from '../store.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY, APPLICATION_NOTICE, DIAGNOSIS_INTRO, instLine } from '../data/types.js';
+import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
 
 const visible = (q, a) =>
@@ -14,7 +14,7 @@ function questionHTML(q, a) {
     const inputType = q.type === 'single' ? 'radio' : 'checkbox';
     const opt = (o) => {
       const checked = q.type === 'single' ? a[q.id] === o.value : (a[q.id] || []).includes(o.value);
-      return `<label class="choice"><input type="${inputType}" name="${q.id}" value="${esc(o.value)}" ${checked ? 'checked' : ''}/><span>${esc(o.label)}${o.note ? `<small class="note">${esc(o.note)}</small>` : ''}</span></label>`;
+      return `<label class="choice"><input type="${inputType}" name="${q.id}" value="${esc(o.value)}" ${checked ? 'checked' : ''}/><span>${esc(o.label)}${o.inst ? `<small class="note">${o.inst.location ? `${esc(o.inst.location)} · ` : ''}${esc(instLine(o.inst, semesterId()))}</small>` : ''}</span></label>`;
     };
     const groups = [...new Set(q.options.map((o) => o.group || ''))];
     body = groups
@@ -44,7 +44,7 @@ function resultHTML(results, currentTypeId) {
       <p class="tiny">활동: ${r.type.activities.map((x) => `<span class="tag">${esc(x)}</span>`).join(' ')}</p>
       ${
         r.type.institutions
-          ? `<ul class="inst tiny">${r.type.institutions.map((i) => `<li>${esc(i.name)} <span class="muted">${esc(i.region)}${i.schedule ? ` · ${esc(i.schedule)}` : ''}</span></li>`).join('')}</ul>`
+          ? `<ul class="inst tiny">${r.type.institutions.map((i) => `<li>${esc(i.name)} <span class="muted">${i.location ? esc(i.location) : esc(i.region)} · ${esc(instLine(i, semesterId()))}</span></li>`).join('')}</ul>`
           : '<p class="tiny muted">실습 기관: 실습생이 직접 섭외</p>'
       }
       <ul class="bullets tiny">${r.reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>

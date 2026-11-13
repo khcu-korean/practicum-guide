@@ -1,5 +1,6 @@
 // 여러 화면에서 공통으로 쓰는 계산 로직
 import { tasksForType } from './data/tasks.js';
+import { getInstitution, termOf } from './data/types.js';
 import { sem, semesterId } from './store.js';
 import { resolveDue, daysLeft } from './utils.js';
 
@@ -24,6 +25,24 @@ export function upcoming(withinDays = 7) {
   return myTasks()
     .filter((t) => !t.done && t.left !== null && t.left <= withinDays)
     .sort((a, b) => a.left - b.left);
+}
+
+// 기관 일정을 보여 줄 과제 (지정 기관을 고른 경우)
+const INST_SCHEDULE_TASKS = ['site-observe', 'teaching'];
+
+/** 내가 고른 지정 기관과 이번 학기 참관 정보 */
+export function myInstitution() {
+  const inst = getInstitution(sem().institution?.id);
+  return inst ? { inst, term: termOf(inst, semesterId()) } : null;
+}
+
+/** 과제에 붙일 기관 일정 (해당 없으면 null) */
+export function instScheduleFor(taskId) {
+  if (!INST_SCHEDULE_TASKS.includes(taskId)) return null;
+  const mi = myInstitution();
+  if (!mi?.term) return null;
+  if (taskId === 'teaching' && !/강의실습/.test(mi.term.method)) return null;
+  return mi;
 }
 
 /** 진행 단계 상태 */
