@@ -34,7 +34,7 @@ export default {
 
     <section class="card">
       <h2>미완료 과업 (${todo.length})</h2>
-      ${todo.length ? `<ul class="task-list">${todo.map(taskRow).join('')}</ul>` : '<p class="muted">모든 과업을 완료했어요! 🎉 <a class="link" href="#/complete">이수 완료 점검 →</a></p>'}
+      ${todo.length ? `<ul class="task-list">${todo.map(taskRow).join('')}</ul>` : '<p class="muted">모든 과업을 완료했어요. <a class="link" href="#/complete">이수 완료 점검 →</a></p>'}
     </section>
 
     <section class="card">
@@ -43,7 +43,7 @@ export default {
     </section>
 
     <section class="card soft">
-      <h2>🔔 마감 알림</h2>
+      <h2>마감 알림</h2>
       <p class="muted">마감 ${CONFIG.alertDays.join('일 전 · ')}일 전에 알려 드려요.</p>
       <p class="tiny">현재 상태: <b>${nStatus.label}</b></p>
       ${nStatus.canEnable ? '<button class="btn" id="enableNoti">휴대폰/브라우저 알림 켜기</button>' : ''}

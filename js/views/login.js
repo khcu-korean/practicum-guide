@@ -7,6 +7,7 @@ export default {
   render() {
     return `
     <section class="hero">
+      <p class="label" style="color:#f1dde2">한국어교육현장실습 · 수강생 안내</p>
       <h1>${esc(CONFIG.appName)}</h1>
       <p>${esc(CONFIG.subtitle)}</p>
       <p class="motto">“나에게 해당하는 정보만, 지금 무엇을 언제까지 어떻게 해야 하는지”</p>

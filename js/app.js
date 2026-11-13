@@ -29,12 +29,23 @@ const ROUTES = {
   settings,
 };
 
+// 아이콘 (선 아이콘, 색은 글자색을 따름)
+const ICON = {
+  home: '<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>',
+  timeline: '<rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/>',
+  progress: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  complete: '<path d="m4 12.5 5 5L20 6.5"/>',
+  more: '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+};
+const svg = (name) =>
+  `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[name]}</svg>`;
+
 const NAV = [
-  { path: '', icon: '🏠', label: '홈' },
-  { path: 'timeline', icon: '🗓️', label: '타임라인' },
-  { path: 'progress', icon: '📊', label: '진행현황' },
-  { path: 'complete', icon: '🎓', label: '이수점검' },
-  { path: 'settings', icon: '⋯', label: '더보기' },
+  { path: '', icon: 'home', label: '홈' },
+  { path: 'timeline', icon: 'timeline', label: '타임라인' },
+  { path: 'progress', icon: 'progress', label: '진행 현황' },
+  { path: 'complete', icon: 'complete', label: '이수 점검' },
+  { path: 'settings', icon: 'more', label: '더보기' },
 ];
 
 const app = document.getElementById('app');
@@ -45,27 +56,39 @@ function parseHash() {
   return { path, params };
 }
 
+const schoolMark = () =>
+  CONFIG.school.logo
+    ? `<img class="logo" src="${esc(CONFIG.school.logo)}" alt="${esc(CONFIG.school.name)}" />`
+    : `<span class="mark" aria-hidden="true">${esc(CONFIG.school.mark)}</span>`;
+
 function layout(view, path, body) {
   const user = getUser();
   const soon = user ? upcoming(CONFIG.urgentDays) : [];
+  const isActive = (n) => path === n.path || (n.path === 'timeline' && (path === 'task' || path === 'assign'));
   return `
-  <header class="topbar">
-    <a href="#/" class="brand">${esc(CONFIG.appName)}</a>
-    ${user ? `<span class="sem">${esc(getSemester(semesterId()).label)}</span>` : '<a class="link" href="#/login">로그인</a>'}
+  <header class="band">
+    <div class="band-in">
+      <a href="#/" class="brand">${schoolMark()}<span>${esc(CONFIG.school.name)}<small>${esc(CONFIG.school.dept)}</small></span></a>
+      ${user ? `<span class="sem">${esc(getSemester(semesterId()).label)}</span>` : view.public ? '<a class="band-link" href="#/login">로그인</a>' : ''}
+    </div>
   </header>
   ${
+    user
+      ? `<nav class="mainnav" aria-label="주 메뉴"><div class="mainnav-in">${NAV.map(
+          (n) => `<a href="#/${n.path}" class="${isActive(n) ? 'active' : ''}" ${isActive(n) ? 'aria-current="page"' : ''}>${svg(n.icon)}<span>${n.label}</span></a>`
+        ).join('')}</div></nav>`
+      : ''
+  }
+  ${
     soon.length && path !== ''
-      ? `<a class="strip" href="#/task/${soon[0].task.id}">⏰ <b>${ddayLabel(soon[0].left)}</b> ${esc(soon[0].task.title)}${soon.length > 1 ? ` 외 ${soon.length - 1}건` : ''}</a>`
+      ? `<a class="strip" href="#/task/${soon[0].task.id}"><span class="badge badge-urgent">${ddayLabel(soon[0].left)}</span> ${esc(soon[0].task.title)}${soon.length > 1 ? ` <span class="muted">외 ${soon.length - 1}건</span>` : ''}</a>`
       : ''
   }
   <main class="container" id="view">${body}</main>
-  ${
-    user
-      ? `<nav class="bottomnav">${NAV.map(
-          (n) => `<a href="#/${n.path}" class="${(path === n.path || (path === 'task' && n.path === 'timeline')) ? 'active' : ''}"><span>${n.icon}</span>${n.label}</a>`
-        ).join('')}</nav>`
-      : ''
-  }`;
+  <footer class="foot container">
+    <p>${esc(CONFIG.appName)} · ${esc(CONFIG.school.name)} ${esc(CONFIG.school.dept)}</p>
+    <p>이 앱의 안내와 진단 결과는 참고용이며, 최종 기준은 학교의 공식 학사 안내와 학과 공지를 따릅니다.</p>
+  </footer>`;
 }
 
 function render(force = true) {

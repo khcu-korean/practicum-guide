@@ -24,7 +24,7 @@ export default {
     <p class="muted">${esc(type.name)} · ${esc(type.summary)}</p>
 
     <section class="card ${allOk ? 'success' : 'alert'}">
-      <h2>${allOk ? '🎓 모든 이수 요건을 확인했어요!' : `⚠️ 확인이 필요한 항목이 ${missing.length + extras.filter((c) => !c.ok).length}개 있어요`}</h2>
+      <h2>${allOk ? '모든 이수 요건을 확인했어요' : `확인이 필요한 항목이 ${missing.length + extras.filter((c) => !c.ok).length}개 있어요`}</h2>
       ${allOk ? '<p>수고하셨습니다. 최종 성적 및 이수 여부는 LMS 공지를 확인하세요.</p>' : ''}
     </section>
 
@@ -34,7 +34,7 @@ export default {
         ${required
           .map(
             (t) => `<li class="${t.done ? 'ok' : 'no'}">
-              <span>${t.done ? '✅' : '⬜'}</span>
+              <span>${t.done ? '<span class="badge badge-done">완료</span>' : '<span class="badge badge-normal">남음</span>'}</span>
               <a href="#/task/${t.task.id}" class="grow">${esc(t.task.title)}</a>
               <span class="tiny muted">${t.done ? '완료' : `마감 ${fmtDate(t.due)}`}</span></li>`
           )

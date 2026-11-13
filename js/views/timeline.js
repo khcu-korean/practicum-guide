@@ -43,7 +43,7 @@ export default {
     const list = myTasks();
     return `
     <h1 class="page-title">맞춤 타임라인</h1>
-    <p class="muted"><b>${esc(type.name)}</b> · ${esc(type.summary)}<br/>🏫 ${s.institution ? esc(s.institution.name) : '실습 기관 미입력'} <a class="link" href="#/assign">수정</a></p>
+    <p class="muted"><b>${esc(type.name)}</b> · ${esc(type.summary)}<br/>실습 기관: ${s.institution ? esc(s.institution.name) : '실습 기관 미입력'} <a class="link" href="#/assign">수정</a></p>
     <div class="legend tiny">
       <span class="badge badge-urgent">D-3 이내</span><span class="badge badge-soon">D-7 이내</span>
       <span class="badge badge-tbd">미정</span><span class="badge badge-done">완료</span>

@@ -33,7 +33,7 @@ export default {
     ${
       task.due === null
         ? `<section class="card">
-        <h3>📅 날짜 직접 입력</h3>
+        <h3>날짜 직접 입력</h3>
         <div class="row">
           <input type="date" id="customDue" value="${esc(r.customDue || '')}" class="grow" />
           <button class="btn" id="saveDue">저장</button>
@@ -43,15 +43,15 @@ export default {
     }
 
     <section class="card guide">
-      <h2>📌 과제 소개</h2>
+      <h2>과제 소개</h2>
       <p>${esc(g.intro)}</p>
 
-      <h2>⚠️ 중요 사항</h2>
+      <h2>중요 사항</h2>
       <ul class="bullets">${[...(g.important || []), ...COMMON_GUIDE_NOTES].map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
 
       ${
         g.templates?.length
-          ? `<h2>📄 작성 양식</h2>
+          ? `<h2>작성 양식</h2>
         <ul class="templates">${g.templates
           .map((t) =>
             t.url
@@ -62,7 +62,7 @@ export default {
           : ''
       }
 
-      <h2>📤 제출 방법 및 기한</h2>
+      <h2>제출 방법 및 기한</h2>
       <table class="result">
         <tr><th>제출 방법</th><td>${esc(g.submit?.method)}</td></tr>
         <tr><th>제출 위치</th><td>${esc(g.submit?.where)}</td></tr>
@@ -71,7 +71,7 @@ export default {
     </section>
 
     <section class="card">
-      <h3>📝 나의 메모</h3>
+      <h3>나의 메모</h3>
       <textarea id="memo" rows="3" placeholder="참관 날짜, 기관 담당자 연락처 등 자유롭게 기록하세요.">${esc(r.memo || '')}</textarea>
     </section>
 

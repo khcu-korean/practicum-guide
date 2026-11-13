@@ -5,7 +5,15 @@
 
 export const CONFIG = {
   appName: '한국어교육현장실습 길잡이',
-  subtitle: '경희사이버대학교 한국어교육실습 수강생 대상',
+  subtitle: '한국어교육실습 수강생을 위한 실습 안내',
+
+  // 학교 표시 (logo에 이미지 경로를 넣으면 글자 표시 대신 로고가 나옵니다. 예: 'icons/khcu-logo.png')
+  school: {
+    name: '경희사이버대학교',
+    dept: '한국어교육전공',
+    mark: 'KH',
+    logo: '',
+  },
 
   // 현재 운영 중인 학기 (학기가 바뀌면 여기만 수정)
   currentSemesterId: '2027-1',

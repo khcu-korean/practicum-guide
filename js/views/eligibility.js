@@ -71,7 +71,7 @@ function resultHTML(r) {
 
   return `
   <section class="card ${r.ok ? 'success' : 'alert'}">
-    <h2>${r.ok ? '✅ 수강 신청 가능 (자가진단 기준)' : '⚠️ 아직 충족하지 않은 요건이 있어요'}</h2>
+    <h2>${r.ok ? '수강 신청 가능 (자가진단 기준)' : '아직 충족하지 않은 요건이 있어요'}</h2>
     <p class="tiny muted">${esc(r.track.label)} (${esc(r.track.grade)}) 기준</p>
     <table class="result">
       <tr><th>${esc(E.totalCredits.label)}</th><td>${r.total.earned} / ${r.total.required}학점</td><td>${mark(r.total.ok)}</td></tr>

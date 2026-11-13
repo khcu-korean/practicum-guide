@@ -46,11 +46,11 @@ export default {
     return `
     <section class="greeting">
       <p class="muted">${esc(getUser()?.email || '')}</p>
-      <h1>${type ? `${esc(type.name)} <small>${esc(type.summary)}${s.institution ? ` · 🏫 ${esc(s.institution.name)}` : ''}</small>` : '실습 준비를 시작해 볼까요?'}</h1>
+      <h1>${type ? `${esc(type.name)} <small>${esc(type.summary)}${s.institution ? ` · ${esc(s.institution.name)}` : ''}</small>` : '실습 준비를 시작해 볼까요?'}</h1>
     </section>
 
-    ${dueSection('🚨 기한이 지난 과업', soon.filter((t) => t.left < 0), 'alert')}
-    ${dueSection('⏰ 마감 임박 과업 (7일 이내)', soon.filter((t) => t.left >= 0), 'warn')}
+    ${dueSection('기한이 지난 과업', soon.filter((t) => t.left < 0), 'alert')}
+    ${dueSection('마감 임박 과업 (7일 이내)', soon.filter((t) => t.left >= 0), 'warn')}
 
     ${
       nextStep
@@ -81,7 +81,7 @@ export default {
         <div class="grow">
           <h2>과업 진행률</h2>
           <p>${stats.total}개 중 <b>${stats.done}개</b> 완료</p>
-          ${tbd.length ? `<p class="tiny muted">일정 미정 과업 ${tbd.length}개 — 기관 일정이 정해지면 입력하세요.</p>` : ''}
+          ${tbd.length ? `<p class="tiny muted">날짜 미정 과업 ${tbd.length}개 — 일정이 정해지면 직접 입력하세요.</p>` : ''}
           <a href="#/progress" class="link">자세히 보기 →</a>
         </div>
       </section>`
