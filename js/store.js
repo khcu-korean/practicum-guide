@@ -115,6 +115,25 @@ export function update(fn) {
   emit();
 }
 
+/** 기록 코드: 다른 기기로 기록을 옮길 때 사용 */
+export function exportCode() {
+  return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+}
+
+export function importCode(code) {
+  const obj = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+  if (!obj || typeof obj !== 'object' || !obj.semesters) throw new Error('올바른 기록 코드가 아닙니다.');
+  data = obj;
+  save();
+  emit();
+}
+
+export function resetData() {
+  data = emptyData();
+  save();
+  emit();
+}
+
 export function setSemester(id) {
   data.currentSemesterId = id;
   save();

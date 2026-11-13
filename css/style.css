@@ -76,28 +76,47 @@ p { margin: .3em 0; }
   border: 1px solid var(--brand); border-radius: 999px; padding: 2px 10px;
 }
 
-/* ---------- 메뉴: 휴대폰은 아래 고정, 넓은 화면은 띠 아래 탭 ---------- */
-.mainnav {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
-  background: var(--surface); border-top: 1px solid var(--line);
-  padding-bottom: env(safe-area-inset-bottom);
+/* ---------- 전체 메뉴: 띠 아래 고정, 휴대폰에서는 옆으로 밀어서 보기 ---------- */
+.stepnav {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--surface); border-bottom: 1px solid var(--line); padding: 0 8px;
 }
-.mainnav-in { display: flex; max-width: 728px; margin: 0 auto; }
-.mainnav a {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
-  padding: 8px 0 6px; font-size: .7rem; color: var(--muted);
+.stepnav-in {
+  display: flex; gap: 2px; max-width: 744px; margin: 0 auto;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
-.mainnav a.active { color: var(--brand); font-weight: 700; }
-@media (min-width: 820px) {
-  .mainnav { position: sticky; top: 0; bottom: auto; border-top: 0; border-bottom: 1px solid var(--line); padding: 0 16px; }
-  .mainnav-in { gap: 4px; }
-  .mainnav a {
-    flex: none; flex-direction: row; gap: 6px; padding: 12px 12px 10px; font-size: .9rem;
-    border-bottom: 2px solid transparent; margin-bottom: -1px;
-  }
-  .mainnav a svg { width: 18px; height: 18px; }
-  .mainnav a.active { border-color: var(--brand); }
+.stepnav-in::-webkit-scrollbar { display: none; }
+.stepnav a {
+  flex: none; display: flex; align-items: center; gap: 5px;
+  padding: 12px 10px 10px; font-size: .88rem; color: var(--muted); white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
 }
+.stepnav a .no {
+  width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center;
+  font-size: .68rem; font-weight: 700; background: #efedea; color: var(--muted);
+}
+.stepnav a.active { color: var(--brand); font-weight: 700; border-color: var(--brand); }
+.stepnav a.active .no { background: var(--brand); color: #fff; }
+
+.prevnext { display: flex; justify-content: space-between; gap: 10px; padding-top: 0; padding-bottom: 8px; }
+.prevnext .btn { flex: 1; font-size: .88rem; }
+.prevnext .btn.primary { flex: 1.4; }
+
+/* 첫 화면 메뉴 목록 */
+.menu-list { list-style: none; margin: 0 0 14px; padding: 0; }
+.menu-list li a { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.menu-list li:last-child a { border-bottom: 0; }
+.menu-list b { display: block; font-size: .96rem; }
+.menu-list small { display: block; font-size: .8rem; color: var(--muted); margin-top: 2px; }
+.menu-list .dot {
+  width: 30px; height: 30px; border-radius: 50%; flex: none; display: grid; place-items: center;
+  background: #efedea; font-weight: 700; font-size: .85rem; color: var(--muted);
+}
+.menu-list li.done .dot { background: var(--ok); color: #fff; }
+.menu-list li.current .dot { background: var(--brand); color: #fff; }
+.menu-list li.current b { color: var(--brand); }
+.menu-list .arrow { color: var(--muted); font-size: 1.3rem; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 
 .strip {
   display: flex; align-items: center; gap: 8px; max-width: 728px; margin: 12px auto 0;
@@ -107,8 +126,7 @@ p { margin: .3em 0; }
 
 .container { max-width: 760px; margin: 0 auto; padding: 18px 16px 24px; }
 main.container { padding-bottom: 32px; min-height: 60vh; }
-.foot { padding-bottom: 110px; font-size: .76rem; color: var(--muted); border-top: 1px solid var(--line); margin-top: 8px; }
-@media (min-width: 820px) { .foot { padding-bottom: 32px; } }
+.foot { padding-bottom: 72px; font-size: .76rem; color: var(--muted); border-top: 1px solid var(--line); margin-top: 8px; }
 .foot p { margin: 2px 0; }
 
 /* ---------- 제목 ---------- */
@@ -271,12 +289,11 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 .bar span { display: block; height: 100%; background: var(--brand); }
 
 .toast {
-  position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 20px);
+  position: fixed; left: 50%; bottom: 72px; transform: translate(-50%, 20px);
   background: var(--text); color: #fff; padding: 10px 16px; border-radius: 8px;
   opacity: 0; transition: .25s; z-index: 50; font-size: .9rem; max-width: 90vw;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
-@media (min-width: 820px) { .toast { bottom: 32px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
 /* 자격증 영역별 이수 현황 */
@@ -296,7 +313,7 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 .section-title { margin: 14px 0 0; font-size: 1.1rem; }
 .card .label { margin-bottom: 4px; }
 .sticky-sum {
-  position: fixed; left: 12px; right: 12px; bottom: calc(68px + env(safe-area-inset-bottom)); z-index: 15;
+  position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 15;
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px;
   max-width: 704px; margin: 0 auto; padding: 9px 14px; border-radius: 10px;
   background: var(--text); color: #fff; font-size: .84rem; box-shadow: 0 4px 14px rgba(0,0,0,.18);
@@ -304,5 +321,5 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 .sticky-sum .muted { color: #c9ced6; }
 .sticky-sum.ok { background: var(--ok); }
 .sticky-sum.ok .muted { color: #d7eee0; }
-body:not(:has(.mainnav)) .sticky-sum { bottom: calc(12px + env(safe-area-inset-bottom)); }
-@media (min-width: 820px) { .sticky-sum { bottom: 16px; } }
+.nowrap { white-space: nowrap; }
+@media (max-width: 520px) { .band .sem { display: none; } }

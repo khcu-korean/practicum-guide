@@ -1,7 +1,7 @@
 // ② 수강 자격·이수 현황 점검 (로그인 없이도 이용 가능)
 // 과목을 체크하면 ① 실습 수강 자격과 ② 자격증 영역별 이수 현황이 함께 바뀝니다.
 import { ELIGIBILITY as E } from '../data/eligibility.js';
-import { getUser, sem, update } from '../store.js';
+import { sem, update } from '../store.js';
 import { esc } from '../utils.js';
 
 const offeredLabel = (o) => (o.length === 2 ? '1·2학기' : `${o[0]}학기`);
@@ -26,6 +26,7 @@ function evaluate(input) {
 
   // ① 실습 수강 자격
   const combinedEarned = P.combinedAreaIds.reduce((n, id) => n + byId[id].earned, 0);
+  const combinedCount = P.combinedAreaIds.reduce((n, id) => n + byId[id].count, 0);
   const minChecks = P.combinedAreaIds.map((id) => ({
     id,
     no: byId[id].no,
@@ -34,7 +35,7 @@ function evaluate(input) {
   }));
   const others = E.otherRequirements.map((r) => ({ ...r, ok: Boolean(input.others[r.id]) }));
   const practicum = track && {
-    combined: { earned: combinedEarned, required: track.combinedCredits, ok: combinedEarned >= track.combinedCredits },
+    combined: { earned: combinedEarned, count: combinedCount, required: track.combinedCredits, courses: track.combinedCourses, ok: combinedEarned >= track.combinedCredits },
     minChecks,
     others,
   };
@@ -70,7 +71,7 @@ function practicumHTML(r) {
     <p class="label">① 실습 수강 자격</p>
     <h2>${p.ok ? '수강 신청 가능 (자가진단 기준)' : '아직 충족하지 않은 요건이 있어요'}</h2>
     <table class="result">
-      <tr><th>${names} 합산</th><td>${p.combined.earned} / ${p.combined.required}학점</td><td>${mark(p.combined.ok)}</td></tr>
+      <tr><th>${names} 합산</th><td>${p.combined.count} / ${p.combined.courses}과목<br/><span class="muted">${p.combined.earned} / ${p.combined.required}학점</span></td><td>${mark(p.combined.ok)}</td></tr>
       ${p.minChecks.map((m) => `<tr><th>${m.no}영역 최소</th><td>${m.earned} / ${E.practicum.minCreditsPerArea}학점</td><td>${mark(m.ok)}</td></tr>`).join('')}
       ${p.others.map((o) => `<tr><th colspan="2">${esc(o.label.replace(/인가요\?$/, ''))}</th><td>${mark(o.ok)}</td></tr>`).join('')}
     </table>
@@ -118,7 +119,7 @@ function summaryHTML(r) {
 }
 
 export default {
-  title: '수강 자격·이수 현황 점검',
+  title: '수강 자격 자기점검',
   public: true,
   render() {
     const saved = sem().eligibility;
@@ -126,9 +127,19 @@ export default {
     const r = evaluate(input);
     const track = E.tracks.find((t) => t.id === input.track);
     return `
-    <h1 class="page-title">STEP 1. 수강 자격·이수 현황 점검</h1>
+    <h1 class="page-title">STEP 1. <span class="nowrap">&lt;한국어교육현장실습&gt;</span> 수강 자격 자기점검</h1>
     <p class="muted">지금까지 이수한 과목에 체크하면 <b>실습 수강 자격</b>과 <b>자격증 영역별 이수 현황</b>을 함께 확인할 수 있어요.</p>
     <p class="notice tiny">${esc(E.basisNote)} 현재 수강 중인 과목은 아직 체크하지 마세요.</p>
+    <details class="card soft">
+      <summary><b>수강 자격 기준과 근거</b></summary>
+      <table class="result">
+        <tr><th>공통</th><td>전체 이수 학점 105학점 이상 (4학년 1학기부터 수강 가능)</td></tr>
+        <tr><th>주전공·복수전공 (2급)</th><td>직전 학기까지 1영역·3영역 합산 8과목(24학점) 이상 이수</td></tr>
+        <tr><th>부전공 (3급)</th><td>직전 학기까지 1영역·3영역 합산 4과목(12학점) 이상 이수</td></tr>
+        <tr><th>영역별 최소</th><td>1영역, 3영역 모두 최소 3학점 이상 이수</td></tr>
+      </table>
+      <p class="tiny muted">근거: 경희사이버대학교 한국어교육현장실습 수강 자격 공지, 국립국어원 「한국어교육 실습 교과목 운영 지침」 2.2 수강 자격(학부: 한국어학 영역과 외국어로서의 한국어교육론 영역을 합하여 주전공·복수전공 24학점, 부전공 12학점 이상)</p>
+    </details>
 
     <form id="eligForm" class="stack">
       <section class="card">
@@ -177,7 +188,6 @@ export default {
         .join('')}
     </form>
     <p class="tiny muted">${esc(E.disclaimer)}</p>
-    ${getUser() ? '' : '<a class="btn primary" href="#/login">결과 저장하고 실습 준비 시작하기 →</a>'}
     ${stickyHTML(r)}`;
   },
 

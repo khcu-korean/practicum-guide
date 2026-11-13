@@ -11,7 +11,7 @@ export default {
     const s = sem();
     const type = getType(s.typeId);
     if (!type) {
-      return `<h1 class="page-title">이수 완료 점검</h1>
+      return `<h1 class="page-title">STEP 6. 이수 완료 점검</h1>
       <section class="card next"><p>배정된 유형을 먼저 입력해 주세요.</p><a class="btn primary" href="#/assign">배정 유형·기관 입력하기 →</a></section>`;
     }
     const required = myTasks().filter((t) => t.task.required !== false);
@@ -20,7 +20,7 @@ export default {
     const allOk = missing.length === 0 && extras.every((c) => c.ok);
 
     return `
-    <h1 class="page-title">이수 완료 점검</h1>
+    <h1 class="page-title">STEP 6. 이수 완료 점검</h1>
     <p class="muted">${esc(type.name)} · ${esc(type.summary)}</p>
 
     <section class="card ${allOk ? 'success' : 'alert'}">
