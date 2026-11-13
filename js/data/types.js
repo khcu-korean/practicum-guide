@@ -100,7 +100,7 @@ export const TYPE_LABELS = {
   '1-1': { name: '유형 1-1 (국내외 지정 기관 · 온라인 병행)', work: '강의참관(오프라인 + 온라인) + 모의수업' },
   2: { name: '유형 2 (국내외 기관 직접 섭외)', work: '강의참관 + 강의실습' },
   '2-1': { name: '유형 2-1 (해외 협약 대학)', work: '강의참관 + 강의실습' },
-  3: { name: '유형 3 (해외 기관 직접 섭외)', work: '강의참관 + 모의수업' },
+  3: { name: '유형 3 (국내외 기관 직접 섭외)', work: '강의참관 + 모의수업' },
 };
 
 const instOf = (typeId) => INSTITUTIONS.filter((i) => i.type === typeId);
@@ -134,16 +134,6 @@ export const DIAGNOSIS_QUESTIONS = [
     ],
   },
   {
-    id: 'orgRegion',
-    text: '직접 섭외하려는(섭외한) 기관은 어디에 있나요?',
-    type: 'single',
-    showIf: { org: ['secured', 'can'] },
-    options: [
-      { value: 'domestic', label: '국내' },
-      { value: 'overseas', label: '해외(국외)' },
-    ],
-  },
-  {
     id: 'teachAtOrg',
     text: '섭외한 기관에서 강의참관뿐 아니라 직접 강의실습(한 차시 수업)까지 할 수 있나요?',
     type: 'single',
@@ -153,11 +143,6 @@ export const DIAGNOSIS_QUESTIONS = [
       { value: 'no', label: '강의참관만 가능' },
       { value: 'unknown', label: '아직 모르겠다' },
     ],
-  },
-  {
-    id: 'time',
-    text: '실습에 참여할 수 있는 시간대를 적어 주세요. (예: 평일 오후 7시 이후)',
-    type: 'text',
   },
 ];
 
@@ -230,14 +215,13 @@ export const PRACTICUM_TYPES = [
     id: '3',
     name: TYPE_LABELS['3'].name,
     summary: TYPE_LABELS['3'].work,
-    description: '실습생이 해외(국외) 기관을 직접 섭외하여 강의참관만 하고, 모의수업을 하는 유형입니다.',
+    description: '실습생이 국내 또는 해외의 기관을 직접 섭외하여 강의참관만 하고, 모의수업을 하는 유형입니다. (유형 2와 달리 강의실습 대신 모의수업을 합니다.)',
     activities: ['강의참관', '모의수업'],
     institutions: null,
     match: (a) => {
       const r = [];
-      if (!['secured', 'can'].includes(a.org)) r.push('해외(국외) 기관을 직접 섭외해야 합니다');
-      else if (a.orgRegion !== 'overseas') r.push('유형 3은 해외(국외) 기관만 해당합니다');
-      return r.length ? { ok: false, reasons: r } : { ok: true, reasons: ['해외(국외) 기관 섭외 가능'] };
+      if (!['secured', 'can'].includes(a.org)) r.push('실습 기관을 직접 섭외해야 합니다');
+      return r.length ? { ok: false, reasons: r } : { ok: true, reasons: ['실습 기관 섭외 가능 (강의참관 후 모의수업)'] };
     },
   },
 ];
