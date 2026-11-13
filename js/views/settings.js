@@ -1,12 +1,11 @@
-// 더보기: 기록 관리(이 기기 저장, 기록 코드로 옮기기, 초기화), 학기 선택
-import { CONFIG, isServerMode } from '../config.js';
-import { getUser, getData, semesterId, setSemester, logout, exportCode, importCode, resetData } from '../store.js';
+// 더보기: 기록 관리(이 기기 저장, 기록 코드로 옮기기, 초기화)
+import { isServerMode } from '../config.js';
+import { getUser, logout, exportCode, importCode, resetData } from '../store.js';
 import { esc, toast } from '../utils.js';
 
 export default {
   title: '더보기',
   render() {
-    const data = getData();
     const user = getUser();
     return `
     <h1 class="page-title">더보기</h1>
@@ -36,19 +35,6 @@ export default {
       <div id="resetBox" class="hidden notice">
         이 기기에 저장된 모든 기록을 지웁니다.
         <div class="btn-row"><button class="btn" id="resetYes">지우기</button><button class="btn ghost" id="resetNo">취소</button></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>학기 선택</h2>
-      <p class="muted">학기별로 실습 기록이 따로 저장됩니다.</p>
-      <div class="choices">
-        ${CONFIG.semesters
-          .map(
-            (s) => `<label class="choice"><input type="radio" name="sem" value="${s.id}" ${semesterId() === s.id ? 'checked' : ''}/>
-            <span>${esc(s.label)}${data.semesters[s.id]?.typeId ? ' · 기록 있음' : ''}</span></label>`
-          )
-          .join('')}
       </div>
     </section>`;
   },
@@ -88,9 +74,6 @@ export default {
     $('#resetYes').addEventListener('click', () => {
       resetData();
       toast('모든 기록을 지웠습니다.');
-    });
-    root.addEventListener('change', (e) => {
-      if (e.target.name === 'sem') setSemester(e.target.value);
     });
   },
 };

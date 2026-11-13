@@ -98,7 +98,8 @@ const emit = () => listeners.forEach((fn) => fn());
 // ---------------- 조회/수정 ----------------
 export const getUser = () => user;
 export const getData = () => data;
-export const semesterId = () => data.currentSemesterId || CONFIG.currentSemesterId;
+// 학생은 항상 관리자가 정한 현재 학기로 이용 (학기가 바뀌면 새 학기 기록으로 시작, 이전 기록은 보관)
+export const semesterId = () => CONFIG.currentSemesterId;
 
 export function sem() {
   const id = semesterId();
