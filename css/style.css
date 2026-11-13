@@ -199,3 +199,6 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
   .container { padding-top: 24px; }
   h1 { font-size: 1.6rem; }
 }
+.extra { margin-top: 10px; font-weight: 500; color: var(--muted); }
+.sub { margin-top: 4px; font-size: .85rem; }
+details.card summary { color: var(--text); margin: 0; }
