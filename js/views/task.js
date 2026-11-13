@@ -25,15 +25,15 @@ export default {
     <section class="card row">
       <span class="badge big ${ddayClass(left, r.done)}">${r.done ? '완료' : ddayLabel(left)}</span>
       <div class="grow">
-        <p>${task.start && !r.customDue ? '기간' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : esc(task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
-        ${task.due === null ? `<p class="tiny muted">${esc(SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
+        <p>${task.start && !r.customDue ? '기간' : task.due === null ? '일정' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : esc(task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
+        ${task.due === null ? `<p class="tiny muted">${esc(task.scheduleNote || SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
       </div>
     </section>
 
     ${
       task.due === null
         ? `<section class="card">
-        <h3>📅 마감일 직접 입력</h3>
+        <h3>📅 날짜 직접 입력</h3>
         <div class="row">
           <input type="date" id="customDue" value="${esc(r.customDue || '')}" class="grow" />
           <button class="btn" id="saveDue">저장</button>

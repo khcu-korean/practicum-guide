@@ -36,6 +36,7 @@ export const COMMON_GUIDE_NOTES = [
 const TEACHING_PLAN_NOTE = '교안은 실습 기관의 실습 지도자에게 제출하고 지도를 받습니다.';
 const ORG_PLAN_NOTE =
   '실습 기관의 강의참관·강의실습 일정에 맞춰 작성합니다. LMS의 리포트 제출 기한이 지났다면 조교에게 제출합니다.';
+const SEMINAR_NOTE = '세미나 날짜는 반마다 다릅니다. 반별 공지를 확인하고 날짜를 직접 입력하세요.';
 const MOCK_BLOCK = '기한 안에 하지 않으면 모의수업에 참가할 수 없습니다. (유형 1·1-1·3)';
 
 // 날짜 표기: { week: n, day: 'mon'~'sun' } = 개강 n주차 요일 (2027-1 기준 2026-2 일정에서 환산, 검토 전)
@@ -52,26 +53,35 @@ export const TASKS = {
   },
   'seminar-1': {
     title: '1차 온라인 세미나 참여',
-    due: { week: 2, day: 'thu' },
-    time: '19:00',
+    due: null,
+    dueText: '반별 공지 확인',
+    schedule: 'course',
+    scheduleNote: SEMINAR_NOTE,
+    note: '수강생 모두 필참',
     guide: guide('자기소개, 학사 일정, 실습 관련 안내 사항, 각종 작성 양식 설명 등을 다루는 첫 온라인 세미나입니다.', {
-      submit: { method: '온라인 세미나 참여', where: '접속 방법은 반별 공지 확인', deadlineText: '3월 둘째 주 목요일' },
+      submit: { method: '온라인 세미나 참여 (수강생 모두 필참)', where: '접속 방법은 반별 공지 확인', deadlineText: '반별 공지 확인 (반마다 날짜가 다릅니다)' },
     }),
   },
   'seminar-2': {
     title: '2차 온라인 세미나 참여',
-    due: { week: 3, day: 'thu' },
-    time: '19:00',
+    due: null,
+    dueText: '반별 공지 확인',
+    schedule: 'course',
+    scheduleNote: SEMINAR_NOTE,
+    note: '수강생 모두 필참',
     guide: guide('교안 작성 방법을 다루는 온라인 세미나입니다.', {
-      submit: { method: '온라인 세미나 참여', where: '접속 방법은 반별 공지 확인', deadlineText: '3월 셋째 주 목요일' },
+      submit: { method: '온라인 세미나 참여 (수강생 모두 필참)', where: '접속 방법은 반별 공지 확인', deadlineText: '반별 공지 확인 (반마다 날짜가 다릅니다)' },
     }),
   },
   'seminar-3': {
     title: '3차 온라인 세미나 참여',
-    due: { week: 7, day: 'thu' },
-    time: '19:00',
+    due: null,
+    dueText: '반별 공지 확인',
+    schedule: 'course',
+    scheduleNote: SEMINAR_NOTE,
+    note: '수강생 모두 필참',
     guide: guide('교안 작성 방법을 다루는 온라인 세미나입니다.', {
-      submit: { method: '온라인 세미나 참여', where: '접속 방법은 반별 공지 확인', deadlineText: '4월 셋째 주 목요일' },
+      submit: { method: '온라인 세미나 참여 (수강생 모두 필참)', where: '접속 방법은 반별 공지 확인', deadlineText: '반별 공지 확인 (반마다 날짜가 다릅니다)' },
     }),
   },
   'lms-log-4': {
