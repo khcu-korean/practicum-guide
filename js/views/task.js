@@ -49,13 +49,17 @@ export default {
       <h2>⚠️ 중요 사항</h2>
       <ul class="bullets">${[...(g.important || []), ...COMMON_GUIDE_NOTES].map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
 
-      <h2>📄 작성 양식</h2>
       ${
         g.templates?.length
-          ? `<ul class="bullets">${g.templates
-              .map((t) => (t.url ? `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)} ⬇</a></li>` : `<li>${esc(t.name)}</li>`))
-              .join('')}</ul>`
-          : '<p class="muted">(양식 입력 예정)</p>'
+          ? `<h2>📄 작성 양식</h2>
+        <ul class="templates">${g.templates
+          .map((t) =>
+            t.url
+              ? `<li>${esc(t.name)} <a class="btn small" href="${esc(t.url)}" target="_blank" rel="noopener">클릭</a></li>`
+              : `<li>${esc(t.name)} <button type="button" class="btn small" data-nofile>클릭</button></li>`
+          )
+          .join('')}</ul>`
+          : ''
       }
 
       <h2>📤 제출 방법 및 기한</h2>
@@ -75,6 +79,9 @@ export default {
   },
 
   mount(root, { params }) {
+    root.querySelectorAll('[data-nofile]').forEach((b) =>
+      b.addEventListener('click', () => toast('현재는 파일이 없습니다. 양식이 준비되면 이곳에서 내려받을 수 있습니다.'))
+    );
     const id = params[0];
     const patch = (fn) => update((s) => fn((s.tasks[id] ||= {})));
 

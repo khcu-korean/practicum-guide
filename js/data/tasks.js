@@ -90,6 +90,7 @@ export const TASKS = {
     due: { week: 6, day: 'sun' },
     guide: guide('온라인 강의실 4차시의 한국어 수업(초급 문법 수업)을 관찰하고 참관 일지를 작성하여 제출합니다.', {
       important: ['4차시 1강을 참관하고 참관 일지를 작성합니다.', MOCK_BLOCK],
+      templates: [{ name: '참관 일지 양식', url: '' }],
       submit: { method: '참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '4차시 강의 기간 시작 ~ 6주차 일요일' },
     }),
   },
@@ -99,6 +100,7 @@ export const TASKS = {
     due: { week: 7, day: 'sun' },
     guide: guide('온라인 강의실 5차시의 한국어 수업(초급 말하기 수업)을 관찰하고 참관 일지를 작성하여 제출합니다.', {
       important: ['5차시 1강을 참관하고 참관 일지를 작성합니다.', MOCK_BLOCK],
+      templates: [{ name: '참관 일지 양식', url: '' }],
       submit: { method: '참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '5차시 강의 기간 시작 ~ 7주차 일요일' },
     }),
   },
@@ -121,6 +123,7 @@ export const TASKS = {
     schedule: 'institution',
     guide: guide('현장 실습 기관에서 강의를 참관한 뒤 실습 일지와 참관 일지를 작성하여 제출합니다.', {
       important: [MOCK_BLOCK],
+      templates: [{ name: '실습 일지·참관 일지 양식', url: '' }],
       submit: { method: '실습 일지·참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '참관 후 (유형 1·1-1·3은 모의수업 전까지)' },
     }),
   },
@@ -136,6 +139,7 @@ export const TASKS = {
         '실습 기관: 소개, 연간 학사 일정, 교육과정, 교재, 학습자 특성 등',
         '실습 계획: 배정 문법, 교안 작성 계획, 실습 계획, 실습에 임하는 자세 등',
       ],
+      templates: [{ name: '실습계획서 양식', url: '' }],
       submit: { method: '실습계획서 제출', where: 'LMS 리포트 게시판', deadlineText: '3주차 일요일까지' },
     }),
   },
@@ -151,6 +155,7 @@ export const TASKS = {
         '기타 교육 기관에서 실습하는 경우 그 기관의 한 차시 기준에 맞게 작성할 수 있습니다. (지도교수와 반드시 미리 논의)',
         '기한 안에 초벌 교안, 1차 수정 교안, 2차 수정 교안을 내지 않으면 모의수업에 참가할 수 없고, 실습을 이수할 수 없습니다.',
       ],
+      templates: [{ name: '교안 양식', url: '' }],
       submit: { method: '교안 제출 (두 곳 모두)', where: 'LMS 리포트 게시판 + 조별 게시판', deadlineText: '5주차 일요일까지' },
     }),
   },
@@ -179,6 +184,7 @@ export const TASKS = {
         '지도교수 피드백은 8주차 일요일 무렵 게시판에 올라옵니다. 개인별 교안에 수정·보완 사항을 적어 주는 방식이니, 반드시 내려받아 확인하세요.',
         '피드백을 기다리는 동안에도 계속 스스로 수정해 나가세요. 동료 교안에 대한 교수 피드백도 함께 공부하면 좋습니다.',
       ],
+      templates: [{ name: '교안 양식', url: '' }],
       submit: { method: '교안 제출', where: 'LMS 리포트 게시판', deadlineText: '7주차 월요일 ~ 일요일' },
     }),
   },
@@ -191,6 +197,7 @@ export const TASKS = {
         '2차 수정 교안으로 모의수업을 진행하므로 수정과 보완을 충실히 하세요.',
         '기한 안에 초벌 교안, 1차 수정 교안, 2차 수정 교안을 내지 않으면 모의수업에 참가할 수 없고, 실습을 이수할 수 없습니다.',
       ],
+      templates: [{ name: '교안 양식', url: '' }],
       submit: { method: '교안 제출', where: 'LMS 리포트 게시판', deadlineText: '11주차 일요일까지' },
     }),
   },
@@ -215,6 +222,7 @@ export const TASKS = {
     due: { week: 15, day: 'sun' },
     guide: guide('모의수업 후 받은 교수 피드백과 평가를 반영하여 최종 교안을 작성합니다.', {
       important: ['반드시 "자기성찰"을 포함하여 작성하세요.'],
+      templates: [{ name: '교안 양식', url: '' }],
       submit: { method: '교안 제출', where: 'LMS 리포트 게시판', deadlineText: '15주차 일요일까지' },
     }),
   },
@@ -230,6 +238,7 @@ export const TASKS = {
         '실습 기관: 소개, 연간 학사 일정, 교육과정, 교재, 학습자 특성 등',
         '실습 계획: 교안 작성 계획, 실습 계획, 실습에 임하는 자세 등',
       ],
+      templates: [{ name: '실습계획서 양식', url: '' }],
       submit: { method: '실습계획서 제출', where: 'LMS 리포트 게시판 (기한이 지났다면 조교에게 제출)', deadlineText: '실습 기관 일정에 맞춰' },
     }),
   },
@@ -248,28 +257,48 @@ export const TASKS = {
   'org-find': {
     title: '실습 기관 섭외',
     due: null,
-    schedule: 'institution',
-    guide: guide(),
+    dueText: '1월 말 (개강 전)',
+    schedule: 'course',
+    scheduleNote: '1월 말까지 섭외를 마치고 기관 신청서를 제출하세요.',
+    guide: guide('강의참관과 강의실습을 모두 할 수 있는 실습 기관을 실습생이 직접 섭외합니다.', {
+      important: ['기관에서 강의참관뿐 아니라 한 차시 강의실습까지 할 수 있는지 꼭 확인하세요.', '섭외가 끝나면 1월 말까지 학부에 실습 기관 신청서를 제출해야 합니다.'],
+      submit: { method: '실습 기관 섭외', where: '실습생이 직접 섭외', deadlineText: '1월 말 (개강 전)' },
+    }),
   },
   'org-apply': {
     title: '학부에 실습 기관 신청서 작성 및 제출',
     due: null,
+    dueText: '1월 말 (개강 전)',
     schedule: 'course',
-    guide: guide(),
+    scheduleNote: '1월 말까지 제출하세요. 정확한 날짜는 학과 공지를 확인하세요.',
+    guide: guide('섭외한 실습 기관의 정보를 실습 기관 신청서에 작성하여 학부에 제출합니다.', {
+      templates: [{ name: '실습 기관 신청서 양식', url: '' }],
+      submit: { method: '실습 기관 신청서 제출', where: '학과 공지 확인', deadlineText: '1월 말 (개강 전)' },
+    }),
   },
   'org-approval': {
     title: '학부의 실습 기관 승인 결과 확인',
     due: null,
+    dueText: '2월 첫째 주',
     schedule: 'course',
+    scheduleNote: '2월 첫째 주에 학부에서 승인 결과를 통보합니다.',
     note: '학부에서 승인 결과를 통보합니다',
-    guide: guide(),
+    guide: guide('학부에서 통보하는 실습 기관 승인 결과를 확인합니다.', {
+      important: ['승인된 실습 기관에는 학교에서 공문을 보냅니다.'],
+      submit: { method: '승인 결과 확인', where: '학부 통보', deadlineText: '2월 첫째 주' },
+    }),
   },
   'result-report': {
     title: '실습 결과 회보서 송부 확인',
-    due: null,
-    schedule: 'institution',
+    due: { week: 14, day: 'sun' },
     note: '실습 기관이 학부로 회보서를 보냅니다. 송부 여부를 실습생이 기관에 확인하세요.',
-    guide: guide(),
+    guide: guide('학교가 승인된 실습 기관에 공문을 보낼 때 회보서 양식을 함께 보냅니다. 실습이 끝나면 실습 기관이 회보서를 작성하여 학부로 보내야 합니다.', {
+      important: [
+        '회보서는 실습 기관이 작성하여 학부로 보내는 서류입니다. 실습생은 기관이 기한 안에 보냈는지 확인하세요.',
+        '6월 첫째 주까지 학부에 도착해야 합니다.',
+      ],
+      submit: { method: '실습 기관이 회보서 송부 (실습생은 송부 여부 확인)', where: '실습 기관 → 학부', deadlineText: '6월 첫째 주까지' },
+    }),
   },
 };
 
@@ -335,8 +364,7 @@ export const SCHEDULE_NOTE = {
 // 이수 완료 점검에서 과업 외에 추가로 확인할 항목
 export const COMPLETION_EXTRA_CHECKS = [
   { id: 'hours', label: '강의참관 9시간 이상과 강의참관 지도 1시간 이상을 모두 채웠다' },
-  { id: 'files', label: '제출한 모든 파일이 정상적으로 열리는지 확인했다 (예시)' },
-  { id: 'lms', label: 'LMS에서 제출 완료 상태를 확인했다 (예시)' },
+  { id: 'lms', label: 'LMS에서 모든 과제의 제출 완료 상태를 확인했다' },
 ];
 
 export const getTask = (id) => (TASKS[id] ? { id, ...TASKS[id] } : null);

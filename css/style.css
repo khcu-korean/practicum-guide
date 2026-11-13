@@ -218,3 +218,6 @@ details.card summary { color: var(--text); margin: 0; }
 }
 .steps-timeline li.done .num { background: var(--ok); }
 .steps-timeline .task-list { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 0 12px; }
+.templates { list-style: none; padding: 0; margin: 6px 0; }
+.templates li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.btn.small { padding: 6px 14px; font-size: .85rem; color: var(--brand); border-color: var(--brand); }
