@@ -1,24 +1,20 @@
 // =====================================================================
 // ④ 타임라인 과업 + ⑤ 과제 수행 가이드 데이터
 //
-// 과업 하나의 구조:
+// [1] TASKS: 과업 목록 (여러 유형이 같이 하는 과업은 한 번만 적습니다)
 // {
-//   id: '고유 영문 ID',
 //   title: '과업 이름',
-//   types: 'all'  또는  ['1', '1-1']   ← 'all' = 공통 과업
-//   week: 7,                          ← 몇 주차 과업인지 (타임라인 묶음 기준)
-//   due:  '2026-10-17'  |  { week: 7, day: 'sun' }  |  null
-//         └ 날짜 직접 지정 | 학기 시작일 기준 n주차 요일 | null = 미정(기관 일정에 따름)
-//   dueNote: '미정일 때 학생에게 보여 줄 안내',
-//   required: true,                   ← 이수 완료 점검에 포함할지
-//   guide: {
-//     intro: '과제 소개',
-//     important: ['중요 사항', ...],
-//     templates: [{ name: '양식 이름', url: '다운로드 링크' }],
-//     submit: { method: '제출 방법', where: '제출 위치', deadlineText: '기한 설명' },
-//   }
+//   week: 3,                 ← (선택) 'n주차까지' 표시
+//   due:  '2026-10-17'  |  { week: 3, day: 'sun' }  |  null
+//         └ 날짜 직접 지정 | 개강일 기준 n주차 요일 | null = 날짜 미정
+//   schedule: 'course' | 'institution'
+//         └ 날짜 미정일 때 안내: course = 강의 공지에 따름, institution = 실습 기관 일정에 따름
+//   note: '과업 목록에 함께 보여 줄 짧은 안내',
+//   required: true,          ← 이수 완료 점검에 포함할지 (기본 true)
+//   guide: { intro, important: [], templates: [{ name, url }], submit: { method, where, deadlineText } }
 // }
-// ※ 아래 내용은 모두 '틀 확인용 예시'입니다. 실제 과업으로 교체하세요.
+//
+// [2] SEQUENCES: 유형별 과업 순서 (타임라인에 이 순서대로 표시)
 // =====================================================================
 
 const TBD = '(내용 입력 예정)';
@@ -31,206 +27,196 @@ const guide = (intro = TBD, extra = {}) => ({
   ...extra,
 });
 
-export const TASKS = [
-  // ---------------- 공통 과업 ----------------
-  {
-    id: 'common-orientation',
-    title: '실습 오리엔테이션 참석',
-    types: 'all',
-    week: 1,
-    due: { week: 1, day: 'sat' },
-    required: true,
-    guide: guide('실습 전체 과정과 유형별 진행 방식을 안내하는 오리엔테이션입니다.'),
+const TEACHING_PLAN_NOTE = '교안은 실습 기관의 실습 지도자에게 제출하고 지도를 받습니다.';
+const ORG_PLAN_NOTE =
+  '실습 기관의 강의참관·강의실습 일정에 맞춰 작성합니다. LMS의 리포트 제출 기한이 지났다면 조교에게 제출합니다.';
+
+export const TASKS = {
+  // ---------------- 모든 유형 ----------------
+  orientation: {
+    title: '한국어교육현장실습 교과목 오리엔테이션 참가',
+    due: null,
+    schedule: 'course',
+    guide: guide(),
   },
-  {
-    id: 'common-type-apply',
-    title: '실습 유형 신청서 제출',
-    types: 'all',
-    week: 2,
-    due: { week: 2, day: 'sun' },
-    required: true,
-    guide: guide('진단 결과를 참고하여 본인의 실습 유형을 확정하고 신청서를 제출합니다.', {
-      templates: [{ name: '실습 유형 신청서 (양식 링크 입력 예정)', url: '' }],
-    }),
+  'lms-log-4': {
+    title: 'LMS 강의 4차시 참관 일지 제출',
+    due: null,
+    schedule: 'course',
+    guide: guide(),
   },
-  {
-    id: 'common-plan',
-    title: '실습 계획서 제출',
-    types: 'all',
+  'lms-log-5': {
+    title: 'LMS 강의 5차시 참관 일지 제출',
+    due: null,
+    schedule: 'course',
+    guide: guide(),
+  },
+  'site-observe': {
+    title: '현장 실습 기관 강의참관',
+    due: null,
+    schedule: 'institution',
+    guide: guide(),
+  },
+  'site-observe-log': {
+    title: '현장 강의참관 일지 제출',
+    due: null,
+    schedule: 'institution',
+    guide: guide(),
+  },
+
+  // ---------------- 유형 1 · 1-1 · 3 ----------------
+  plan: {
+    title: '실습계획서 제출',
     week: 3,
     due: { week: 3, day: 'sun' },
-    required: true,
+    note: '개강 후 3주차까지',
     guide: guide(),
   },
-  {
-    id: 'common-report',
-    title: '최종 실습 보고서 제출',
-    types: 'all',
-    week: 15,
-    due: { week: 15, day: 'sun' },
-    required: true,
+  group: {
+    title: '자신의 조 확인 및 조장 정하기',
+    due: null,
+    schedule: 'course',
     guide: guide(),
   },
-  {
-    id: 'common-self-eval',
-    title: '자기 평가서 제출',
-    types: 'all',
-    week: 15,
-    due: { week: 15, day: 'sun' },
-    required: true,
+  'draft-plan': {
+    title: '초벌 교안 제출',
+    due: null,
+    schedule: 'course',
+    guide: guide(),
+  },
+  'peer-feedback': {
+    title: '초벌 교안에 대한 동료 피드백',
+    due: null,
+    schedule: 'course',
+    note: '조별 게시판에서 진행',
+    guide: guide(),
+  },
+  'revise-1': {
+    title: '1차 수정 교안 제출',
+    due: null,
+    schedule: 'course',
+    guide: guide(),
+  },
+  'revise-2': {
+    title: '2차 수정 교안 제출',
+    due: null,
+    schedule: 'course',
+    guide: guide(),
+  },
+  'mock-class': {
+    title: '모의수업',
+    due: null,
+    schedule: 'course',
+    note: '지정된 강의실에서 진행',
+    guide: guide(),
+  },
+  'final-plan': {
+    title: '최종 교안 제출',
+    due: null,
+    schedule: 'course',
     guide: guide(),
   },
 
-  // ---------------- 유형 1 ----------------
-  {
-    id: 't1-observe-apply',
-    title: '오프라인 참관 일정 신청',
-    types: ['1', '1-1'],
-    week: 4,
-    due: { week: 4, day: 'fri' },
-    required: true,
-    guide: guide(),
+  // ---------------- 유형 2 · 2-1 ----------------
+  'plan-org': {
+    title: '실습계획서 제출',
+    due: null,
+    schedule: 'institution',
+    note: ORG_PLAN_NOTE,
+    guide: guide(ORG_PLAN_NOTE),
   },
-  {
-    id: 't1-observe',
-    title: '오프라인 참관 수행 및 참관 일지 제출',
-    types: ['1'],
-    week: 8,
-    due: { week: 8, day: 'sun' },
-    required: true,
-    guide: guide(),
+  teaching: {
+    title: '강의실습',
+    due: null,
+    schedule: 'institution',
+    note: TEACHING_PLAN_NOTE,
+    guide: guide(TBD, { important: [TEACHING_PLAN_NOTE] }),
   },
 
-  // ---------------- 유형 1-1 ----------------
-  {
-    id: 't11-observe-offline',
-    title: '오프라인 참관 8시간 수행 및 참관 일지 제출',
-    types: ['1-1'],
-    week: 8,
-    due: { week: 8, day: 'sun' },
-    required: true,
+  // ---------------- 유형 2 ----------------
+  'org-find': {
+    title: '실습 기관 섭외',
+    due: null,
+    schedule: 'institution',
     guide: guide(),
   },
-  {
-    id: 't11-observe-online',
-    title: '온라인 참관 1시간 수행 및 참관 일지 제출',
-    types: ['1-1'],
-    week: 9,
-    due: { week: 9, day: 'sun' },
-    required: true,
+  'org-apply': {
+    title: '학부에 실습 기관 신청서 작성 및 제출',
+    due: null,
+    schedule: 'course',
     guide: guide(),
   },
+  'org-approval': {
+    title: '학부의 실습 기관 승인 결과 확인',
+    due: null,
+    schedule: 'course',
+    note: '학부에서 승인 결과를 통보합니다',
+    guide: guide(),
+  },
+  'result-report': {
+    title: '실습 결과 회보서 송부 확인',
+    due: null,
+    schedule: 'institution',
+    note: '실습 기관이 학부로 회보서를 보냅니다. 송부 여부를 실습생이 기관에 확인하세요.',
+    guide: guide(),
+  },
+};
 
-  // ---------------- 모의수업 (1, 1-1, 3) ----------------
-  {
-    id: 'mock-lessonplan',
-    title: '모의수업 교안 제출',
-    types: ['1', '1-1', '3'],
-    week: 10,
-    due: { week: 10, day: 'sun' },
-    required: true,
-    guide: guide(),
-  },
-  {
-    id: 'mock-teach',
-    title: '모의수업 시연 및 영상 제출',
-    types: ['1', '1-1', '3'],
-    week: 12,
-    due: { week: 12, day: 'sun' },
-    required: true,
-    guide: guide(),
-  },
-
-  // ---------------- 기관 직접 섭외 (2, 3) ----------------
-  {
-    id: 'org-confirm',
-    title: '실습 기관 확인서 제출',
-    types: ['2', '3'],
-    week: 4,
-    due: { week: 4, day: 'sun' },
-    required: true,
-    guide: guide('직접 섭외한 실습 기관의 정보와 담당자 확인을 받아 제출합니다.'),
-  },
-  {
-    id: 'org-observe',
-    title: '기관 수업 참관 및 참관 일지 제출',
-    types: ['2', '3'],
-    week: 9,
-    due: null,
-    dueNote: '실습 기관 일정에 따라 결정됩니다. 일정이 확정되면 직접 입력하세요.',
-    required: true,
-    guide: guide(),
-  },
-  {
-    id: 'org-teach-plan',
-    title: '강의실습 교안 제출',
-    types: ['2'],
-    week: 10,
-    due: null,
-    dueNote: '실습 기관 일정에 따라 결정됩니다.',
-    required: true,
-    guide: guide(),
-  },
-  {
-    id: 'org-teach',
-    title: '강의실습 수행',
-    types: ['2'],
-    week: 12,
-    due: null,
-    dueNote: '실습 기관 일정에 따라 결정됩니다.',
-    required: true,
-    guide: guide(),
-  },
-  {
-    id: 'org-eval',
-    title: '기관 담당자 평가서 제출',
-    types: ['2'],
-    week: 14,
-    due: { week: 14, day: 'sun' },
-    required: true,
-    guide: guide(),
-  },
-
-  // ---------------- 유형 2-1 (예르생달랏대학교) ----------------
-  {
-    id: 'dalat-apply',
-    title: '예르생달랏대학교 실습 참가 신청',
-    types: ['2-1'],
-    week: 3,
-    due: { week: 3, day: 'fri' },
-    required: true,
-    guide: guide(),
-  },
-  {
-    id: 'dalat-observe',
-    title: '현지 수업 참관 및 참관 일지 제출',
-    types: ['2-1'],
-    week: 9,
-    due: null,
-    dueNote: '현지 학사 일정에 따라 결정됩니다.',
-    required: true,
-    guide: guide(),
-  },
-  {
-    id: 'dalat-teach',
-    title: '현지 강의실습 수행 및 교안 제출',
-    types: ['2-1'],
-    week: 12,
-    due: null,
-    dueNote: '현지 학사 일정에 따라 결정됩니다.',
-    required: true,
-    guide: guide(),
-  },
+// 유형별 과업 순서
+const SEQ_MOCK = [
+  'orientation',
+  'plan',
+  'group',
+  'lms-log-4',
+  'lms-log-5',
+  'draft-plan',
+  'peer-feedback',
+  'site-observe',
+  'revise-1',
+  'revise-2',
+  'site-observe-log',
+  'mock-class',
+  'final-plan',
 ];
+
+export const SEQUENCES = {
+  1: SEQ_MOCK,
+  '1-1': SEQ_MOCK,
+  3: SEQ_MOCK,
+  2: [
+    'orientation',
+    'org-find',
+    'org-apply',
+    'org-approval',
+    'plan-org',
+    'lms-log-4',
+    'lms-log-5',
+    'site-observe',
+    'site-observe-log',
+    'teaching',
+    'result-report',
+  ],
+  '2-1': ['orientation', 'plan-org', 'lms-log-4', 'lms-log-5', 'site-observe', 'site-observe-log', 'teaching'],
+};
+
+// 날짜 미정 과업의 안내 문구
+export const SCHEDULE_NOTE = {
+  course: '제출일은 강의 공지를 확인하세요. 날짜가 정해지면 직접 입력할 수 있습니다.',
+  institution: '실습 기관 일정에 따라 정해집니다. 일정이 확정되면 직접 입력하세요.',
+};
 
 // 이수 완료 점검에서 과업 외에 추가로 확인할 항목
 export const COMPLETION_EXTRA_CHECKS = [
-  { id: 'hours', label: '유형별 필수 실습 시간을 모두 채웠다 (예시)' },
+  { id: 'hours', label: '강의참관 9시간 이상과 강의참관 지도 1시간 이상을 모두 채웠다' },
   { id: 'files', label: '제출한 모든 파일이 정상적으로 열리는지 확인했다 (예시)' },
   { id: 'lms', label: 'LMS에서 제출 완료 상태를 확인했다 (예시)' },
 ];
 
-export const getTask = (id) => TASKS.find((t) => t.id === id);
+export const getTask = (id) => (TASKS[id] ? { id, ...TASKS[id] } : null);
 
+/** 유형별 과업 목록 (순서대로, step = 순번) */
 export const tasksForType = (typeId) =>
-  TASKS.filter((t) => t.types === 'all' || (typeId && t.types.includes(typeId)));
+  (SEQUENCES[typeId] || []).map((id, i) => ({ id, step: i + 1, ...TASKS[id] }));
+
+/** 이 과업을 하는 유형 목록 */
+export const typesOfTask = (id) => Object.keys(SEQUENCES).filter((t) => SEQUENCES[t].includes(id));

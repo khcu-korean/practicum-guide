@@ -1,5 +1,5 @@
 // ⑤ 과제 수행 가이드 (과업 상세)
-import { getTask } from '../data/tasks.js';
+import { getTask, typesOfTask, SCHEDULE_NOTE } from '../data/tasks.js';
 import { getType } from '../data/types.js';
 import { sem, semesterId, update } from '../store.js';
 import { esc, resolveDue, daysLeft, ddayLabel, ddayClass, fmtDate, toast } from '../utils.js';
@@ -13,18 +13,20 @@ export default {
     const due = resolveDue(task, semesterId(), r);
     const left = daysLeft(due);
     const g = task.guide || {};
-    const typeNames = task.types === 'all' ? '공통 과업' : task.types.map((id) => getType(id)?.name).join(', ');
+    const typeIds = typesOfTask(task.id);
+    const typeNames = typeIds.length === 5 ? '모든 유형 공통' : typeIds.map((id) => getType(id)?.name.replace('실습 ', '')).join(', ');
 
     return `
     <a href="#/timeline" class="link">← 타임라인</a>
     <h1 class="page-title">${esc(task.title)}</h1>
-    <p class="muted">${task.week}주차 · ${esc(typeNames)}</p>
+    <p class="muted">${task.week ? `${task.week}주차까지 · ` : ''}${esc(typeNames)}</p>
+    ${task.note ? `<p class="notice tiny">${esc(task.note)}</p>` : ''}
 
     <section class="card row">
       <span class="badge big ${ddayClass(left, r.done)}">${r.done ? '완료' : ddayLabel(left)}</span>
       <div class="grow">
         <p>마감: <b>${fmtDate(due)}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
-        ${task.due === null ? `<p class="tiny muted">${esc(task.dueNote || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
+        ${task.due === null ? `<p class="tiny muted">${esc(SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
       </div>
     </section>
 
