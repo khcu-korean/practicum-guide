@@ -1,5 +1,5 @@
 // ③ 실습 유형 진단 및 추천 → 유형 확정
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY, APPLICATION_NOTICE } from '../data/types.js';
 import { sem, update } from '../store.js';
 import { esc, toast } from '../utils.js';
 
@@ -55,7 +55,11 @@ function resultHTML(results, currentTypeId) {
     <h2>추천 결과</h2>
     ${ok.length ? `<p>선택 가능한 실습 유형이 <b>${ok.length}개</b> 있어요.</p>${ok.map(card).join('')}` : '<p class="notice">입력한 조건으로 선택 가능한 유형이 없습니다. 담당 교수(조교)에게 문의하세요.</p>'}
     ${no.length ? `<details><summary>선택이 어려운 유형 보기 (${no.length})</summary>${no.map(card).join('')}</details>` : ''}
-    <p class="tiny muted">※ 추천 결과는 참고용입니다. 최종 유형은 학과 안내에 따라 확정하세요.</p>
+    <div class="notice">
+      <b>📌 기관 신청 안내</b>
+      <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+    </div>
+    <p class="tiny muted">※ 추천 결과는 참고용입니다. 기관 배정 결과가 나오면 해당 유형으로 확정하세요. 확정한 뒤에도 바꿀 수 있습니다.</p>
   </section>`;
 }
 

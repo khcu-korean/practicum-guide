@@ -163,7 +163,7 @@ export const TASKS = [
   },
   {
     id: 'org-teach-plan',
-    title: '강의 실습 교안 제출',
+    title: '강의실습 교안 제출',
     types: ['2'],
     week: 10,
     due: null,
@@ -173,7 +173,7 @@ export const TASKS = [
   },
   {
     id: 'org-teach',
-    title: '강의 실습 수행',
+    title: '강의실습 수행',
     types: ['2'],
     week: 12,
     due: null,
@@ -213,7 +213,7 @@ export const TASKS = [
   },
   {
     id: 'dalat-teach',
-    title: '현지 강의 실습 수행 및 교안 제출',
+    title: '현지 강의실습 수행 및 교안 제출',
     types: ['2-1'],
     week: 12,
     due: null,
