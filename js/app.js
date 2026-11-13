@@ -130,7 +130,7 @@ async function start() {
   subscribe(() => render(false));
   render();
   notifyDueTasks();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
 }
 
 start();
