@@ -4,6 +4,9 @@
 
 > “나에게 해당하는 정보만 보여 주고, 지금 무엇을 언제까지 어떻게 해야 하는지 알려 주는 앱”
 
+- 접속 주소: https://khcu-korean.github.io/practicum-guide/
+- 저장소: https://github.com/khcu-korean/practicum-guide
+
 ## 1. 내용 추가할 파일
 
 내용은 **`js/data/` 폴더**에만 넣으면 됩니다. 화면 코드는 고칠 필요가 없습니다.
