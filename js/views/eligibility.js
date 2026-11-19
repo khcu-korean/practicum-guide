@@ -4,7 +4,7 @@ import { ELIGIBILITY as E } from '../data/eligibility.js';
 import { sem, update } from '../store.js';
 import { esc } from '../utils.js';
 
-const offeredLabel = (o) => (o.length === 2 ? '1·2학기' : `${o[0]}학기`);
+const offeredLabel = (o) => (!o?.length ? '' : o.length === 2 ? '1·2학기' : `${o[0]}학기`);
 const areaById = (id) => E.areas.find((a) => a.id === id);
 
 function evaluate(input) {
@@ -59,7 +59,7 @@ function practicumHTML(r) {
     const lack = p.combined.required - p.combined.earned;
     const options = E.practicum.combinedAreaIds
       .map((id) => r.areas.find((a) => a.id === id))
-      .map((a) => `<div class="tiny"><b>${a.no}영역</b>: ${a.remaining.map((c) => `${esc(c.name)} <span class="muted">(${offeredLabel(c.offered)})</span>`).join(', ') || '-'}</div>`)
+      .map((a) => `<div class="tiny"><b>${a.no}영역</b>: ${a.remaining.map((c) => `${esc(c.name)} ${c.offered?.length ? `<span class="muted">(${offeredLabel(c.offered)})</span>` : ''}`).join(', ') || '-'}</div>`)
       .join('');
     todo.push(`${names} 합산 <b>${lack}학점</b>(${Math.ceil(lack / 3)}과목)이 더 필요합니다.<div class="sub">들을 수 있는 과목:</div>${options}`);
   }
@@ -129,7 +129,7 @@ export default {
     return `
     <h1 class="page-title">STEP 1. <span class="nowrap">&lt;한국어교육현장실습&gt;</span> 수강 자격 자기점검</h1>
     <p class="muted">영역별로 이수한 과목에 체크하면, 아래에 <b>실습 수강 자격</b>과 <b>한국어교원 자격 영역별 이수 현황</b> 진단 결과가 나옵니다.</p>
-    <p class="notice tiny">${esc(E.basisNote)} 현재 수강 중인 과목은 아직 체크하지 마세요.</p>
+    <p class="notice tiny">${esc(E.basisNote)}</p>
     <details class="card soft">
       <summary><b>수강 자격 기준과 근거</b></summary>
       <table class="result">
@@ -166,7 +166,7 @@ export default {
             ${a.courses
               .map(
                 (c) => `<label class="check"><input type="checkbox" name="course" value="${c.id}" ${input.courses.includes(c.id) ? 'checked' : ''}/>
-                <span>${esc(c.name)}</span><small>${c.credits}학점 · ${offeredLabel(c.offered)}</small></label>`
+                <span>${esc(c.name)}</span><small>${c.credits}학점${c.offered?.length ? ` · ${offeredLabel(c.offered)}` : ''}</small></label>`
               )
               .join('')}
           </div>

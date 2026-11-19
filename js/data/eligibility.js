@@ -94,6 +94,7 @@ export const ELIGIBILITY = {
         { id: 'a4-food', name: '한국의음식문화', credits: 3, offered: [1] },
         { id: 'a4-multicultural', name: '한국사회의다문화현상이해', credits: 3, offered: [2] },
         { id: 'a4-history', name: '한국역사의이해', credits: 3, offered: [2] },
+        { id: 'a4-multicultural-era', name: '다문화시대의한국사회', credits: 3 }, // TODO: 개설 학기 확인 후 offered 추가
       ],
     },
     {
