@@ -437,3 +437,4 @@ details.qa .ans p { margin: 0 0 8px; }
 .bar.dual span { position: absolute; left: 0; top: 0; bottom: 0; }
 .bar.dual span.p { background: var(--warn); opacity: .35; }
 @media (max-width: 400px) { .course { flex-direction: column; align-items: stretch; gap: 6px; } .st { align-self: flex-start; } }
+.basis p { margin: 8px 0 2px; } .basis .bullets { margin-top: 0; }
