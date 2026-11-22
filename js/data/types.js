@@ -25,25 +25,27 @@ export const GLOSSARY = [
 // 유형 1 · 1-1 · 2-1의 지정 기관 (진단 문항, 유형 설명, 확정 기관 입력, 타임라인에서 함께 사용)
 // - location: 소재지
 // - schedule: 참관 시간 구성 (학기와 관계없이 같은 내용)
-// - terms: 학기별 참관 기간과 방식 { '2027-1': { period, method } } ← 학기가 바뀌면 새 학기 항목을 추가
+// - mode: 참관 방식 ('offline' 전면 오프라인 / 'mixed' 오프라인 + 온라인)
+// - terms: 학기별 참관 정보 { '2027-1': { days, when, period, method, note } } ← 학기가 바뀌면 새 학기 항목을 추가
+//     days: 'weekday' 평일 / 'weekend' 주말,  when: 'semester' 학기 중 / 'vacation' 방학 중
 export const INSTITUTIONS = [
   // 유형 1
   {
-    id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', location: '서울', type: '1',
-    terms: { '2027-1': { period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', location: '서울', type: '1', mode: 'offline',
+    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
   },
   {
-    id: 'honam', name: '호남대학교 한국어교육원', region: '국내', location: '광주광역시', type: '1',
-    terms: { '2027-1': { period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'honam', name: '호남대학교 한국어교육원', region: '국내', location: '광주광역시', type: '1', mode: 'offline',
+    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
   },
   {
-    id: 'tongmyong', name: '동명대학교 부산국제대학 글로벌한국학과', region: '국내', location: '부산광역시', type: '1',
-    terms: { '2027-1': { period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'tongmyong', name: '동명대학교 부산국제대학 글로벌한국학과', region: '국내', location: '부산광역시', type: '1', mode: 'offline',
+    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
   },
   {
-    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1',
+    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1', mode: 'offline',
     terms: {
-      '2027-1': {
+      '2027-1': { days: 'weekday', when: 'vacation',
         period: '2027년 2월 중 (개강 전)',
         method: '평일 3일 오프라인 참관',
         note: '태국 대학의 학사 일정에 따라 방학 중에 미리 참관합니다.',
@@ -51,30 +53,30 @@ export const INSTITUTIONS = [
     },
   },
   {
-    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1',
-    terms: { '2027-1': { period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1', mode: 'offline',
+    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
   },
   // 유형 1-1
   {
-    id: 'khcu-center', name: '경희사이버대학교 한국어센터', region: '국내', location: '서울', type: '1-1',
+    id: 'khcu-center', name: '경희사이버대학교 한국어센터', region: '국내', location: '서울', type: '1-1', mode: 'mixed',
     schedule: '토요일 4시간 + 일요일 2시간 + 온라인 3시간',
-    terms: { '2027-1': { period: '2027년 3~4월 중', method: '토·일 2회 오프라인 참관 + 1회 온라인 참관' } },
+    terms: { '2027-1': { days: 'weekend', when: 'semester', period: '2027년 3~4월 중', method: '토·일 2회 오프라인 참관 + 1회 온라인 참관' } },
   },
   {
-    id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1',
+    id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1', mode: 'mixed',
     schedule: '일요일 2회(회당 4시간) + 온라인 1시간',
-    terms: { '2027-1': { period: '2027년 3~4월 중', method: '일요일 2회 오프라인 참관 + 1회 온라인 참관' } },
+    terms: { '2027-1': { days: 'weekend', when: 'semester', period: '2027년 3~4월 중', method: '일요일 2회 오프라인 참관 + 1회 온라인 참관' } },
   },
   {
-    id: 'jecheon', name: '제천폴리텍다솜고등학교', region: '국내', location: '제천시', type: '1-1',
+    id: 'jecheon', name: '제천폴리텍다솜고등학교', region: '국내', location: '제천시', type: '1-1', mode: 'mixed',
     schedule: '평일 오프라인 총 8시간 + 온라인 1시간',
-    terms: { '2027-1': { period: '2027년 4월 중', method: '평일 3일 오프라인 참관 + 1회 온라인 참관' } },
+    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 4월 중', method: '평일 3일 오프라인 참관 + 1회 온라인 참관' } },
   },
   // 유형 2-1
   {
-    id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', location: '베트남 달랏', type: '2-1',
+    id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', location: '베트남 달랏', type: '2-1', mode: 'offline',
     terms: {
-      '2027-1': {
+      '2027-1': { days: 'weekday', when: 'semester',
         period: '2027년 5월 중',
         method: '평일 3일 오프라인 참관 + 1일 강의실습',
         note: '현지 체류 일정은 협의할 수 있습니다.',
@@ -107,44 +109,112 @@ const instOf = (typeId) => INSTITUTIONS.filter((i) => i.type === typeId);
 // 고른 기관(한 곳)이 이 유형의 기관이면 [id], 아니면 []
 const picked = (a, typeId) => [].concat(a.institutions || []).filter((id) => instOf(typeId).some((i) => i.id === id));
 
-// 진단 문항
-// - type: 'single'(하나 선택) | 'multi'(여러 개 선택) | 'text'(직접 입력)
+// 추천 질문 (STEP 2)
 // - showIf: 특정 답변일 때만 문항 표시
-// - options의 group: 선택지를 묶어서 보여 줄 제목
 export const DIAGNOSIS_QUESTIONS = [
   {
-    id: 'institutions',
-    text: '실습(강의참관)하고 싶은 기관을 한 곳 고르세요.',
-    help: '거주 지역과 관계없이 직접 방문할 수 있는 곳을 고르세요. 위 기관이 아니라 직접 섭외하려면 맨 아래 "직접 섭외"를 고르세요.',
+    id: 'self',
+    text: '강의참관을 할 기관을 스스로 찾을(섭외할) 수 있나요?',
     type: 'single',
-    options: INSTITUTIONS.map((i) => ({
-      value: i.id,
-      label: i.name,
-      inst: i,
-      group: `${TYPE_LABELS[i.type].name} · ${TYPE_LABELS[i.type].work}`,
-    })).concat([{ value: 'self', label: '위 기관이 아닌 곳을 직접 섭외하겠다', group: '직접 섭외 (유형 2 · 유형 3)' }]),
-  },
-  {
-    id: 'org',
-    text: '실습할 기관을 직접 섭외할 수 있나요?',
-    type: 'single',
-    showIf: { institutions: 'self' },
     options: [
-      { value: 'secured', label: '이미 섭외했다' },
-      { value: 'can', label: '아직 없지만 섭외할 수 있다' },
+      { value: 'no', label: '아니요, 학과 협력 기관에서 하고 싶어요' },
+      { value: 'yes', label: '네, 스스로 찾을 수 있어요 (이미 섭외한 경우 포함)' },
     ],
   },
   {
     id: 'teachAtOrg',
-    text: '섭외한 기관에서 강의참관뿐 아니라 직접 강의실습(한 차시 수업)까지 할 수 있나요?',
+    text: '그 기관에서 강의참관뿐 아니라 강의실습(한 차시 수업)까지 할 수 있나요?',
     type: 'single',
-    showIf: { org: ['secured', 'can'] },
+    showIf: { self: 'yes' },
     options: [
-      { value: 'yes', label: '강의실습까지 가능 (유형 2)' },
-      { value: 'no', label: '강의참관만 가능 (유형 3)' },
+      { value: 'yes', label: '강의실습까지 할 수 있어요' },
+      { value: 'no', label: '강의참관만 할 수 있어요' },
+    ],
+  },
+  {
+    id: 'region',
+    text: '강의참관은 어디에서 할 수 있나요?',
+    type: 'single',
+    showIf: { self: 'no' },
+    options: [
+      { value: 'domestic', label: '국내에서만 할 수 있어요' },
+      { value: 'overseas', label: '국외를 선호해요' },
+      { value: 'any', label: '국내·국외 모두 괜찮아요' },
+    ],
+  },
+  {
+    id: 'days',
+    text: '실습에 시간을 낼 수 있는 요일은 언제인가요?',
+    type: 'single',
+    showIf: { self: 'no' },
+    options: [
+      { value: 'weekend', label: '주말에만 시간을 낼 수 있어요' },
+      { value: 'weekday', label: '평일에도 시간을 낼 수 있어요' },
+    ],
+  },
+  {
+    id: 'semester',
+    text: '학기 중(3~6월)에 며칠씩 시간을 내는 것이 자유로운가요?',
+    type: 'single',
+    showIf: { self: 'no' },
+    options: [
+      { value: 'free', label: '네, 학기 중에도 시간을 낼 수 있어요' },
+      { value: 'notfree', label: '아니요, 학기 중에는 어려워요 (방학 중이나 주말이 좋아요)' },
+    ],
+  },
+  {
+    id: 'mode',
+    text: '어떤 방식의 강의참관을 원하나요?',
+    type: 'single',
+    showIf: { self: 'no' },
+    options: [
+      { value: 'offline', label: '전면 오프라인' },
+      { value: 'mixed', label: '오프라인 + 온라인 병행' },
+      { value: 'any', label: '상관없어요' },
     ],
   },
 ];
+
+// 기관 구분 표시(배지)
+export const ATTR_LABELS = {
+  region: { 국내: '국내', 해외: '국외' },
+  mode: { offline: '전면 오프라인', mixed: '오프라인 + 온라인' },
+  days: { weekday: '평일', weekend: '주말' },
+  when: { semester: '학기 중', vacation: '방학 중' },
+};
+
+export function instBadges(inst, semesterId) {
+  const t = termOf(inst, semesterId) || {};
+  return [ATTR_LABELS.region[inst.region], ATTR_LABELS.mode[inst.mode], ATTR_LABELS.days[t.days], ATTR_LABELS.when[t.when]].filter(Boolean);
+}
+
+// 추천 조건 (조건 이름, 기관이 조건에 맞는지)
+const CONDITIONS = [
+  { id: 'region', label: (v) => (v === 'domestic' ? '국내에서만' : '국외 선호'), test: (i, t, v) => v === 'any' || (v === 'domestic' ? i.region === '국내' : i.region === '해외') },
+  { id: 'days', label: () => '주말에만', test: (i, t, v) => v !== 'weekend' || t.days === 'weekend' },
+  { id: 'semester', label: () => '학기 중에는 어려움', test: (i, t, v) => v !== 'notfree' || t.days === 'weekend' || t.when === 'vacation' },
+  { id: 'mode', label: (v) => (v === 'offline' ? '전면 오프라인' : '오프라인 + 온라인 병행'), test: (i, t, v) => v === 'any' || i.mode === v },
+];
+
+/**
+ * 추천 결과
+ * - 스스로 섭외: { kind: 'self', typeId: '2' | '3' }
+ * - 협력 기관: { kind: 'partner', matches: [기관], relax: [{ label, count }] }
+ *   relax: 결과가 없을 때, 조건 하나를 빼면 몇 곳이 맞는지
+ */
+export function recommend(a, semesterId) {
+  if (a.self === 'yes') return { kind: 'self', typeId: a.teachAtOrg === 'yes' ? '2' : '3' };
+  const active = CONDITIONS.filter((c) => a[c.id]);
+  const fits = (i, conds) => conds.every((c) => c.test(i, termOf(i, semesterId) || {}, a[c.id]));
+  const matches = INSTITUTIONS.filter((i) => fits(i, active));
+  const relax = matches.length
+    ? []
+    : active
+        .filter((c) => !['any'].includes(a[c.id]))
+        .map((c) => ({ label: c.label(a[c.id]), count: INSTITUTIONS.filter((i) => fits(i, active.filter((x) => x !== c))).length }))
+        .filter((r) => r.count > 0);
+  return { kind: 'partner', matches, relax };
+}
 
 // 실습 유형 정의
 // activities: 유형 카드에 보여 줄 활동 구성

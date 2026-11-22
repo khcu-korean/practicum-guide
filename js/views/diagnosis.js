@@ -1,5 +1,5 @@
-// ③ 실습 유형 진단 및 추천 → 유형 확정
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, GLOSSARY, APPLICATION_NOTICE, DIAGNOSIS_INTRO, instLine } from '../data/types.js';
+// STEP 2. 실습 유형 추천: 질문에 답하면 맞는 유형과 협력 기관을 추천
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, instLine, instBadges, termOf, recommend, getType } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
 import { typeGuideHTML } from './typeGuide.js';
@@ -27,39 +27,61 @@ function questionHTML(q, a) {
   return `<section class="card q"><h3>${esc(q.text)}</h3>${q.help ? `<p class="tiny muted">${esc(q.help)}</p>` : ''}${body}</section>`;
 }
 
-function recommend(a) {
-  return PRACTICUM_TYPES.map((t) => ({ type: t, ...t.match(a) }));
+function instItem(i) {
+  const sid = semesterId();
+  const t = termOf(i, sid);
+  return `<li class="inst-item">
+    <b>${esc(i.name)}</b> <span class="muted">${esc(i.location || '')}</span>
+    <div class="badges">${instBadges(i, sid).map((x) => `<span class="tag">${esc(x)}</span>`).join('')}</div>
+    <div class="tiny muted">${esc(instLine(i, sid))}${t?.note ? ` · ${esc(t.note)}` : ''}</div>
+  </li>`;
 }
 
-function resultHTML(results, currentTypeId) {
-  const ok = results.filter((r) => r.ok);
-  const card = (r) => `
-    <div class="type-card ${r.ok ? '' : 'disabled'}">
-      <div class="row">
-        <h3 class="grow">${esc(r.type.name)}</h3>
-        ${r.ok ? '<span class="badge badge-soon">추천 유형</span>' : ''}
-      </div>
-      <p><b>${esc(r.type.summary)}</b></p>
-      <p class="muted">${esc(r.type.description)}</p>
-      <p class="tiny">활동: ${r.type.activities.map((x) => `<span class="tag">${esc(x)}</span>`).join(' ')}</p>
+const typeHead = (t) => `<div class="row"><h3 class="grow">${esc(t.name)}</h3><span class="badge badge-soon">추천</span></div>
+  <p><b>${esc(t.summary)}</b></p>`;
+
+function resultHTML(a) {
+  const r = recommend(a, semesterId());
+  let body = '';
+  let ok = false;
+  if (r.kind === 'self') {
+    const t = getType(r.typeId);
+    ok = true;
+    body = `<p>스스로 섭외한 기관에서 실습하는 경우, 나에게 맞는 유형은 다음과 같습니다.</p>
+      <div class="type-card">${typeHead(t)}<p class="muted">${esc(t.description)}</p></div>`;
+  } else if (r.matches.length) {
+    ok = true;
+    // 기관을 유형별로 묶어서 보여 줌
+    const groups = PRACTICUM_TYPES.filter((t) => r.matches.some((i) => i.type === t.id));
+    body = `<p>조건에 맞는 협력 기관이 <b>${r.matches.length}곳</b> 있어요. 기관 정보를 비교해 보고 신청할 곳을 정하세요.</p>
+      ${groups
+        .map(
+          (t) => `<div class="type-card">${typeHead(t)}
+          <ul class="inst-list">${r.matches.filter((i) => i.type === t.id).map(instItem).join('')}</ul></div>`
+        )
+        .join('')}`;
+  } else {
+    body = `<p class="notice">입력한 조건에 모두 맞는 협력 기관이 없습니다.</p>
       ${
-        r.type.institutions
-          ? `<ul class="inst tiny">${r.type.institutions.map((i) => `<li>${esc(i.name)} <span class="muted">${i.location ? esc(i.location) : esc(i.region)} · ${esc(instLine(i, semesterId()))}</span></li>`).join('')}</ul>`
-          : '<p class="tiny muted">실습 기관: 실습생이 직접 섭외</p>'
+        r.relax.length
+          ? `<p class="tiny">조건을 하나 바꾸면 이런 결과가 있어요.</p><ul class="bullets tiny">${r.relax
+              .map((x) => `<li>‘${esc(x.label)}’ 조건을 빼면 <b>${x.count}곳</b></li>`)
+              .join('')}</ul>`
+          : ''
       }
-      <ul class="bullets tiny">${r.reasons.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-    </div>`;
+      <p class="tiny muted">스스로 기관을 섭외하는 방법(유형 2·3)도 있습니다. 첫 문항에서 "네"를 골라 보세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>`;
+  }
   return `
   <section class="card">
     <h2>추천 결과</h2>
+    ${body}
     ${
-      ok.length
-        ? `<p>나에게 맞는 실습 유형입니다.</p>${ok.map(card).join('')}
-    <div class="notice">
+      ok
+        ? `<div class="notice">
       <b>실습 신청은 이렇게 합니다</b>
       <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     </div>`
-        : '<p class="notice">입력한 조건으로 해당하는 유형이 없습니다. 담당 교수(조교)에게 문의하세요.</p>'
+        : ''
     }
     <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다.</p>
   </section>
@@ -72,20 +94,20 @@ function resultHTML(results, currentTypeId) {
 }
 
 export default {
-  title: '실습 기관·유형 살펴보기',
+  title: '실습 유형 추천받기',
   render() {
     const s = sem();
     const a = s.diagnosis?.answers || {};
     return `
-    <h1 class="page-title">STEP 2. 실습 기관·유형 살펴보기</h1>
-    <p class="muted">나의 상황과 여건을 입력하면 고를 수 있는 실습 기관과 유형을 추천해 드려요.</p>
+    <h1 class="page-title">STEP 2. 실습 유형 추천받기</h1>
+    <p class="muted">몇 가지 질문에 답하면 나의 여건에 맞는 실습 유형과 협력 기관을 추천해 드려요.</p>
     <p class="notice tiny">${esc(DIAGNOSIS_INTRO)}</p>
     ${typeGuideHTML({ withGlossary: true })}
     <form id="diagForm" class="stack">
       <div id="questions">${Q.map((q) => questionHTML(q, a)).join('')}</div>
       <button class="btn primary big" type="submit">추천 받기</button>
     </form>
-    <div id="result">${s.diagnosis ? resultHTML(recommend(a), s.typeId) : ''}</div>`;
+    <div id="result">${s.diagnosis ? resultHTML(a) : ''}</div>`;
   },
 
   mount(root) {
@@ -109,8 +131,7 @@ export default {
       const a = read();
       const missing = Q.filter((q) => visible(q, a) && q.type === 'single' && !a[q.id]);
       if (missing.length) return toast('모든 문항에 답해 주세요.');
-      const recommended = recommend(a).filter((r) => r.ok).map((r) => r.type.id);
-      update((s) => (s.diagnosis = { answers: a, recommended, at: new Date().toISOString() }));
+      update((s) => (s.diagnosis = { answers: a, at: new Date().toISOString() }));
       requestAnimationFrame(() => document.querySelector('#result')?.scrollIntoView({ behavior: 'smooth' }));
     });
   },
