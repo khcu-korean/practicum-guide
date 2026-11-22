@@ -61,12 +61,12 @@ export const INSTITUTIONS = [
   },
   // 유형 1-2
   {
-    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1-2', mode: 'mixed', days: 'weekday',
-    windows: [[1, 2], [9, 10]], method: '평일 3일 오프라인 참관 + 온라인 참관 병행', note: '온라인 참관 세부 일정은 추후 안내합니다.',
+    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1-2', mode: 'offline', days: 'weekday',
+    windows: [[1, 2], [9, 10]], method: '평일 3일 오프라인 참관',
   },
   {
-    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1-2', mode: 'mixed', days: 'weekday',
-    windows: [[3, 3], [9, 10]], method: '평일 3일 오프라인 참관 + 온라인 참관 병행', note: '온라인 참관 세부 일정은 추후 안내합니다.',
+    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1-2', mode: 'offline', days: 'weekday',
+    windows: [[3, 3], [9, 10]], method: '평일 3일 오프라인 참관',
   },
   // 유형 2-1
   {
@@ -115,7 +115,7 @@ export const getInstitution = (id) => INSTITUTIONS.find((i) => i.id === id);
 export const TYPE_LABELS = {
   1: { name: '유형 1 (국내 지정 기관)', work: '강의참관 + 모의수업' },
   '1-1': { name: '유형 1-1 (국내 지정 기관 · 온라인 병행)', work: '강의참관(오프라인 + 온라인) + 모의수업' },
-  '1-2': { name: '유형 1-2 (국외 지정 기관 · 온라인 병행)', work: '강의참관(오프라인 + 온라인) + 모의수업' },
+  '1-2': { name: '유형 1-2 (국외 지정 기관 · 전면 오프라인)', work: '강의참관(전면 오프라인) + 모의수업' },
   2: { name: '유형 2 (국내외 기관 직접 섭외)', work: '강의참관 + 강의실습' },
   '2-1': { name: '유형 2-1 (해외 협약 대학)', work: '강의참관 + 강의실습' },
   3: { name: '유형 3 (국내외 기관 직접 섭외)', work: '강의참관 + 모의수업' },
@@ -315,8 +315,8 @@ export const PRACTICUM_TYPES = [
     id: '1-2',
     name: TYPE_LABELS['1-2'].name,
     summary: TYPE_LABELS['1-2'].work,
-    description: '국외 현장 실습 기관에서 강의참관을 하되 온라인 참관을 병행하고, 모의수업을 하는 유형입니다. 오프라인과 온라인을 합쳐 최소 9시간 이상 강의참관을 하며, 강의참관 지도(1시간 이상)는 9시간과 별도로 진행됩니다. 기관마다 참관 일정이 다릅니다.',
-    activities: ['강의참관 (오프라인 + 온라인 병행, 총 9시간)', '모의수업'],
+    description: '국외 현장 실습 기관에서 전면 오프라인으로 강의참관을 하고, 모의수업을 하는 유형입니다. 기관마다 참관 일정이 다릅니다.',
+    activities: ['강의참관 (전면 오프라인)', '모의수업'],
     institutions: instOf('1-2'),
     match: (a) => {
       const p = picked(a, '1-2');
