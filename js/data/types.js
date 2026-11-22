@@ -43,14 +43,6 @@ export const INSTITUTIONS = [
     id: 'tongmyong', name: '동명대학교 부산국제대학 글로벌한국학과', region: '국내', location: '부산광역시', type: '1', mode: 'offline', days: 'weekday',
     windows: [[3, 4], [9, 10]], method: '평일 3일 오프라인 참관',
   },
-  {
-    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1', mode: 'offline', days: 'weekday',
-    windows: [[1, 2], [9, 10]], method: '평일 3일 오프라인 참관',
-  },
-  {
-    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1', mode: 'offline', days: 'weekday',
-    windows: [[3, 3], [9, 10]], method: '평일 3일 오프라인 참관',
-  },
   // 유형 1-1
   {
     id: 'khcu-center', name: '경희사이버대학교 한국어센터', region: '국내', location: '서울', type: '1-1', mode: 'mixed', days: 'weekend',
@@ -66,6 +58,15 @@ export const INSTITUTIONS = [
     id: 'jecheon', name: '제천폴리텍다솜고등학교', region: '국내', location: '제천시', type: '1-1', mode: 'mixed', days: 'weekday',
     windows: [[3, 4], [9, 10]], method: '평일 3일 오프라인 참관 + 1회 온라인 참관',
     schedule: '평일 오프라인 총 8시간 + 온라인 1시간',
+  },
+  // 유형 1-2
+  {
+    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1-2', mode: 'mixed', days: 'weekday',
+    windows: [[1, 2], [9, 10]], method: '평일 3일 오프라인 참관 + 온라인 참관 병행', note: '온라인 참관 세부 일정은 추후 안내합니다.',
+  },
+  {
+    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1-2', mode: 'mixed', days: 'weekday',
+    windows: [[3, 3], [9, 10]], method: '평일 3일 오프라인 참관 + 온라인 참관 병행', note: '온라인 참관 세부 일정은 추후 안내합니다.',
   },
   // 유형 2-1
   {
@@ -112,7 +113,7 @@ export const getInstitution = (id) => INSTITUTIONS.find((i) => i.id === id);
 
 // 유형 이름과 할 일 (이름: '유형 1 (국내외 지정 기관)', 할 일: '강의참관 + 모의수업')
 export const TYPE_LABELS = {
-  1: { name: '유형 1 (국내외 지정 기관)', work: '강의참관 + 모의수업' },
+  1: { name: '유형 1 (국내 지정 기관)', work: '강의참관 + 모의수업' },
   '1-1': { name: '유형 1-1 (국내 지정 기관 · 온라인 병행)', work: '강의참관(오프라인 + 온라인) + 모의수업' },
   '1-2': { name: '유형 1-2 (국외 지정 기관 · 온라인 병행)', work: '강의참관(오프라인 + 온라인) + 모의수업' },
   2: { name: '유형 2 (국내외 기관 직접 섭외)', work: '강의참관 + 강의실습' },
@@ -284,7 +285,7 @@ export const PRACTICUM_TYPES = [
     id: '1',
     name: TYPE_LABELS['1'].name,
     summary: TYPE_LABELS['1'].work,
-    description: '국내 또는 해외의 현장 실습 기관에서 강의참관을 하고, 모의수업을 하는 유형입니다.',
+    description: '국내 현장 실습 기관에서 강의참관을 하고, 모의수업을 하는 유형입니다.',
     activities: ['강의참관', '모의수업'],
     institutions: instOf('1'),
     match: (a) => {
@@ -316,7 +317,7 @@ export const PRACTICUM_TYPES = [
     summary: TYPE_LABELS['1-2'].work,
     description: '국외 현장 실습 기관에서 강의참관을 하되 온라인 참관을 병행하고, 모의수업을 하는 유형입니다. 오프라인과 온라인을 합쳐 최소 9시간 이상 강의참관을 하며, 강의참관 지도(1시간 이상)는 9시간과 별도로 진행됩니다. 기관마다 참관 일정이 다릅니다.',
     activities: ['강의참관 (오프라인 + 온라인 병행, 총 9시간)', '모의수업'],
-    institutions: instOf('1-2'), // 기관은 추후 추가
+    institutions: instOf('1-2'),
     match: (a) => {
       const p = picked(a, '1-2');
       return p.length ? { ok: true, reasons: [] } : { ok: false, reasons: ['유형 1-2 지정 기관 중 방문할 수 있는 곳이 있어야 합니다'] };
