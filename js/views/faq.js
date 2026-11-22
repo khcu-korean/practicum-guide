@@ -5,10 +5,12 @@ import { esc } from '../utils.js';
 let category = '전체';
 let query = '';
 
+// 답변 속 웹 주소는 누르면 열리도록
+const linkify = (t) => t.replace(/https?:\/\/[^\s)<]+/g, (u) => `<a class="link" href="${u}" target="_blank" rel="noopener">${u}</a>`);
 const answerHTML = (a) =>
   esc(a)
     .split(/\n{2,}/)
-    .map((p) => `<p>${p.replace(/\n/g, '<br/>')}</p>`)
+    .map((p) => `<p>${linkify(p).replace(/\n/g, '<br/>')}</p>`)
     .join('');
 
 function listHTML() {
@@ -37,7 +39,7 @@ export default {
     const cats = ['전체', ...new Set(FAQ.map((f) => f.category || '기타'))];
     return `
     <h1 class="page-title">자주 묻는 질문</h1>
-    <p class="muted">한국어교원 자격에 관해 자주 묻는 질문입니다.</p>
+    <p class="muted">국립국어원 누리집의 한국어교원 자격 ‘자주 묻는 질문’을 옮겨 왔습니다. 최신 내용은 출처에서 확인하세요.</p>
     ${
       FAQ.length
         ? `<div class="faqtools">
