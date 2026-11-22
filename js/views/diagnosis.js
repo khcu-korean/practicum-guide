@@ -1,5 +1,5 @@
 // STEP 2. 실습 유형 추천: 질문에 답하면 맞는 유형과 협력 기관을 추천
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, instLine, instBadges, termOf, recommend, getType, VACATION_NOTE, SEASON_LABEL, seasonOf, ATTR_LABELS } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, recommend, getType, VACATION_NOTE, SEASON_LABEL, seasonOf, ATTR_LABELS, windowsIn, monthsFor, fmtWindows } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
 import { getSemester } from '../config.js';
@@ -16,7 +16,7 @@ function questionHTML(q, a) {
     const inputType = q.type === 'single' ? 'radio' : 'checkbox';
     const opt = (o) => {
       const checked = q.type === 'single' ? a[q.id] === o.value : (a[q.id] || []).includes(o.value);
-      return `<label class="choice"><input type="${inputType}" name="${q.id}" value="${esc(o.value)}" ${checked ? 'checked' : ''}/><span>${esc(o.label)}${o.inst ? `<small class="note">${o.inst.location ? `${esc(o.inst.location)} · ` : ''}${esc(instLine(o.inst, semesterId()))}</small>` : ''}</span></label>`;
+      return `<label class="choice"><input type="${inputType}" name="${q.id}" value="${esc(o.value)}" ${checked ? 'checked' : ''}/><span>${esc(o.label)}</span></label>`;
     };
     const groups = [...new Set(q.options.map((o) => o.group || ''))];
     body = groups
@@ -29,13 +29,11 @@ function questionHTML(q, a) {
 }
 
 function instItem(i, sid, a) {
-  const t = termOf(i, sid);
-  // 방학 중 참관을 고른 경우: 학기 중 기간 대신 방학 참관 가능 안내
-  const vac = a.timing === 'vacation' ? SEASON_LABEL[seasonOf(a)] : '';
-  const badges = vac
-    ? [ATTR_LABELS.region[i.region], ATTR_LABELS.mode[i.mode], vac]
-    : instBadges(i, sid);
-  const line = vac ? `${vac} 중 강의참관 가능 · 자세한 일정은 학과 공지를 확인하세요` : `${instLine(i, sid)}${t?.note ? ` · ${t.note}` : ''}`;
+  // 학생이 고른 수강 학기·참관 시기에 해당하는 참관 가능 달
+  const ws = windowsIn(i, monthsFor(a));
+  const when = a.timing === 'vacation' ? SEASON_LABEL[seasonOf(a)] : a.timing === 'semester' ? '학기 중' : '';
+  const badges = [ATTR_LABELS.region[i.region], ATTR_LABELS.mode[i.mode], ATTR_LABELS.days[i.days], when];
+  const line = `${ws.length ? `${fmtWindows(ws)} 중${when ? ` (${when})` : ''}` : '참관 일정 추후 안내'} · ${i.method}${i.note ? ` · ${i.note}` : ''}`;
   return `<li class="inst-item">
     <b>${esc(i.name)}</b> <span class="muted">${esc(i.location || '')}</span>
     <div class="badges">${badges.filter(Boolean).map((x) => `<span class="tag">${esc(x)}</span>`).join('')}</div>

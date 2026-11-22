@@ -24,72 +24,85 @@ export const GLOSSARY = [
 
 // 유형 1 · 1-1 · 2-1의 지정 기관 (진단 문항, 유형 설명, 확정 기관 입력, 타임라인에서 함께 사용)
 // - location: 소재지
-// - schedule: 참관 시간 구성 (학기와 관계없이 같은 내용)
 // - mode: 참관 방식 ('offline' 전면 오프라인 / 'mixed' 오프라인 + 온라인)
-// - vacation: 방학 중 참관 가능 시기 ('winter' 동계 → 1학기 수강생, 'summer' 하계 → 2학기 수강생)
-// - terms: 학기별 참관 정보 { '2027-1': { days, when, period, method, note } } ← 학기가 바뀌면 새 학기 항목을 추가
-//     days: 'weekday' 평일 / 'weekend' 주말,  when: 'semester' 학기 중 / 'vacation' 방학 중
+// - days: 참관 요일 ('weekday' 평일 / 'weekend' 주말)
+// - windows: 매년 강의참관이 가능한 달 [[시작 월, 끝 월], ...]  예: [[1, 2], [4, 5]] = 1~2월 중, 4~5월 중
+// - method: 참관 방식 설명,  schedule: 참관 시간 구성,  note: 참고 사항
+// ※ 달 구분: 1학기 수강생은 동계 방학(1~2월)·학기 중(3~6월), 2학기 수강생은 하계 방학(7~8월)·학기 중(9~12월)
 export const INSTITUTIONS = [
   // 유형 1
   {
-    id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', location: '서울', type: '1', mode: 'offline', vacation: ['winter', 'summer'],
-    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', location: '서울', type: '1', mode: 'offline', days: 'weekday',
+    windows: [[1, 2], [4, 5], [7, 8], [10, 11]], method: '평일 3일 오프라인 참관',
   },
   {
-    id: 'honam', name: '호남대학교 한국어교육원', region: '국내', location: '광주광역시', type: '1', mode: 'offline',
-    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'honam', name: '호남대학교 한국어교육원', region: '국내', location: '광주광역시', type: '1', mode: 'offline', days: 'weekday',
+    windows: [[1, 2], [4, 5], [7, 8], [10, 11]], method: '평일 3일 오프라인 참관',
   },
   {
-    id: 'tongmyong', name: '동명대학교 부산국제대학 글로벌한국학과', region: '국내', location: '부산광역시', type: '1', mode: 'offline',
-    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'tongmyong', name: '동명대학교 부산국제대학 글로벌한국학과', region: '국내', location: '부산광역시', type: '1', mode: 'offline', days: 'weekday',
+    windows: [[3, 4], [9, 10]], method: '평일 3일 오프라인 참관',
   },
   {
-    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1', mode: 'offline', vacation: ['summer'],
-    terms: {
-      '2027-1': { days: 'weekday', when: 'vacation',
-        period: '2027년 2월 중 (개강 전)',
-        method: '평일 3일 오프라인 참관',
-        note: '태국 대학의 학사 일정에 따라 방학 중에 미리 참관합니다.',
-      },
-    },
+    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1', mode: 'offline', days: 'weekday',
+    windows: [[1, 2], [9, 10]], method: '평일 3일 오프라인 참관',
   },
   {
-    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1', mode: 'offline',
-    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
+    id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1', mode: 'offline', days: 'weekday',
+    windows: [[3, 3], [9, 10]], method: '평일 3일 오프라인 참관',
   },
   // 유형 1-1
   {
-    id: 'khcu-center', name: '경희사이버대학교 한국어센터', region: '국내', location: '서울', type: '1-1', mode: 'mixed',
+    id: 'khcu-center', name: '경희사이버대학교 한국어센터', region: '국내', location: '서울', type: '1-1', mode: 'mixed', days: 'weekend',
+    windows: [[1, 2], [4, 5], [7, 8], [10, 11]], method: '토·일 2회 오프라인 참관 + 1회 온라인 참관',
     schedule: '토요일 4시간 + 일요일 2시간 + 온라인 3시간',
-    terms: { '2027-1': { days: 'weekend', when: 'semester', period: '2027년 3~4월 중', method: '토·일 2회 오프라인 참관 + 1회 온라인 참관' } },
   },
   {
-    id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1', mode: 'mixed', vacation: ['winter', 'summer'],
+    id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1', mode: 'mixed', days: 'weekend',
+    windows: [[1, 2], [4, 5], [10, 11]], method: '일요일 2회 오프라인 참관 + 1회 온라인 참관',
     schedule: '일요일 2회(회당 4시간) + 온라인 1시간',
-    terms: { '2027-1': { days: 'weekend', when: 'semester', period: '2027년 3~4월 중', method: '일요일 2회 오프라인 참관 + 1회 온라인 참관' } },
   },
   {
-    id: 'jecheon', name: '제천폴리텍다솜고등학교', region: '국내', location: '제천시', type: '1-1', mode: 'mixed',
+    id: 'jecheon', name: '제천폴리텍다솜고등학교', region: '국내', location: '제천시', type: '1-1', mode: 'mixed', days: 'weekday',
+    windows: [[3, 4], [9, 10]], method: '평일 3일 오프라인 참관 + 1회 온라인 참관',
     schedule: '평일 오프라인 총 8시간 + 온라인 1시간',
-    terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 4월 중', method: '평일 3일 오프라인 참관 + 1회 온라인 참관' } },
   },
   // 유형 2-1
   {
-    id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', location: '베트남 달랏', type: '2-1', mode: 'offline',
-    terms: {
-      '2027-1': { days: 'weekday', when: 'semester',
-        period: '2027년 5월 중',
-        method: '평일 3일 오프라인 참관 + 1일 강의실습',
-        note: '현지 체류 일정은 협의할 수 있습니다.',
-      },
-    },
+    id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', location: '베트남 달랏', type: '2-1', mode: 'offline', days: 'weekday',
+    windows: [[5, 5]], method: '평일 3일 오프라인 참관 + 1일 강의실습',
+    note: '현지 체류 일정은 협의할 수 있습니다.',
   },
 ];
 
-/** 기관의 학기별 참관 정보 (없으면 null) */
-export const termOf = (inst, semesterId) => inst?.terms?.[semesterId] || null;
+// 수강 학기·참관 시기별 달
+export const MONTHS = {
+  1: { vacation: [1, 2], semester: [3, 4, 5, 6] },
+  2: { vacation: [7, 8], semester: [9, 10, 11, 12] },
+};
+const hits = (w, months) => months.some((m) => w[0] <= m && m <= w[1]);
+/** 기관의 참관 가능 달 중 주어진 달에 걸치는 것 */
+export const windowsIn = (inst, months) => (inst?.windows || []).filter((w) => hits(w, months));
+/** [[1,2],[4,5]] → '1~2월, 4~5월' */
+export const fmtWindows = (ws) => ws.map(([a, b]) => (a === b ? `${a}월` : `${a}~${b}월`)).join(', ');
 
-/** 기관 안내 한 줄: '2027년 4월 중 · 평일 3일 오프라인 참관' */
+/** 학기 id('2027-1')에 맞춘 기관 참관 정보 */
+export const termOf = (inst, semesterId) => {
+  if (!inst) return null;
+  const [year, half] = semesterId.split('-');
+  const M = MONTHS[half === '2' ? 2 : 1];
+  const ws = windowsIn(inst, [...M.vacation, ...M.semester]);
+  return {
+    days: inst.days,
+    method: inst.method,
+    note: inst.note,
+    vacation: windowsIn(inst, M.vacation).length > 0,
+    semester: windowsIn(inst, M.semester).length > 0,
+    period: ws.length ? `${year}년 ${fmtWindows(ws)} 중` : '이번 학기 참관 일정 없음',
+  };
+};
+
+/** 기관 안내 한 줄: '2027년 1~2월, 4~5월 중 · 평일 3일 오프라인 참관' */
 export const instLine = (inst, semesterId) => {
   const t = termOf(inst, semesterId);
   return t ? `${t.period} · ${t.method}` : inst?.schedule || '';
@@ -194,13 +207,19 @@ export const ATTR_LABELS = {
 
 export function instBadges(inst, semesterId) {
   const t = termOf(inst, semesterId) || {};
-  return [ATTR_LABELS.region[inst.region], ATTR_LABELS.mode[inst.mode], ATTR_LABELS.days[t.days], ATTR_LABELS.when[t.when]].filter(Boolean);
+  return [
+    ATTR_LABELS.region[inst.region],
+    ATTR_LABELS.mode[inst.mode],
+    ATTR_LABELS.days[inst.days],
+    t.vacation ? '방학 중 가능' : '',
+    t.semester ? '학기 중 가능' : '',
+  ].filter(Boolean);
 }
 
 // 추천 조건 (조건 이름, 기관이 조건에 맞는지)
 const CONDITIONS = [
   { id: 'region', label: (v) => (v === 'domestic' ? '국내에서만' : '국외 선호'), test: (i, t, v) => v === 'any' || (v === 'domestic' ? i.region === '국내' : i.region === '해외') },
-  { id: 'days', label: () => '주말에만', test: (i, t, v) => v !== 'weekend' || t.days === 'weekend' },
+  { id: 'days', label: () => '주말에만', test: (i, t, v) => v !== 'weekend' || i.days === 'weekend' },
   { id: 'mode', label: (v) => (v === 'offline' ? '전면 오프라인' : '오프라인 + 온라인 병행'), test: (i, t, v) => v === 'any' || i.mode === v },
 ];
 
@@ -210,13 +229,18 @@ const CONDITIONS = [
  * - 협력 기관: { kind: 'partner', matches: [기관], relax: [{ label, count }] }
  *   relax: 결과가 없을 때, 조건 하나를 빼면 몇 곳이 맞는지
  */
-// 수강 학기(1·2학기)에 해당하는 학기 id. 그 학기 기관 정보가 아직 없으면 현재 학기 정보를 참고로 사용
+// 수강 학기(1·2학기)에 해당하는 학기 id (기관 참관 달은 매년 같으므로 어느 학기든 계산 가능)
 export function targetSemester(a, currentId) {
   const [year] = currentId.split('-');
   const want = a.take ? `${year}-${a.take}` : currentId;
-  const has = INSTITUTIONS.some((i) => i.terms?.[want]);
-  return { id: has ? want : currentId, want, fallback: !has && want !== currentId };
+  return { id: want, want, fallback: false };
 }
+
+/** 학생이 고른 수강 학기·참관 시기의 달 */
+export const monthsFor = (a) => {
+  const M = MONTHS[a.take === '2' ? 2 : 1];
+  return a.timing === 'vacation' ? M.vacation : a.timing === 'semester' ? M.semester : [...M.vacation, ...M.semester];
+};
 
 export const SEASON_LABEL = { winter: '동계 방학', summer: '하계 방학' };
 export const seasonOf = (a) => (a.take === '2' ? 'summer' : 'winter');
@@ -236,7 +260,7 @@ export function recommend(a, currentId) {
   const timingCond = a.timing && {
     id: 'timing',
     label: () => (a.timing === 'vacation' ? `${SEASON_LABEL[season]} 중 참관` : '학기 중 참관'),
-    test: (i, t) => (a.timing === 'vacation' ? Boolean(i.vacation?.includes(season)) : t.when === 'semester'),
+    test: (i) => windowsIn(i, monthsFor(a)).length > 0,
   };
   const active = [...CONDITIONS.filter((c) => a[c.id]), ...(timingCond ? [timingCond] : [])];
   const fits = (i, conds) => conds.every((c) => c.test(i, termOf(i, semesterId) || {}, a[c.id]));
