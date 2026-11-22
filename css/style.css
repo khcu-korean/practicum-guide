@@ -414,3 +414,26 @@ details.qa[open] summary::after { content: '−'; }
 details.qa .ans { padding: 0 0 14px; font-size: .92rem; }
 details.qa .ans p { margin: 0 0 8px; }
 @media (min-width: 820px) { .faqtools { flex-direction: row; align-items: center; } .faqtools input { flex: 1; } }
+
+/* 과목 이수 상태 (미이수 / 수강 중 / 이수) */
+.course-list { display: flex; flex-direction: column; }
+.course { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.course:first-child { border-top: 0; }
+.cinfo { min-width: 0; }
+.cname { display: block; font-weight: 600; }
+.cmeta { display: block; font-size: .78rem; color: var(--muted); }
+.st { display: inline-flex; flex: none; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+.st label { position: relative; cursor: pointer; font-weight: 500; }
+.st label + label { border-left: 1px solid var(--line); }
+.st input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.st span { display: block; padding: 6px 9px; font-size: .78rem; color: var(--muted); white-space: nowrap; }
+.st input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: -2px; }
+.st .o0 input:checked + span { background: #efedea; color: var(--text); font-weight: 700; }
+.st .o1 input:checked + span { background: var(--warn-soft); color: var(--warn); font-weight: 700; }
+.st .o2 input:checked + span { background: var(--ok-soft); color: var(--ok); font-weight: 700; }
+.course.s2 .cname { color: var(--ok); }
+.prog { color: var(--warn); }
+.bar.dual { position: relative; }
+.bar.dual span { position: absolute; left: 0; top: 0; bottom: 0; }
+.bar.dual span.p { background: var(--warn); opacity: .35; }
+@media (max-width: 400px) { .course { flex-direction: column; align-items: stretch; gap: 6px; } .st { align-self: flex-start; } }

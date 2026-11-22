@@ -36,7 +36,7 @@ export const ELIGIBILITY = {
     },
   ],
 
-  // 영역별 과목 (offered: 개설 학기 / 1 = 1학기, 2 = 2학기)
+  // 영역별 과목 (terms: 개설 학년-학기, 예: '1-2' = 1학년 2학기)
   // cert: 한국어교원 자격 심사 영역별 필수 이수 학점 { major: 2급, minor: 3급 }
   areas: [
     {
@@ -45,10 +45,10 @@ export const ELIGIBILITY = {
       name: '한국어학',
       cert: { major: 6, minor: 3 },
       courses: [
-        { id: 'a1-grammar', name: '한국어문법론', credits: 3, offered: [1] },
-        { id: 'a1-semantics', name: '한국어의미론', credits: 3, offered: [1] },
-        { id: 'a1-intro', name: '한국어학개론', credits: 3, offered: [2] },
-        { id: 'a1-norms', name: '한국어어문규범', credits: 3, offered: [2] },
+        { id: 'a1-grammar', name: '한국어문법론', credits: 3, terms: ['2-1'] },
+        { id: 'a1-semantics', name: '한국어의미론', credits: 3, terms: ['3-1'] },
+        { id: 'a1-intro', name: '한국어학개론', credits: 3, terms: ['1-2'] },
+        { id: 'a1-norms', name: '한국어어문규범', credits: 3, terms: ['2-2'] },
       ],
     },
     {
@@ -57,9 +57,9 @@ export const ELIGIBILITY = {
       name: '일반언어학 및 응용언어학',
       cert: { major: 6, minor: 3 },
       courses: [
-        { id: 'a2-linguistics', name: '언어학개론', credits: 3, offered: [1] },
-        { id: 'a2-acquisition', name: '외국어습득론', credits: 3, offered: [1] },
-        { id: 'a2-socio', name: '사회언어학', credits: 3, offered: [2] },
+        { id: 'a2-linguistics', name: '언어학개론', credits: 3, terms: ['1-1'] },
+        { id: 'a2-acquisition', name: '외국어습득론', credits: 3, terms: ['3-1'] },
+        { id: 'a2-socio', name: '사회언어학', credits: 3, terms: ['3-2'] },
       ],
     },
     {
@@ -68,19 +68,19 @@ export const ELIGIBILITY = {
       name: '외국어로서의 한국어교육론',
       cert: { major: 24, minor: 9 },
       courses: [
-        { id: 'a3-intro', name: '한국어교육개론', credits: 3, offered: [1, 2] },
-        { id: 'a3-lessonplan', name: '한국어교안작성과자료개발', credits: 3, offered: [1, 2] },
-        { id: 'a3-comprehension', name: '한국어이해교육론', credits: 3, offered: [1] },
-        { id: 'a3-vocab', name: '한국어어휘교육론', credits: 3, offered: [1] },
-        { id: 'a3-textbook', name: '한국어교재론', credits: 3, offered: [1] },
-        { id: 'a3-assessment', name: '한국어평가론', credits: 3, offered: [1] },
-        { id: 'a3-youth', name: '아동·청소년대상한국어교육론', credits: 3, offered: [1] },
-        { id: 'a3-methods', name: '한국어교수방법론', credits: 3, offered: [2] },
-        { id: 'a3-pronunciation', name: '한국어발음교육론', credits: 3, offered: [2] },
-        { id: 'a3-expression', name: '한국어표현교육론', credits: 3, offered: [2] },
-        { id: 'a3-grammar', name: '한국어문법교육론', credits: 3, offered: [2] },
-        { id: 'a3-culture', name: '한국문화교육론', credits: 3, offered: [2] },
-        { id: 'a3-multimedia', name: '멀티미디어활용한국어교육', credits: 3, offered: [2] },
+        { id: 'a3-intro', name: '한국어교육개론', credits: 3, terms: ['1-1', '1-2'] },
+        { id: 'a3-lessonplan', name: '한국어교안작성과자료개발', credits: 3, terms: ['3-1', '3-2'] },
+        { id: 'a3-comprehension', name: '한국어이해교육론', credits: 3, terms: ['2-1'] },
+        { id: 'a3-vocab', name: '한국어어휘교육론', credits: 3, terms: ['3-1'] },
+        { id: 'a3-textbook', name: '한국어교재론', credits: 3 },
+        { id: 'a3-assessment', name: '한국어평가론', credits: 3, terms: ['4-1'] },
+        { id: 'a3-youth', name: '아동·청소년대상한국어교육론', credits: 3, terms: ['4-1'] },
+        { id: 'a3-methods', name: '한국어교수방법론', credits: 3, terms: ['1-2'] },
+        { id: 'a3-pronunciation', name: '한국어발음교육론', credits: 3, terms: ['2-2'] },
+        { id: 'a3-expression', name: '한국어표현교육론', credits: 3 },
+        { id: 'a3-grammar', name: '한국어문법교육론', credits: 3, terms: ['3-2'] },
+        { id: 'a3-culture', name: '한국문화교육론', credits: 3 },
+        { id: 'a3-multimedia', name: '멀티미디어활용한국어교육', credits: 3, terms: ['4-2'] },
       ],
     },
     {
@@ -89,12 +89,12 @@ export const ELIGIBILITY = {
       name: '한국문화',
       cert: { major: 6, minor: 3 },
       courses: [
-        { id: 'a4-modern', name: '한국의현대문화', credits: 3, offered: [1] },
-        { id: 'a4-compare', name: '한국문화와타문화의비교', credits: 3, offered: [1] },
-        { id: 'a4-food', name: '한국의음식문화', credits: 3, offered: [1] },
-        { id: 'a4-multicultural', name: '한국사회의다문화현상이해', credits: 3, offered: [2] },
-        { id: 'a4-history', name: '한국역사의이해', credits: 3, offered: [2] },
-        { id: 'a4-multicultural-era', name: '다문화시대의한국사회', credits: 3 }, // TODO: 개설 학기 확인 후 offered 추가
+        { id: 'a4-modern', name: '한국의현대문화', credits: 3, terms: ['1-1'] },
+        { id: 'a4-compare', name: '한국문화와타문화의비교', credits: 3, terms: ['2-1'] },
+        { id: 'a4-food', name: '한국의음식문화', credits: 3, terms: ['2-1'] },
+        { id: 'a4-multicultural', name: '한국사회의다문화현상이해', credits: 3, terms: ['1-2'] },
+        { id: 'a4-history', name: '한국역사의이해', credits: 3, terms: ['3-2'] },
+        { id: 'a4-multicultural-era', name: '다문화시대의한국사회', credits: 3 }, // TODO: 개설 학년·학기 확인 후 terms 추가
       ],
     },
     {
@@ -102,7 +102,7 @@ export const ELIGIBILITY = {
       no: 5,
       name: '한국어교육실습',
       cert: { major: 3, minor: 3 },
-      courses: [{ id: 'a5-practicum', name: '한국어교육현장실습', credits: 3, offered: [1, 2] }],
+      courses: [{ id: 'a5-practicum', name: '한국어교육현장실습', credits: 3, terms: ['4-1', '4-2'] }],
     },
   ],
 };

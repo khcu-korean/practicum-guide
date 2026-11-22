@@ -1,23 +1,45 @@
 // ② 수강 자격·이수 현황 점검 (로그인 없이도 이용 가능)
-// 과목을 체크하면 ① 실습 수강 자격과 ② 자격증 영역별 이수 현황이 함께 바뀝니다.
+// 과목마다 미이수·수강 중·이수를 고르면 실습 수강 자격과 자격증 영역별 이수 현황이 함께 바뀝니다.
 import { ELIGIBILITY as E } from '../data/eligibility.js';
 import { sem, update } from '../store.js';
 import { esc } from '../utils.js';
 
-const offeredLabel = (o) => (!o?.length ? '' : o.length === 2 ? '1·2학기' : `${o[0]}학기`);
+// 개설 학년·학기 표시: ['1-1','1-2'] → '1학년 1·2학기', ['2-1'] → '2학년 1학기'
+const termLabel = (terms) => {
+  if (!terms?.length) return '';
+  const byYear = {};
+  terms.forEach((t) => {
+    const [y, h] = t.split('-');
+    (byYear[y] ||= []).push(h);
+  });
+  return Object.entries(byYear).map(([y, hs]) => `${y}학년 ${hs.join('·')}학기`).join(', ');
+};
+const firstTerm = (c) => (c.terms?.[0] ? c.terms[0] : '9-9');
+
+// 이수 상태: 0 미이수, 1 수강 중, 2 이수 (예전 체크 기록은 '이수'로 바꿔 읽음)
+const STATUS = ['미이수', '수강 중', '이수'];
+function statusMap(input) {
+  const st = { ...(input.status || {}) };
+  (input.courses || []).forEach((id) => {
+    if (st[id] === undefined) st[id] = 2;
+  });
+  return st;
+}
 const areaById = (id) => E.areas.find((a) => a.id === id);
 
-function evaluate(input) {
+// min: 2면 '이수'만, 1이면 '수강 중'까지 포함해서 계산
+function evaluate(input, min = 2) {
+  const st = statusMap(input);
   const track = E.tracks.find((t) => t.id === input.track);
   const areas = E.areas.map((a) => {
-    const taken = a.courses.filter((c) => input.courses.includes(c.id));
+    const taken = a.courses.filter((c) => (st[c.id] || 0) >= min);
     return {
       id: a.id,
       no: a.no,
       name: a.name,
       earned: taken.reduce((n, c) => n + c.credits, 0),
       count: taken.length,
-      remaining: a.courses.filter((c) => !input.courses.includes(c.id)),
+      remaining: a.courses.filter((c) => !(st[c.id] || 0)),
       certReq: track ? a.cert[track.id] : null,
     };
   });
@@ -46,20 +68,25 @@ function evaluate(input) {
   const certTotal = track ? E.areas.reduce((n, a) => n + a.cert[track.id], 0) : null;
   const certMet = track ? areas.filter((a) => a.earned >= a.certReq).length : 0;
 
-  return { track: track && { id: track.id, label: track.label, grade: track.grade }, areas, practicum, totalEarned, certTotal, certMet };
+  const result = { track: track && { id: track.id, label: track.label, grade: track.grade }, areas, practicum, totalEarned, certTotal, certMet };
+  if (min === 2) result.prog = evaluate(input, 1); // 수강 중 포함 결과
+  return result;
 }
 
 const mark = (ok) => `<span class="badge ${ok ? 'badge-done' : 'badge-over'}">${ok ? '충족' : '미충족'}</span>`;
 
 function practicumHTML(r) {
   const p = r.practicum;
+  const pp = r.prog.practicum; // 수강 중 포함
+  const later = !p.ok && pp.ok;
+  const plus = (a, b, unit) => (b > a ? ` <span class="tiny prog">(수강 중 포함 ${b}${unit})</span>` : '');
   const names = E.practicum.combinedAreaIds.map((id) => `${areaById(id).no}영역`).join('·');
   const todo = [];
   if (!p.combined.ok) {
     const lack = p.combined.required - p.combined.earned;
     const options = E.practicum.combinedAreaIds
       .map((id) => r.areas.find((a) => a.id === id))
-      .map((a) => `<div class="tiny"><b>${a.no}영역</b>: ${a.remaining.map((c) => `${esc(c.name)} ${c.offered?.length ? `<span class="muted">(${offeredLabel(c.offered)})</span>` : ''}`).join(', ') || '-'}</div>`)
+      .map((a) => `<div class="tiny"><b>${a.no}영역</b>: ${[...a.remaining].sort((x, y) => firstTerm(x).localeCompare(firstTerm(y))).map((c) => `${esc(c.name)}${c.terms?.length ? ` <span class="muted">(${termLabel(c.terms)})</span>` : ''}`).join(', ') || '-'}</div>`)
       .join('');
     todo.push(`${names} 합산 <b>${lack}학점</b>(${Math.ceil(lack / 3)}과목)이 더 필요합니다.<div class="sub">들을 수 있는 과목:</div>${options}`);
   }
@@ -67,12 +94,13 @@ function practicumHTML(r) {
   p.others.filter((o) => !o.ok).forEach((o) => todo.push(esc(o.help)));
 
   return `
-  <section class="card ${p.ok ? 'success' : 'alert'}">
+  <section class="card ${p.ok ? 'success' : later ? 'warn' : 'alert'}">
     <p class="label">실습 수강 자격</p>
-    <h2>${p.ok ? '수강 신청 가능 (자가진단 기준)' : '아직 충족하지 않은 요건이 있어요'}</h2>
+    <h2>${p.ok ? '수강 신청 가능 (자가진단 기준)' : later ? '지금 수강 중인 과목을 모두 이수하면 신청할 수 있어요' : '아직 충족하지 않은 요건이 있어요'}</h2>
+    <p class="tiny muted">판정은 ‘이수’한 과목으로 합니다. ‘수강 중’인 과목은 괄호 안에 따로 보여 줍니다.</p>
     <table class="result">
-      <tr><th>${names} 합산</th><td>${p.combined.count} / ${p.combined.courses}과목<br/><span class="muted">${p.combined.earned} / ${p.combined.required}학점</span></td><td>${mark(p.combined.ok)}</td></tr>
-      ${p.minChecks.map((m) => `<tr><th>${m.no}영역 최소</th><td>${m.earned} / ${E.practicum.minCreditsPerArea}학점</td><td>${mark(m.ok)}</td></tr>`).join('')}
+      <tr><th>${names} 합산</th><td>${p.combined.count} / ${p.combined.courses}과목${plus(p.combined.count, pp.combined.count, '과목')}<br/><span class="muted">${p.combined.earned} / ${p.combined.required}학점</span></td><td>${mark(p.combined.ok)}</td></tr>
+      ${p.minChecks.map((m, i) => `<tr><th>${m.no}영역 최소</th><td>${m.earned} / ${E.practicum.minCreditsPerArea}학점${plus(m.earned, pp.minChecks[i].earned, '학점')}</td><td>${mark(m.ok)}</td></tr>`).join('')}
       ${p.others.map((o) => `<tr><th colspan="2">${esc(o.label.replace(/인가요\?$/, ''))}</th><td>${mark(o.ok)}</td></tr>`).join('')}
     </table>
     ${todo.length ? `<h3>이렇게 준비하세요</h3><ul class="bullets">${todo.map((t) => `<li>${t}</li>`).join('')}</ul>` : ''}
@@ -84,18 +112,20 @@ function certHTML(r) {
   <section class="card">
     <p class="label">한국어교원 ${esc(r.track.grade)} 자격 영역별 이수 현황</p>
     <h2>${r.certMet === E.areas.length ? '모든 영역의 필수 이수 학점을 채웠어요' : `${E.areas.length - r.certMet}개 영역이 남았어요`}
-      <small>체크한 과목 합계 ${r.totalEarned}학점 · 자격 기준 ${r.certTotal}학점</small></h2>
+      <small>이수 ${r.totalEarned}학점${r.prog.totalEarned > r.totalEarned ? ` (수강 중 포함 ${r.prog.totalEarned}학점)` : ''} · 자격 기준 ${r.certTotal}학점</small></h2>
     <div class="areas">
       ${r.areas
-        .map((a) => {
+        .map((a, i) => {
           const ok = a.earned >= a.certReq;
+          const pg = r.prog.areas[i].earned;
           const pct = Math.min(100, (a.earned / a.certReq) * 100);
+          const ppct = Math.min(100, (pg / a.certReq) * 100);
           return `<div class="area ${ok ? 'ok' : ''}">
             <span class="label">${a.no}영역</span>
             <span class="aname">${esc(a.name)}</span>
             <span class="num">${a.earned}<small> / ${a.certReq}학점</small></span>
-            <div class="bar"><span style="width:${pct}%"></span></div>
-            ${ok ? '<span class="badge badge-done">충족</span>' : `<span class="badge badge-soon">${a.certReq - a.earned}학점 부족</span>`}
+            <div class="bar dual"><span class="p" style="width:${ppct}%"></span><span style="width:${pct}%"></span></div>
+            ${ok ? '<span class="badge badge-done">충족</span>' : pg >= a.certReq ? '<span class="badge badge-tbd">수강 중 포함 시 충족</span>' : `<span class="badge badge-soon">${a.certReq - a.earned}학점 부족</span>`}
           </div>`;
         })
         .join('')}
@@ -108,7 +138,7 @@ function stickyHTML(r) {
   if (!r.track) return '';
   const p = r.practicum;
   return `<a href="#" class="sticky-sum ${p.ok ? 'ok' : ''}" data-top>
-    <span><b>실습 자격</b> ${p.ok ? '충족' : '미충족'} <span class="muted">· 1·3영역 ${p.combined.earned}/${p.combined.required}</span></span>
+    <span><b>실습 자격</b> ${p.ok ? '충족' : r.prog.practicum.ok ? '수강 중 이수 시 충족' : '미충족'} <span class="muted">· 1·3영역 ${p.combined.earned}/${p.combined.required}</span></span>
     <span><b>자격증</b> ${r.totalEarned}/${r.certTotal}학점 <span class="muted">· 결과 보기 ↓</span></span>
   </a>`;
 }
@@ -123,12 +153,13 @@ export default {
   public: true,
   render() {
     const saved = sem().eligibility;
-    const input = { track: '', courses: [], others: {}, ...(saved?.input || {}) };
+    const input = { track: '', courses: [], status: {}, others: {}, ...(saved?.input || {}) };
+    const st = statusMap(input);
     const r = evaluate(input);
     const track = E.tracks.find((t) => t.id === input.track);
     return `
     <h1 class="page-title">STEP 1. <span class="nowrap">&lt;한국어교육현장실습&gt;</span> 수강 자격 자기점검</h1>
-    <p class="muted">영역별로 이수한 과목에 체크하면, 아래에 <b>실습 수강 자격</b>과 <b>한국어교원 자격 영역별 이수 현황</b> 진단 결과가 나옵니다.</p>
+    <p class="muted">과목마다 미이수·수강 중·이수를 고르면, 아래에 <b>실습 수강 자격</b>과 <b>한국어교원 자격 영역별 이수 현황</b> 진단 결과가 나옵니다.</p>
     <p class="notice tiny">${esc(E.basisNote)}</p>
     <details class="card soft">
       <summary><b>수강 자격 기준과 근거</b></summary>
@@ -154,20 +185,26 @@ export default {
         </div>
       </section>
 
-      <h2 class="section-title">① 영역별 이수 과목 체크</h2>
-      <p class="tiny muted">지금까지 이수한 과목에 모두 체크하세요.</p>
+      <h2 class="section-title">① 영역별 과목 이수 확인</h2>
+      <p class="tiny muted">과목마다 <b>미이수 / 수강 중 / 이수</b> 중 하나를 고르세요.</p>
       ${E.areas
         .map(
           (a) => `
         <section class="card">
           <h2>${a.no}영역 ${esc(a.name)}
             <small>${track ? `자격 기준 ${a.cert[track.id]}학점` : `자격 기준 2급 ${a.cert.major}학점 · 3급 ${a.cert.minor}학점`}${E.practicum.combinedAreaIds.includes(a.id) ? ' · 실습 수강 자격에 포함' : ''}</small></h2>
-          <div class="checks">
-            ${a.courses
-              .map(
-                (c) => `<label class="check"><input type="checkbox" name="course" value="${c.id}" ${input.courses.includes(c.id) ? 'checked' : ''}/>
-                <span>${esc(c.name)}</span><small>${c.credits}학점${c.offered?.length ? ` · ${offeredLabel(c.offered)}` : ''}</small></label>`
-              )
+          <div class="course-list">
+            ${[...a.courses]
+              .sort((x, y) => firstTerm(x).localeCompare(firstTerm(y)))
+              .map((c) => {
+                const v = st[c.id] || 0;
+                return `<div class="course s${v}">
+                <div class="cinfo"><span class="cname">${esc(c.name)}</span>
+                  <span class="cmeta">${c.credits}학점${c.terms?.length ? ` · ${termLabel(c.terms)}` : ''}</span></div>
+                <div class="st" role="radiogroup" aria-label="${esc(c.name)} 이수 상태">
+                  ${STATUS.map((t, i) => `<label class="o${i}"><input type="radio" name="st-${c.id}" value="${i}" ${v === i ? 'checked' : ''}/><span>${t}</span></label>`).join('')}
+                </div></div>`;
+              })
               .join('')}
           </div>
         </section>`
@@ -203,7 +240,7 @@ export default {
     form.addEventListener('change', () => {
       const input = {
         track: form.querySelector('input[name=track]:checked')?.value || '',
-        courses: [...form.querySelectorAll('input[name=course]:checked')].map((x) => x.value),
+        status: Object.fromEntries([...form.querySelectorAll('input[name^="st-"]:checked')].map((x) => [x.name.slice(3), Number(x.value)])),
         others: Object.fromEntries([...form.querySelectorAll('input[name=other]:checked')].map((x) => [x.value, true])),
       };
       const result = evaluate(input);
