@@ -446,3 +446,19 @@ details.qa .ans p { margin: 0 0 8px; }
 .verdict.warn { color: var(--warn); }
 .verdict.no { color: var(--danger); }
 .verdict small { display: block; font-weight: 400; font-size: .82rem; color: var(--muted); margin-top: 2px; }
+.verdict { display: flex; align-items: flex-start; gap: 8px; }
+.verdict .vicon {
+  flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+  font-size: .8rem; font-weight: 800; color: #fff; margin-top: 1px;
+}
+.verdict.ok .vicon { background: var(--ok); }
+.verdict.warn .vicon { background: var(--warn); }
+.verdict.no .vicon { background: var(--danger); }
+.btn.ghost-line { background: transparent; color: var(--muted); border: 1px dashed var(--line); }
+.btn.ghost-line:hover { color: var(--danger); border-color: var(--danger); }
+.prevnext .btn.ghost-line { flex: 1; }
+@media (max-width: 480px) {
+  .prevnext { gap: 6px; }
+  .prevnext .btn { white-space: nowrap; font-size: .8rem; padding: 11px 6px; }
+  .prevnext .btn.primary { flex: 1.5; }
+}

@@ -1,10 +1,10 @@
 // 앱 시작점: 화면 전환(라우터), 공통 레이아웃, 로그인 확인
 import { CONFIG, getSemester, isServerMode } from './config.js';
 import { MENUS, SUBSTEPS, stepOf, isSubstep } from './steps.js';
-import { initStore, subscribe, getUser, semesterId } from './store.js';
+import { initStore, subscribe, getUser, semesterId, update } from './store.js';
 import { upcoming } from './selectors.js';
 import { notifyDueTasks } from './notify.js';
-import { esc, ddayLabel } from './utils.js';
+import { esc, ddayLabel, toast } from './utils.js';
 
 import home from './views/home.js';
 import login from './views/login.js';
@@ -77,8 +77,11 @@ function prevNext(path) {
   const i = FLOW_.indexOf(st);
   const prev = FLOW_[i - 1];
   const next = FLOW_[i + 1];
+  // 입력을 비우고 다시 할 수 있는 단계
+  const resettable = { eligibility: '수강 자격 자기점검' };
   return `<nav class="prevnext container" aria-label="단계 이동">
     ${prev ? `<a href="#/${prev.path}" class="btn">← ${prev.no}. ${prev.short}</a>` : '<a href="#/" class="btn">← 홈</a>'}
+    ${resettable[path] ? `<button type="button" class="btn ghost-line" data-reset="${path}">비우고 다시 하기</button>` : ''}
     ${next ? `<a href="#/${next.path}" class="btn primary">다음: ${next.no}. ${next.short} →</a>` : '<a href="#/" class="btn primary">홈으로</a>'}
   </nav>`;
 }
@@ -140,6 +143,15 @@ async function start() {
   app.innerHTML = '<p class="loading">불러오는 중…</p>';
   await initStore();
   window.addEventListener('hashchange', () => render());
+  // '비우고 다시 하기': 해당 단계의 입력을 지움
+  document.addEventListener('click', (e) => {
+    const key = e.target.closest('[data-reset]')?.dataset.reset;
+    if (!key) return;
+    if (!confirm('입력한 내용을 모두 지우고 처음부터 다시 할까요?')) return;
+    update((s) => delete s[key]);
+    window.scrollTo(0, 0);
+    toast('입력을 비웠습니다. 처음부터 다시 선택하세요.');
+  });
   subscribe(() => render(false));
   render();
   notifyDueTasks();

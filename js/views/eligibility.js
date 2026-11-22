@@ -73,6 +73,10 @@ function evaluate(input, min = 2) {
   return result;
 }
 
+// 판정 문구: 두 결과 카드에 같은 형식으로 사용 (state: ok / warn / no)
+const verdictHTML = (state, text, sub = '') =>
+  `<p class="verdict ${state}"><span class="vicon" aria-hidden="true">${state === 'ok' ? '✓' : '!'}</span><span>${text}${sub ? `<small>${sub}</small>` : ''}</span></p>`;
+
 const mark = (ok) => `<span class="badge ${ok ? 'badge-done' : 'badge-over'}">${ok ? '충족' : '미충족'}</span>`;
 
 function practicumHTML(r) {
@@ -96,8 +100,11 @@ function practicumHTML(r) {
   return `
   <section class="card ${p.ok ? 'success' : later ? 'warn' : 'alert'}">
     <h2 class="result-title">실습 수강 자격<small>&lt;한국어교육현장실습&gt;을 신청할 수 있는지</small></h2>
-    <p class="verdict ${p.ok ? 'ok' : later ? 'warn' : 'no'}">${p.ok ? '✓ 수강 신청 가능 (자가진단 기준)' : later ? '지금 수강 중인 과목을 모두 이수하면 신청할 수 있어요' : '아직 충족하지 않은 요건이 있어요'}</p>
-    <p class="tiny muted">판정은 ‘이수’한 과목으로 합니다. ‘수강 중’인 과목은 괄호 안에 따로 보여 줍니다.</p>
+    ${verdictHTML(
+      p.ok ? 'ok' : later ? 'warn' : 'no',
+      p.ok ? '수강 신청 가능 (자가진단 기준)' : later ? '지금 수강 중인 과목을 모두 이수하면 신청할 수 있어요' : '아직 충족하지 않은 요건이 있어요',
+      '판정은 ‘이수’한 과목으로 합니다. ‘수강 중’인 과목은 괄호 안에 따로 보여 줍니다.'
+    )}
     <table class="result">
       <tr><th>${names} 합산</th><td>${p.combined.count} / ${p.combined.courses}과목${plus(p.combined.count, pp.combined.count, '과목')}<br/><span class="muted">${p.combined.earned} / ${p.combined.required}학점</span></td><td>${mark(p.combined.ok)}</td></tr>
       ${p.minChecks.map((m, i) => `<tr><th>${m.no}영역 최소</th><td>${m.earned} / ${E.practicum.minCreditsPerArea}학점${plus(m.earned, pp.minChecks[i].earned, '학점')}</td><td>${mark(m.ok)}</td></tr>`).join('')}
@@ -108,11 +115,18 @@ function practicumHTML(r) {
 }
 
 function certHTML(r) {
+  const all = r.certMet === E.areas.length;
+  const allProg = r.prog.areas.every((a) => a.earned >= a.certReq);
   return `
-  <section class="card">
+  <section class="card ${all ? 'success' : allProg ? 'warn' : 'alert'}">
     <h2 class="result-title">한국어교원 ${esc(r.track.grade)} 자격 영역별 이수 현황<small>졸업 후 자격증을 받기 위한 기준 (실습 신청 자격과는 별개)</small></h2>
-    <p class="verdict ${r.certMet === E.areas.length ? 'ok' : 'neutral'}">${r.certMet === E.areas.length ? '✓ 모든 영역의 필수 이수 학점을 채웠어요' : `${E.areas.length - r.certMet}개 영역이 남았어요`}
-      <small>이수 ${r.totalEarned}학점${r.prog.totalEarned > r.totalEarned ? ` (수강 중 포함 ${r.prog.totalEarned}학점)` : ''} · 자격 기준 ${r.certTotal}학점</small></p>
+    ${(() => {
+      return verdictHTML(
+        all ? 'ok' : allProg ? 'warn' : 'no',
+        all ? '모든 영역의 필수 이수 학점을 채웠어요' : allProg ? '지금 수강 중인 과목을 모두 이수하면 모든 영역을 채워요' : `${E.areas.length - r.certMet}개 영역이 남았어요`,
+        `이수 ${r.totalEarned}학점${r.prog.totalEarned > r.totalEarned ? ` (수강 중 포함 ${r.prog.totalEarned}학점)` : ''} · 자격 기준 ${r.certTotal}학점`
+      );
+    })()}
     <div class="areas">
       ${r.areas
         .map((a, i) => {
