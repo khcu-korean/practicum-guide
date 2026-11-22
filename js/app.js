@@ -1,6 +1,6 @@
 // 앱 시작점: 화면 전환(라우터), 공통 레이아웃, 로그인 확인
 import { CONFIG, getSemester, isServerMode } from './config.js';
-import { STEPS, GROUPS, stepOf } from './steps.js';
+import { MENUS, SUBSTEPS, stepOf, isSubstep } from './steps.js';
 import { initStore, subscribe, getUser, semesterId } from './store.js';
 import { upcoming } from './selectors.js';
 import { notifyDueTasks } from './notify.js';
@@ -12,6 +12,7 @@ import eligibility from './views/eligibility.js';
 import diagnosis from './views/diagnosis.js';
 import assign from './views/assign.js';
 import timeline from './views/timeline.js';
+import practice from './views/practice.js';
 import task from './views/task.js';
 import progress from './views/progress.js';
 import complete from './views/complete.js';
@@ -22,6 +23,7 @@ const ROUTES = {
   login,
   eligibility,
   diagnosis,
+  practice,
   assign,
   timeline,
   task,
@@ -44,30 +46,37 @@ const brandHTML = () =>
     : `<span class="mark" aria-hidden="true">${esc(CONFIG.school.mark)}</span><span>${esc(CONFIG.school.name)}<small>${esc(CONFIG.school.dept)}</small></span>`;
 
 function stepNav(path) {
-  const activePath = path === 'task' ? 'timeline' : path;
   const item = (href, label, active, no) =>
     `<a href="#/${href}" class="${active ? 'active' : ''}" ${active ? 'aria-current="page"' : ''}>${no ? `<span class="no">${no}</span>` : ''}${label}</a>`;
-  const group = (g, joiner) =>
-    `<span class="navgroup ${g}"><span class="navlabel">${GROUPS[g].label}</span>${STEPS.filter((x) => x.group === g)
-      .map((x) => item(x.path, x.short, activePath === x.path, x.no))
-      .join(joiner)}</span>`;
+  const activeMenu = isSubstep(path) ? 'practice' : path;
   return `<nav class="stepnav" aria-label="전체 메뉴"><div class="stepnav-in">
-    ${item('', '홈', activePath === '')}
-    ${group('prep', '<span class="sep" aria-hidden="true">·</span>')}
-    ${group('flow', '<span class="sep" aria-hidden="true">›</span>')}
-    ${item('settings', '더보기', activePath === 'settings')}
+    ${item('', '홈', path === '')}
+    ${MENUS.map((m) => item(m.path, m.short, activeMenu === m.path, m.no)).join('')}
+    ${item('settings', '더보기', path === 'settings')}
+  </div></nav>`;
+}
+
+// 3. 실습 유형별 과제 수행 안의 하위 메뉴 (3-1 ~ 3-4)
+function subNav(path) {
+  if (!isSubstep(path) && path !== 'practice') return '';
+  const active = path === 'task' ? 'timeline' : path;
+  return `<nav class="subnav" aria-label="실습 유형별 과제 수행"><div class="subnav-in">
+    ${SUBSTEPS.map(
+      (x, i) => `${i ? '<span class="sep" aria-hidden="true">›</span>' : ''}<a href="#/${x.path}" class="${active === x.path ? 'active' : ''}"><span class="no">${x.no}</span>${x.short}</a>`
+    ).join('')}
   </div></nav>`;
 }
 
 function prevNext(path) {
+  const FLOW_ = [MENUS[0], MENUS[1], ...SUBSTEPS];
   const st = stepOf(path);
   if (!st) return '';
-  const i = STEPS.indexOf(st);
-  const prev = STEPS[i - 1];
-  const next = STEPS[i + 1];
+  const i = FLOW_.indexOf(st);
+  const prev = FLOW_[i - 1];
+  const next = FLOW_[i + 1];
   return `<nav class="prevnext container" aria-label="단계 이동">
     ${prev ? `<a href="#/${prev.path}" class="btn">← ${prev.no}. ${prev.short}</a>` : '<a href="#/" class="btn">← 홈</a>'}
-    ${next ? `<a href="#/${next.path}" class="btn primary">다음 단계: ${next.no}. ${next.short} →</a>` : '<a href="#/" class="btn primary">홈으로</a>'}
+    ${next ? `<a href="#/${next.path}" class="btn primary">다음: ${next.no}. ${next.short} →</a>` : '<a href="#/" class="btn primary">홈으로</a>'}
   </nav>`;
 }
 
@@ -81,8 +90,9 @@ function layout(view, path, body) {
     </div>
   </header>
   ${stepNav(path)}
+  ${subNav(path)}
   ${
-    soon.length && path !== ''
+    soon.length
       ? `<a class="strip" href="#/task/${soon[0].task.id}"><span class="badge badge-urgent">${ddayLabel(soon[0].left)}</span> ${esc(soon[0].task.title)}${soon.length > 1 ? ` <span class="muted">외 ${soon.length - 1}건</span>` : ''}</a>`
       : ''
   }
@@ -118,7 +128,7 @@ function render(force = true) {
   document.title = `${view.title} | ${CONFIG.appName}`;
   view.mount?.(document.getElementById('view'), ctx);
   // 상단 메뉴에서 현재 단계가 보이도록 옆으로 스크롤
-  document.querySelector('.stepnav a.active')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  document.querySelectorAll('.stepnav a.active, .subnav a.active').forEach((el) => el.scrollIntoView({ block: 'nearest', inline: 'center' }));
   window.scrollTo(0, scroll);
   current = view;
 }

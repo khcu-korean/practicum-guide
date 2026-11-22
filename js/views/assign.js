@@ -1,4 +1,4 @@
-// STEP 3. 확정된 실습 유형 및 실습 기관 입력
+// STEP 3-1. 확정된 실습 유형 및 실습 기관 입력
 // 유형 이름 아래에 기관이 나열되어 있어, 학생은 기관명만 보고 고르면 유형이 함께 정해집니다.
 // 유형 2·3(직접 섭외)은 유형을 고른 뒤 기관명을 직접 입력합니다.
 import { PRACTICUM_TYPES, getType, instLine, termOf } from '../data/types.js';
@@ -34,7 +34,7 @@ export default {
     const savedSelf = s.institution && !s.institution.id ? s.institution : null;
     const sem_ = semesterId();
     return `
-    <h1 class="page-title">STEP 3. 확정된 실습 유형 및 실습 기관 입력</h1>
+    <h1 class="page-title">STEP 3-1. 확정된 실습 유형 및 실습 기관 입력</h1>
     <p class="muted">학과 게시판에 확정 명단이 발표되면, 나의 <b>실습 기관</b>을 고르세요. 기관을 고르면 유형도 함께 정해지고, 그 유형에 맞춰 <b>유형별 과제 타임라인</b>이 만들어집니다.</p>
 
     ${typeGuideHTML()}

@@ -1,107 +1,47 @@
-// 첫 화면: 앱 소개 + 전체 메뉴(단계) + 마감 임박 과제 + 진행률
+// 홈: 앱 소개 + 메뉴 바둑판 (진행 상황과 관계없이 항상 같은 화면)
 import { CONFIG } from '../config.js';
-import { getType } from '../data/types.js';
-import { sem } from '../store.js';
-import { STEPS, GROUPS } from '../steps.js';
-import { progressStats, upcoming, myTasks } from '../selectors.js';
-import { esc, ddayLabel, ddayClass, fmtDate } from '../utils.js';
+import { MENUS } from '../steps.js';
+import { esc } from '../utils.js';
 
+// 진행률 원 (진행 현황 화면에서도 사용)
 export const ring = (pct) => `
   <div class="ring" style="--p:${pct}">
     <span>${pct}<small>%</small></span>
   </div>`;
 
-const dueSection = (title, list, cls) =>
-  list.length
-    ? `<section class="card ${cls}">
-      <h2>${title}</h2>
-      <ul class="task-list">
-        ${list
-          .map(
-            (t) => `<li><a href="#/task/${t.task.id}">
-              <span class="badge ${ddayClass(t.left, false)}">${ddayLabel(t.left)}</span>
-              <span class="grow">${esc(t.task.title)}</span>
-              <span class="muted">${fmtDate(t.due)}</span></a></li>`
-          )
-          .join('')}
-      </ul></section>`
-    : '';
-
-/** 단계별 완료 여부 */
-function stepDone() {
-  const s = sem();
-  const stats = progressStats();
-  return {
-    eligibility: Boolean(s.eligibility?.result?.practicum),
-    diagnosis: Boolean(s.diagnosis),
-    assign: Boolean(s.typeId),
-    timeline: Boolean(s.typeId) && stats.done > 0,
-    progress: Boolean(s.typeId) && stats.total > 0 && stats.done === stats.total,
-    complete: false,
-  };
-}
+const ICONS = {
+  check: '<path d="M9 11.5 11.5 14 16 9"/><rect x="3.5" y="3.5" width="17" height="17" rx="3"/>',
+  compass: '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+  list: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>',
+  more: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.5 4-5 7-5s5.8 1.5 7 5"/>',
+};
+const icon = (name) =>
+  `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
 
 export default {
   title: '홈',
   public: true,
   render() {
-    const s = sem();
-    const stats = progressStats();
-    const type = getType(s.typeId);
-    const soon = upcoming(7);
-    const tbd = myTasks().filter((t) => !t.done && t.due === null);
-    const done = stepDone();
-    const next = STEPS.find((x) => !done[x.path]) || STEPS[0];
-
+    const tiles = [
+      ...MENUS.map((m) => ({ href: m.path, no: m.no, title: m.title, icon: m.icon })),
+      { href: 'settings', no: '', title: '내 기록 관리', icon: 'more' },
+    ];
     return `
     <section class="hero">
       <h1>${esc(CONFIG.appName)}</h1>
       <p>${esc(CONFIG.subtitle)}</p>
     </section>
 
-    ${dueSection('기한이 지난 과제', soon.filter((t) => t.left < 0), 'alert')}
-    ${dueSection('마감 임박 과제 (7일 이내)', soon.filter((t) => t.left >= 0), 'warn')}
-
-    <section class="card">
-      <h2>이렇게 이용하세요</h2>
-      ${['prep', 'flow']
+    <nav class="tile-grid" aria-label="메뉴">
+      ${tiles
         .map(
-          (g) => `
-        <div class="mgroup ${g}">
-          <p class="mgroup-title"><span class="chip">${GROUPS[g].label}</span> ${esc(GROUPS[g].title)}</p>
-          <p class="tiny muted">${esc(GROUPS[g].desc)}</p>
-          <ol class="menu-list">
-            ${STEPS.filter((x) => x.group === g)
-              .map(
-                (x) => `<li class="${done[x.path] ? 'done' : ''} ${x === next ? 'current' : ''}">
-              <a href="#/${x.path}">
-                <span class="dot">${done[x.path] ? '✓' : x.no}</span>
-                <span class="grow"><b>${esc(x.title).replace(/(&lt;.+?&gt;)/, '<span class="nowrap">$1</span>')}</b><small>${esc(x.desc)}</small></span>
-                <span class="arrow" aria-hidden="true">›</span>
-              </a></li>`
-              )
-              .join('')}
-          </ol>
-        </div>`
+          (t) => `<a class="tile" href="#/${t.href}">
+            ${t.no ? `<span class="tile-no">${t.no}</span>` : '<span class="tile-no ghost"></span>'}
+            <span class="tile-icon">${icon(t.icon)}</span>
+            <span class="tile-title">${esc(t.title)}</span>
+          </a>`
         )
         .join('')}
-      <a class="btn primary big" href="#/${next.path}">${next === STEPS[0] && !done.eligibility ? '시작하기' : `이어서 하기: ${esc(next.short)}`} →</a>
-    </section>
-
-    ${
-      type
-        ? `<section class="card row">
-        ${ring(stats.percent)}
-        <div class="grow">
-          <p class="label">${esc(type.name)}${s.institution ? ` · ${esc(s.institution.name)}` : ''}</p>
-          <p class="tiny">할 일: <b>${esc(type.summary)}</b></p>
-          <h2>과제 진행률</h2>
-          <p>${stats.total}개 중 <b>${stats.done}개</b> 완료</p>
-          ${tbd.length ? `<p class="tiny muted">날짜 미정 과제 ${tbd.length}개 — 일정이 정해지면 직접 입력하세요.</p>` : ''}
-          <a href="#/progress" class="link">진행 현황 보기 →</a>
-        </div>
-      </section>`
-        : ''
-    }`;
+    </nav>`;
   },
 };

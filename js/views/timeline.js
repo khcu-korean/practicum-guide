@@ -37,13 +37,13 @@ export default {
     const s = sem();
     const type = getType(s.typeId);
     if (!type) {
-      return `<h1 class="page-title">STEP 4. 유형별 과제 타임라인과 가이드</h1>
-      <section class="card next"><p>확정 명단이 발표된 뒤 STEP 3에서 실습 유형과 실습 기관을 입력하면, 나에게 필요한 과제와 일정이 자동으로 만들어져요.</p>
+      return `<h1 class="page-title">STEP 3-2. 유형별 과제 타임라인과 가이드</h1>
+      <section class="card next"><p>확정 명단이 발표된 뒤 STEP 3-1에서 실습 유형과 실습 기관을 입력하면, 나에게 필요한 과제와 일정이 자동으로 만들어져요.</p>
       <a class="btn primary" href="#/assign">확정된 실습 유형·기관 입력하기 →</a></section>`;
     }
     const list = myTasks();
     return `
-    <h1 class="page-title">STEP 4. 유형별 과제 타임라인과 가이드</h1>
+    <h1 class="page-title">STEP 3-2. 유형별 과제 타임라인과 가이드</h1>
     <p class="muted"><b>${esc(type.name)}</b> · ${esc(type.summary)}<br/>실습 기관: ${s.institution ? esc(s.institution.name) : '실습 기관 미입력'} <a class="link" href="#/assign">수정</a></p>
     <div class="legend tiny">
       <span class="badge badge-urgent">D-3 이내</span><span class="badge badge-soon">D-7 이내</span>
