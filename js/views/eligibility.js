@@ -95,8 +95,8 @@ function practicumHTML(r) {
 
   return `
   <section class="card ${p.ok ? 'success' : later ? 'warn' : 'alert'}">
-    <p class="label">실습 수강 자격</p>
-    <h2>${p.ok ? '수강 신청 가능 (자가진단 기준)' : later ? '지금 수강 중인 과목을 모두 이수하면 신청할 수 있어요' : '아직 충족하지 않은 요건이 있어요'}</h2>
+    <h2 class="result-title">실습 수강 자격<small>&lt;한국어교육현장실습&gt;을 신청할 수 있는지</small></h2>
+    <p class="verdict ${p.ok ? 'ok' : later ? 'warn' : 'no'}">${p.ok ? '✓ 수강 신청 가능 (자가진단 기준)' : later ? '지금 수강 중인 과목을 모두 이수하면 신청할 수 있어요' : '아직 충족하지 않은 요건이 있어요'}</p>
     <p class="tiny muted">판정은 ‘이수’한 과목으로 합니다. ‘수강 중’인 과목은 괄호 안에 따로 보여 줍니다.</p>
     <table class="result">
       <tr><th>${names} 합산</th><td>${p.combined.count} / ${p.combined.courses}과목${plus(p.combined.count, pp.combined.count, '과목')}<br/><span class="muted">${p.combined.earned} / ${p.combined.required}학점</span></td><td>${mark(p.combined.ok)}</td></tr>
@@ -110,9 +110,9 @@ function practicumHTML(r) {
 function certHTML(r) {
   return `
   <section class="card">
-    <p class="label">한국어교원 ${esc(r.track.grade)} 자격 영역별 이수 현황</p>
-    <h2>${r.certMet === E.areas.length ? '모든 영역의 필수 이수 학점을 채웠어요' : `${E.areas.length - r.certMet}개 영역이 남았어요`}
-      <small>이수 ${r.totalEarned}학점${r.prog.totalEarned > r.totalEarned ? ` (수강 중 포함 ${r.prog.totalEarned}학점)` : ''} · 자격 기준 ${r.certTotal}학점</small></h2>
+    <h2 class="result-title">한국어교원 ${esc(r.track.grade)} 자격 영역별 이수 현황<small>졸업 후 자격증을 받기 위한 기준 (실습 신청 자격과는 별개)</small></h2>
+    <p class="verdict ${r.certMet === E.areas.length ? 'ok' : 'neutral'}">${r.certMet === E.areas.length ? '✓ 모든 영역의 필수 이수 학점을 채웠어요' : `${E.areas.length - r.certMet}개 영역이 남았어요`}
+      <small>이수 ${r.totalEarned}학점${r.prog.totalEarned > r.totalEarned ? ` (수강 중 포함 ${r.prog.totalEarned}학점)` : ''} · 자격 기준 ${r.certTotal}학점</small></p>
     <div class="areas">
       ${r.areas
         .map((a, i) => {

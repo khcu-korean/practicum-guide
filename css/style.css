@@ -438,3 +438,11 @@ details.qa .ans p { margin: 0 0 8px; }
 .bar.dual span.p { background: var(--warn); opacity: .35; }
 @media (max-width: 400px) { .course { flex-direction: column; align-items: stretch; gap: 6px; } .st { align-self: flex-start; } }
 .basis p { margin: 8px 0 2px; } .basis .bullets { margin-top: 0; }
+/* 진단 결과 카드 제목 */
+.result-title { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,.08); }
+.result-title small { font-size: .82rem; font-weight: 500; margin-top: 4px; }
+.verdict { font-weight: 700; font-size: 1rem; margin: 6px 0; }
+.verdict.ok { color: var(--ok); }
+.verdict.warn { color: var(--warn); }
+.verdict.no { color: var(--danger); }
+.verdict small { display: block; font-weight: 400; font-size: .82rem; color: var(--muted); margin-top: 2px; }
