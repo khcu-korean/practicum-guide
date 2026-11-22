@@ -70,7 +70,7 @@ export const INSTITUTIONS = [
   // 유형 2-1
   {
     id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', location: '베트남 달랏', type: '2-1', mode: 'offline', days: 'weekday',
-    windows: [[5, 5]], method: '평일 3일 오프라인 참관 + 1일 강의실습',
+    windows: [[5, 5], [11, 11]], method: '평일 3일 오프라인 참관 + 1일 강의실습',
     note: '현지 체류 일정은 협의할 수 있습니다.',
   },
 ];
