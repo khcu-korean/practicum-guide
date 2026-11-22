@@ -41,6 +41,9 @@ export default {
     <form id="assignForm" class="stack">
       ${PRACTICUM_TYPES.map((t) => {
         const head = `<h2>${esc(t.name)}<small>${esc(t.summary)}</small></h2>`;
+        if (t.institutions && !t.institutions.length) {
+          return `<section class="card">${head}<p class="tiny muted">협력 기관은 추후 안내됩니다.</p></section>`;
+        }
         if (t.institutions) {
           return `<section class="card">${head}
             <div class="choices col">

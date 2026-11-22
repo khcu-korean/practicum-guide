@@ -84,12 +84,15 @@ function resultHTML(a) {
     ${notes.map((n) => `<p class="notice tiny">${n}</p>`).join('')}
     ${body}
     ${
-      ok
-        ? `<div class="notice">
+      !ok
+        ? ''
+        : r.kind === 'self' && r.typeId === '2'
+          ? // TODO: 유형 2(직접 섭외 · 강의실습) 신청 안내 — 자료를 받으면 교체
+            `<div class="notice"><b>실습 신청은 이렇게 합니다</b><p class="tiny">유형 2(직접 섭외 · 강의실습)의 신청 방법은 준비 중입니다. 학과 공지를 확인하세요.</p></div>`
+          : `<div class="notice">
       <b>실습 신청은 이렇게 합니다</b>
       <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     </div>`
-        : ''
     }
     <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다.</p>
   </section>

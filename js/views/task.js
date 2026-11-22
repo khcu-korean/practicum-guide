@@ -1,5 +1,5 @@
 // ⑤ 과제 수행 가이드 (과업 상세)
-import { getTask, typesOfTask, SCHEDULE_NOTE, COMMON_GUIDE_NOTES } from '../data/tasks.js';
+import { getTask, typesOfTask, SCHEDULE_NOTE, COMMON_GUIDE_NOTES, ALL_TYPE_IDS } from '../data/tasks.js';
 import { getType } from '../data/types.js';
 import { instScheduleFor } from '../selectors.js';
 import { sem, semesterId, update } from '../store.js';
@@ -15,7 +15,7 @@ export default {
     const left = daysLeft(due);
     const g = task.guide || {};
     const typeIds = typesOfTask(task.id);
-    const typeNames = typeIds.length === 5 ? '모든 유형 공통' : typeIds.map((id) => `유형 ${id}`).join(', ');
+    const typeNames = typeIds.length === ALL_TYPE_IDS.length ? '모든 유형 공통' : typeIds.map((id) => `유형 ${id}`).join(', ');
 
     return `
     <a href="#/timeline" class="link">← 타임라인</a>

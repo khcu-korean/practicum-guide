@@ -20,7 +20,7 @@ export function typeGuideHTML({ withGlossary = false } = {}) {
         (t) => `<dt>${esc(t.name)} <span class="muted">${esc(t.summary)}</span></dt>
         <dd>${esc(t.description)}
           <div class="tiny">${t.activities.map((x) => `<span class="tag">${esc(x)}</span>`).join(' ')}
-          ${t.institutions ? ` · 기관: ${t.institutions.map((i) => esc(i.name)).join(', ')}` : ' · 기관: 실습생이 직접 섭외'}</div>
+          ${t.institutions ? ` · 기관: ${t.institutions.length ? t.institutions.map((i) => esc(i.name)).join(', ') : '추후 안내'}` : ' · 기관: 실습생이 직접 섭외'}</div>
         </dd>`
       ).join('')}
     </dl>

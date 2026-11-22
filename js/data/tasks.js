@@ -37,7 +37,7 @@ const TEACHING_PLAN_NOTE = '교안은 실습 기관의 실습 지도자에게 �
 const ORG_PLAN_NOTE =
   '실습 기관의 강의참관·강의실습 일정에 맞춰 작성합니다. LMS의 리포트 제출 기한이 지났다면 조교에게 제출합니다.';
 const SEMINAR_NOTE = '세미나 날짜는 반마다 다릅니다. 반별 공지를 확인하고 날짜를 직접 입력하세요.';
-const MOCK_BLOCK = '기한 안에 하지 않으면 모의수업에 참가할 수 없습니다. (유형 1·1-1·3)';
+const MOCK_BLOCK = '기한 안에 하지 않으면 모의수업에 참가할 수 없습니다. (유형 1·1-1·1-2·3)';
 
 // 날짜 표기: { week: n, day: 'mon'~'sun' } = 개강 n주차 요일 (2027-1 기준 2026-2 일정에서 환산, 검토 전)
 export const TASKS = {
@@ -111,10 +111,10 @@ export const TASKS = {
     guide: guide('배정된 현장 실습 기관에서 한국어 강의를 참관합니다. 기관별 자세한 일정은 강의실 공지 사항으로 안내합니다.', {
       important: [
         '기관에서 정한 현장 참관 비용을 따로 내야 합니다.',
-        '정해진 현장 강의참관을 하지 않으면(결석, 일부만 참관 등) 실습 조건을 충족하지 못해 모의수업에 참가할 수 없습니다. (유형 1·1-1·3)',
+        '정해진 현장 강의참관을 하지 않으면(결석, 일부만 참관 등) 실습 조건을 충족하지 못해 모의수업에 참가할 수 없습니다. (유형 1·1-1·1-2·3)',
         '기타 기관에서 참관하는 경우 기관 교육과정을 따르며, 지도교수와 반드시 미리 논의해야 합니다.',
       ],
-      submit: { method: '현장 강의참관', where: '배정된 실습 기관', deadlineText: '기관 일정에 따름 (유형 1·1-1·3은 모의수업 전까지)' },
+      submit: { method: '현장 강의참관', where: '배정된 실습 기관', deadlineText: '기관 일정에 따름 (유형 1·1-1·1-2·3은 모의수업 전까지)' },
     }),
   },
   'site-observe-log': {
@@ -124,11 +124,11 @@ export const TASKS = {
     guide: guide('현장 실습 기관에서 강의를 참관한 뒤 실습 일지와 참관 일지를 작성하여 제출합니다.', {
       important: [MOCK_BLOCK],
       templates: [{ name: '실습 일지·참관 일지 양식', url: '' }],
-      submit: { method: '실습 일지·참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '참관 후 (유형 1·1-1·3은 모의수업 전까지)' },
+      submit: { method: '실습 일지·참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '참관 후 (유형 1·1-1·1-2·3은 모의수업 전까지)' },
     }),
   },
 
-  // ---------------- 유형 1 · 1-1 · 3 ----------------
+  // ---------------- 유형 1 · 1-1 · 1-2 · 3 ----------------
   plan: {
     title: '실습계획서 제출',
     start: { week: 2, day: 'wed' },
@@ -324,6 +324,7 @@ const SEQ_MOCK = [
 export const SEQUENCES = {
   1: SEQ_MOCK,
   '1-1': SEQ_MOCK,
+  '1-2': SEQ_MOCK,
   3: SEQ_MOCK,
   2: [
     'orientation',
@@ -374,4 +375,5 @@ export const tasksForType = (typeId) =>
   (SEQUENCES[typeId] || []).map((id, i) => ({ id, step: i + 1, ...TASKS[id] }));
 
 /** 이 과업을 하는 유형 목록 */
-export const typesOfTask = (id) => ['1', '1-1', '2', '2-1', '3'].filter((t) => SEQUENCES[t]?.includes(id));
+export const ALL_TYPE_IDS = ['1', '1-1', '1-2', '2', '2-1', '3'];
+export const typesOfTask = (id) => ALL_TYPE_IDS.filter((t) => SEQUENCES[t]?.includes(id));
