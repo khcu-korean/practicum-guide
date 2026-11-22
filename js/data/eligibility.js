@@ -36,7 +36,8 @@ export const ELIGIBILITY = {
     },
   ],
 
-  // 영역별 과목 (terms: 개설 학년-학기, 예: '1-2' = 1학년 2학기)
+  // 영역별 과목 (terms: 개설 학년-학기, 예: '1-2' = 1학년 2학기 / common: 기초공통 과목)
+  // 출처: 한국어교육전공 교육과정표
   // cert: 한국어교원 자격 심사 영역별 필수 이수 학점 { major: 2급, minor: 3급 }
   areas: [
     {
@@ -68,18 +69,18 @@ export const ELIGIBILITY = {
       name: '외국어로서의 한국어교육론',
       cert: { major: 24, minor: 9 },
       courses: [
-        { id: 'a3-intro', name: '한국어교육개론', credits: 3, terms: ['1-1', '1-2'] },
-        { id: 'a3-lessonplan', name: '한국어교안작성과자료개발', credits: 3, terms: ['3-1', '3-2'] },
+        { id: 'a3-intro', name: '한국어교육개론', common: true, credits: 3, terms: ['1-1', '1-2'] },
+        { id: 'a3-lessonplan', name: '한국어교안작성과자료개발', common: true, credits: 3, terms: ['3-1', '3-2'] },
         { id: 'a3-comprehension', name: '한국어이해교육론', credits: 3, terms: ['2-1'] },
         { id: 'a3-vocab', name: '한국어어휘교육론', credits: 3, terms: ['3-1'] },
-        { id: 'a3-textbook', name: '한국어교재론', credits: 3 },
+        { id: 'a3-textbook', name: '한국어교재론', credits: 3, terms: ['3-1'] },
         { id: 'a3-assessment', name: '한국어평가론', credits: 3, terms: ['4-1'] },
-        { id: 'a3-youth', name: '아동·청소년대상한국어교육론', credits: 3, terms: ['4-1'] },
+        { id: 'a3-youth', name: '아동·청소년대상한국어교육', credits: 3, terms: ['4-1'] },
         { id: 'a3-methods', name: '한국어교수방법론', credits: 3, terms: ['1-2'] },
         { id: 'a3-pronunciation', name: '한국어발음교육론', credits: 3, terms: ['2-2'] },
-        { id: 'a3-expression', name: '한국어표현교육론', credits: 3 },
+        { id: 'a3-expression', name: '한국어표현교육론', credits: 3, terms: ['2-2'] },
         { id: 'a3-grammar', name: '한국어문법교육론', credits: 3, terms: ['3-2'] },
-        { id: 'a3-culture', name: '한국문화교육론', credits: 3 },
+        { id: 'a3-culture', name: '한국문화교육론', credits: 3, terms: ['3-2'] },
         { id: 'a3-multimedia', name: '멀티미디어활용한국어교육', credits: 3, terms: ['4-2'] },
       ],
     },
@@ -102,7 +103,7 @@ export const ELIGIBILITY = {
       no: 5,
       name: '한국어교육실습',
       cert: { major: 3, minor: 3 },
-      courses: [{ id: 'a5-practicum', name: '한국어교육현장실습', credits: 3, terms: ['4-1', '4-2'] }],
+      courses: [{ id: 'a5-practicum', name: '한국어교육현장실습', common: true, credits: 3, terms: ['4-1', '4-2'] }],
     },
   ],
 };

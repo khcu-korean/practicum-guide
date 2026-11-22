@@ -199,7 +199,7 @@ export default {
               .map((c) => {
                 const v = st[c.id] || 0;
                 return `<div class="course s${v}">
-                <div class="cinfo"><span class="cname">${esc(c.name)}</span>
+                <div class="cinfo"><span class="cname">${esc(c.name)}${c.common ? ' <span class="tag">기초공통</span>' : ''}</span>
                   <span class="cmeta">${c.credits}학점${c.terms?.length ? ` · ${termLabel(c.terms)}` : ''}</span></div>
                 <div class="st" role="radiogroup" aria-label="${esc(c.name)} 이수 상태">
                   ${STATUS.map((t, i) => `<label class="o${i}"><input type="radio" name="st-${c.id}" value="${i}" ${v === i ? 'checked' : ''}/><span>${t}</span></label>`).join('')}
