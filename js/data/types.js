@@ -113,7 +113,7 @@ export const getInstitution = (id) => INSTITUTIONS.find((i) => i.id === id);
 
 // 유형 이름과 할 일 (이름: '유형 1 (국내외 지정 기관)', 할 일: '강의참관 + 모의수업')
 export const TYPE_LABELS = {
-  1: { name: '유형 1 (국내 지정 기관)', work: '강의참관 + 모의수업' },
+  1: { name: '유형 1 (국내 지정 기관 · 전면 오프라인)', work: '강의참관(전면 오프라인) + 모의수업' },
   '1-1': { name: '유형 1-1 (국내 지정 기관 · 온라인 병행)', work: '강의참관(오프라인 + 온라인) + 모의수업' },
   '1-2': { name: '유형 1-2 (국외 지정 기관 · 전면 오프라인)', work: '강의참관(전면 오프라인) + 모의수업' },
   2: { name: '유형 2 (국내외 기관 직접 섭외)', work: '강의참관 + 강의실습' },
@@ -285,8 +285,8 @@ export const PRACTICUM_TYPES = [
     id: '1',
     name: TYPE_LABELS['1'].name,
     summary: TYPE_LABELS['1'].work,
-    description: '국내 현장 실습 기관에서 강의참관을 하고, 모의수업을 하는 유형입니다.',
-    activities: ['강의참관', '모의수업'],
+    description: '국내 현장 실습 기관에서 전면 오프라인으로 강의참관을 하고, 모의수업을 하는 유형입니다. 기관마다 참관 일정이 다릅니다.',
+    activities: ['강의참관 (전면 오프라인)', '모의수업'],
     institutions: instOf('1'),
     match: (a) => {
       const p = picked(a, '1');
