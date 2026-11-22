@@ -462,3 +462,5 @@ details.qa .ans p { margin: 0 0 8px; }
   .prevnext .btn { white-space: nowrap; font-size: .8rem; padding: 11px 6px; }
   .prevnext .btn.primary { flex: 1.5; }
 }
+.pn-short { display: none; }
+@media (max-width: 480px) { .prevnext .pn-name { display: none; } .prevnext .pn-short { display: inline; } }

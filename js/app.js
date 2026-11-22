@@ -78,11 +78,11 @@ function prevNext(path) {
   const prev = FLOW_[i - 1];
   const next = FLOW_[i + 1];
   // 입력을 비우고 다시 할 수 있는 단계
-  const resettable = { eligibility: '수강 자격 자기점검' };
+  const resettable = { eligibility: '수강 자격 자기점검', diagnosis: '실습 유형 추천받기' };
   return `<nav class="prevnext container" aria-label="단계 이동">
-    ${prev ? `<a href="#/${prev.path}" class="btn">← ${prev.no}. ${prev.short}</a>` : '<a href="#/" class="btn">← 홈</a>'}
+    ${prev ? `<a href="#/${prev.path}" class="btn">← <span class="pn-name">${prev.no}. ${prev.short}</span><span class="pn-short">이전</span></a>` : '<a href="#/" class="btn">← 홈</a>'}
     ${resettable[path] ? `<button type="button" class="btn ghost-line" data-reset="${path}">비우고 다시 하기</button>` : ''}
-    ${next ? `<a href="#/${next.path}" class="btn primary">다음: ${next.no}. ${next.short} →</a>` : '<a href="#/" class="btn primary">홈으로</a>'}
+    ${next ? `<a href="#/${next.path}" class="btn primary"><span class="pn-name">다음: ${next.no}. ${next.short}</span><span class="pn-short">다음</span> →</a>` : '<a href="#/" class="btn primary">홈으로</a>'}
   </nav>`;
 }
 
