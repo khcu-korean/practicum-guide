@@ -1,7 +1,8 @@
 // STEP 2. 실습 유형 추천: 질문에 답하면 맞는 유형과 협력 기관을 추천
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, instLine, instBadges, termOf, recommend, getType } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, instLine, instBadges, termOf, recommend, getType, VACATION_NOTE } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
+import { getSemester } from '../config.js';
 import { typeGuideHTML } from './typeGuide.js';
 
 const visible = (q, a) =>
@@ -27,8 +28,7 @@ function questionHTML(q, a) {
   return `<section class="card q"><h3>${esc(q.text)}</h3>${q.help ? `<p class="tiny muted">${esc(q.help)}</p>` : ''}${body}</section>`;
 }
 
-function instItem(i) {
-  const sid = semesterId();
+function instItem(i, sid) {
   const t = termOf(i, sid);
   return `<li class="inst-item">
     <b>${esc(i.name)}</b> <span class="muted">${esc(i.location || '')}</span>
@@ -57,9 +57,13 @@ function resultHTML(a) {
       ${groups
         .map(
           (t) => `<div class="type-card">${typeHead(t)}
-          <ul class="inst-list">${r.matches.filter((i) => i.type === t.id).map(instItem).join('')}</ul></div>`
+          <ul class="inst-list">${r.matches.filter((i) => i.type === t.id).map((i) => instItem(i, r.target.id)).join('')}</ul></div>`
         )
         .join('')}`;
+  } else if (r.pending) {
+    ok = true;
+    body = `<p class="notice">${a.take}학기 수강생을 위한 방학 중(하계 방학) 강의참관 기관과 일정은 아직 정해지지 않았습니다. 학과 공지를 확인하세요.</p>
+      <p class="tiny muted">학기 중 참관을 고르면 현재 정해진 협력 기관을 참고로 볼 수 있습니다.</p>`;
   } else {
     body = `<p class="notice">입력한 조건에 모두 맞는 협력 기관이 없습니다.</p>
       ${
@@ -71,9 +75,13 @@ function resultHTML(a) {
       }
       <p class="tiny muted">스스로 기관을 섭외하는 방법(유형 2·3)도 있습니다. 첫 문항에서 "네"를 골라 보세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>`;
   }
+  const notes = [];
+  if (a.timing === 'vacation' && VACATION_NOTE[a.take]) notes.push(`<b>방학 중 강의참관</b>: ${esc(VACATION_NOTE[a.take])}`);
+  if (r.target.fallback && r.kind !== 'self' && !r.pending) notes.push(`${a.take}학기 협력 기관과 일정은 아직 정해지지 않았습니다. 아래는 ${esc(getSemester(r.target.id).label)} 기준 정보이니 참고만 하세요.`);
   return `
   <section class="card">
     <h2>추천 결과</h2>
+    ${notes.map((n) => `<p class="notice tiny">${n}</p>`).join('')}
     ${body}
     ${
       ok

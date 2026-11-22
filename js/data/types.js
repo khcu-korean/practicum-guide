@@ -132,6 +132,24 @@ export const DIAGNOSIS_QUESTIONS = [
     ],
   },
   {
+    id: 'take',
+    text: '<한국어교육현장실습> 과목을 언제 수강하고 싶나요?',
+    type: 'single',
+    options: [
+      { value: '1', label: '1학기' },
+      { value: '2', label: '2학기' },
+    ],
+  },
+  {
+    id: 'timing',
+    text: '강의참관은 방학 중에 미리 할 수도 있어요. 언제 하고 싶나요?',
+    type: 'single',
+    options: [
+      { value: 'vacation', label: '방학 중에 미리 하고 싶어요' },
+      { value: 'semester', label: '학기 중에 하고 싶어요' },
+    ],
+  },
+  {
     id: 'region',
     text: '강의참관은 어디에서 할 수 있나요?',
     type: 'single',
@@ -150,16 +168,6 @@ export const DIAGNOSIS_QUESTIONS = [
     options: [
       { value: 'weekend', label: '주말에만 시간을 낼 수 있어요' },
       { value: 'weekday', label: '평일에도 시간을 낼 수 있어요' },
-    ],
-  },
-  {
-    id: 'semester',
-    text: '학기 중(3~6월)에 며칠씩 시간을 내는 것이 자유로운가요?',
-    type: 'single',
-    showIf: { self: 'no' },
-    options: [
-      { value: 'free', label: '네, 학기 중에도 시간을 낼 수 있어요' },
-      { value: 'notfree', label: '아니요, 학기 중에는 어려워요 (방학 중이나 주말이 좋아요)' },
     ],
   },
   {
@@ -192,7 +200,7 @@ export function instBadges(inst, semesterId) {
 const CONDITIONS = [
   { id: 'region', label: (v) => (v === 'domestic' ? '국내에서만' : '국외 선호'), test: (i, t, v) => v === 'any' || (v === 'domestic' ? i.region === '국내' : i.region === '해외') },
   { id: 'days', label: () => '주말에만', test: (i, t, v) => v !== 'weekend' || t.days === 'weekend' },
-  { id: 'semester', label: () => '학기 중에는 어려움', test: (i, t, v) => v !== 'notfree' || t.days === 'weekend' || t.when === 'vacation' },
+  { id: 'timing', label: (v) => (v === 'vacation' ? '방학 중 참관' : '학기 중 참관'), test: (i, t, v) => !t.when || t.when === v },
   { id: 'mode', label: (v) => (v === 'offline' ? '전면 오프라인' : '오프라인 + 온라인 병행'), test: (i, t, v) => v === 'any' || i.mode === v },
 ];
 
@@ -202,8 +210,26 @@ const CONDITIONS = [
  * - 협력 기관: { kind: 'partner', matches: [기관], relax: [{ label, count }] }
  *   relax: 결과가 없을 때, 조건 하나를 빼면 몇 곳이 맞는지
  */
-export function recommend(a, semesterId) {
-  if (a.self === 'yes') return { kind: 'self', typeId: a.teachAtOrg === 'yes' ? '2' : '3' };
+// 수강 학기(1·2학기)에 해당하는 학기 id. 그 학기 기관 정보가 아직 없으면 현재 학기 정보를 참고로 사용
+export function targetSemester(a, currentId) {
+  const [year] = currentId.split('-');
+  const want = a.take ? `${year}-${a.take}` : currentId;
+  const has = INSTITUTIONS.some((i) => i.terms?.[want]);
+  return { id: has ? want : currentId, want, fallback: !has && want !== currentId };
+}
+
+// 방학 중 참관 안내
+export const VACATION_NOTE = {
+  1: '1학기에 수강한다면, 수강 전 동계 방학(겨울방학) 중에 강의참관을 마쳐야 합니다.',
+  2: '2학기에 수강한다면, 수강 전 하계 방학(여름방학) 중에 강의참관을 마쳐야 합니다.',
+};
+
+export function recommend(a, currentId) {
+  const target = targetSemester(a, currentId);
+  const semesterId = target.id;
+  if (a.self === 'yes') return { kind: 'self', typeId: a.teachAtOrg === 'yes' ? '2' : '3', target };
+  // 다음 학기 정보가 없는데 방학 중 참관을 원하면, 현재 학기의 방학 기관(다른 계절)은 맞지 않으므로 추천하지 않음
+  if (target.fallback && a.timing === 'vacation') return { kind: 'partner', matches: [], relax: [], target, pending: true };
   const active = CONDITIONS.filter((c) => a[c.id]);
   const fits = (i, conds) => conds.every((c) => c.test(i, termOf(i, semesterId) || {}, a[c.id]));
   const matches = INSTITUTIONS.filter((i) => fits(i, active));
@@ -213,7 +239,7 @@ export function recommend(a, semesterId) {
         .filter((c) => !['any'].includes(a[c.id]))
         .map((c) => ({ label: c.label(a[c.id]), count: INSTITUTIONS.filter((i) => fits(i, active.filter((x) => x !== c))).length }))
         .filter((r) => r.count > 0);
-  return { kind: 'partner', matches, relax };
+  return { kind: 'partner', matches, relax, target };
 }
 
 // 실습 유형 정의
