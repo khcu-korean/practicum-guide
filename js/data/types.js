@@ -26,12 +26,13 @@ export const GLOSSARY = [
 // - location: 소재지
 // - schedule: 참관 시간 구성 (학기와 관계없이 같은 내용)
 // - mode: 참관 방식 ('offline' 전면 오프라인 / 'mixed' 오프라인 + 온라인)
+// - vacation: 방학 중 참관 가능 시기 ('winter' 동계 → 1학기 수강생, 'summer' 하계 → 2학기 수강생)
 // - terms: 학기별 참관 정보 { '2027-1': { days, when, period, method, note } } ← 학기가 바뀌면 새 학기 항목을 추가
 //     days: 'weekday' 평일 / 'weekend' 주말,  when: 'semester' 학기 중 / 'vacation' 방학 중
 export const INSTITUTIONS = [
   // 유형 1
   {
-    id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', location: '서울', type: '1', mode: 'offline',
+    id: 'khu-iie', name: '경희대학교 국제교육원', region: '국내', location: '서울', type: '1', mode: 'offline', vacation: ['winter', 'summer'],
     terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 4월 중', method: '평일 3일 오프라인 참관' } },
   },
   {
@@ -43,7 +44,7 @@ export const INSTITUTIONS = [
     terms: { '2027-1': { days: 'weekday', when: 'semester', period: '2027년 3~4월 중', method: '평일 3일 오프라인 참관' } },
   },
   {
-    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1', mode: 'offline',
+    id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1', mode: 'offline', vacation: ['summer'],
     terms: {
       '2027-1': { days: 'weekday', when: 'vacation',
         period: '2027년 2월 중 (개강 전)',
@@ -63,7 +64,7 @@ export const INSTITUTIONS = [
     terms: { '2027-1': { days: 'weekend', when: 'semester', period: '2027년 3~4월 중', method: '토·일 2회 오프라인 참관 + 1회 온라인 참관' } },
   },
   {
-    id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1', mode: 'mixed',
+    id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1', mode: 'mixed', vacation: ['winter', 'summer'],
     schedule: '일요일 2회(회당 4시간) + 온라인 1시간',
     terms: { '2027-1': { days: 'weekend', when: 'semester', period: '2027년 3~4월 중', method: '일요일 2회 오프라인 참관 + 1회 온라인 참관' } },
   },
@@ -200,7 +201,6 @@ export function instBadges(inst, semesterId) {
 const CONDITIONS = [
   { id: 'region', label: (v) => (v === 'domestic' ? '국내에서만' : '국외 선호'), test: (i, t, v) => v === 'any' || (v === 'domestic' ? i.region === '국내' : i.region === '해외') },
   { id: 'days', label: () => '주말에만', test: (i, t, v) => v !== 'weekend' || t.days === 'weekend' },
-  { id: 'timing', label: (v) => (v === 'vacation' ? '방학 중 참관' : '학기 중 참관'), test: (i, t, v) => !t.when || t.when === v },
   { id: 'mode', label: (v) => (v === 'offline' ? '전면 오프라인' : '오프라인 + 온라인 병행'), test: (i, t, v) => v === 'any' || i.mode === v },
 ];
 
@@ -218,6 +218,9 @@ export function targetSemester(a, currentId) {
   return { id: has ? want : currentId, want, fallback: !has && want !== currentId };
 }
 
+export const SEASON_LABEL = { winter: '동계 방학', summer: '하계 방학' };
+export const seasonOf = (a) => (a.take === '2' ? 'summer' : 'winter');
+
 // 방학 중 참관 안내
 export const VACATION_NOTE = {
   1: '1학기에 수강한다면, 수강 전 동계 방학(겨울방학) 중에 강의참관을 마쳐야 합니다.',
@@ -228,15 +231,20 @@ export function recommend(a, currentId) {
   const target = targetSemester(a, currentId);
   const semesterId = target.id;
   if (a.self === 'yes') return { kind: 'self', typeId: a.teachAtOrg === 'yes' ? '2' : '3', target };
-  // 다음 학기 정보가 없는데 방학 중 참관을 원하면, 현재 학기의 방학 기관(다른 계절)은 맞지 않으므로 추천하지 않음
-  if (target.fallback && a.timing === 'vacation') return { kind: 'partner', matches: [], relax: [], target, pending: true };
-  const active = CONDITIONS.filter((c) => a[c.id]);
+  // 강의참관 시기: 방학 중이면 수강 학기에 맞는 방학(1학기 → 동계, 2학기 → 하계)에 참관할 수 있는 기관
+  const season = seasonOf(a);
+  const timingCond = a.timing && {
+    id: 'timing',
+    label: () => (a.timing === 'vacation' ? `${SEASON_LABEL[season]} 중 참관` : '학기 중 참관'),
+    test: (i, t) => (a.timing === 'vacation' ? Boolean(i.vacation?.includes(season)) : t.when === 'semester'),
+  };
+  const active = [...CONDITIONS.filter((c) => a[c.id]), ...(timingCond ? [timingCond] : [])];
   const fits = (i, conds) => conds.every((c) => c.test(i, termOf(i, semesterId) || {}, a[c.id]));
   const matches = INSTITUTIONS.filter((i) => fits(i, active));
   const relax = matches.length
     ? []
     : active
-        .filter((c) => !['any'].includes(a[c.id]))
+        .filter((c) => a[c.id] !== 'any')
         .map((c) => ({ label: c.label(a[c.id]), count: INSTITUTIONS.filter((i) => fits(i, active.filter((x) => x !== c))).length }))
         .filter((r) => r.count > 0);
   return { kind: 'partner', matches, relax, target };
