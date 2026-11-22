@@ -13,7 +13,7 @@ const ICONS = {
   check: '<path d="M9 11.5 11.5 14 16 9"/><rect x="3.5" y="3.5" width="17" height="17" rx="3"/>',
   compass: '<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
   list: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>',
-  more: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.5 4-5 7-5s5.8 1.5 7 5"/>',
+  faq: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.5"/><circle cx="12" cy="16.8" r=".6" fill="currentColor"/>',
 };
 const icon = (name) =>
   `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
@@ -24,7 +24,7 @@ export default {
   render() {
     const tiles = [
       ...MENUS.map((m) => ({ href: m.path, no: m.no, title: m.title, icon: m.icon })),
-      { href: 'settings', no: '', title: '내 기록 관리', icon: 'more' },
+      { href: 'faq', no: '', title: '자주 묻는 질문', icon: 'faq' },
     ];
     return `
     <section class="hero">

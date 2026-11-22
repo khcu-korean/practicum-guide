@@ -396,3 +396,21 @@ details summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
 .menu-list.flow { padding: 4px 18px; }
 .menu-list.flow .dot { width: auto; min-width: 38px; padding: 0 6px; border-radius: 14px; background: var(--brand-soft); color: var(--brand); font-size: .78rem; }
 @media (max-width: 480px) { .stepnav a { padding: 12px 7px 10px; font-size: .84rem; gap: 4px; } }
+
+/* 자주 묻는 질문 */
+.faqtools { display: flex; flex-direction: column; gap: 10px; margin: 8px 0 14px; }
+.faqtools input { margin-top: 0; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { font: inherit; font-size: .84rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 700; }
+.faqcat { margin-top: 16px; }
+.faqcat .label { margin-bottom: 2px; }
+details.qa { border-top: 1px solid var(--line); background: transparent; }
+details.qa:last-child { border-bottom: 1px solid var(--line); }
+details.qa summary { cursor: pointer; padding: 13px 28px 13px 0; font-weight: 600; color: var(--text); list-style: none; position: relative; margin: 0; }
+details.qa summary::-webkit-details-marker { display: none; }
+details.qa summary::after { content: '+'; position: absolute; right: 4px; top: 11px; color: var(--muted); font-size: 1.1rem; }
+details.qa[open] summary::after { content: '−'; }
+details.qa .ans { padding: 0 0 14px; font-size: .92rem; }
+details.qa .ans p { margin: 0 0 8px; }
+@media (min-width: 820px) { .faqtools { flex-direction: row; align-items: center; } .faqtools input { flex: 1; } }

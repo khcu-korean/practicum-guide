@@ -17,6 +17,7 @@ import task from './views/task.js';
 import progress from './views/progress.js';
 import complete from './views/complete.js';
 import settings from './views/settings.js';
+import faq from './views/faq.js';
 
 const ROUTES = {
   '': home,
@@ -30,6 +31,7 @@ const ROUTES = {
   progress,
   complete,
   settings,
+  faq,
 };
 
 const app = document.getElementById('app');
@@ -52,6 +54,7 @@ function stepNav(path) {
   return `<nav class="stepnav" aria-label="전체 메뉴"><div class="stepnav-in">
     ${item('', '홈', path === '')}
     ${MENUS.map((m) => item(m.path, m.short, activeMenu === m.path, m.no)).join('')}
+    ${item('faq', 'FAQ', path === 'faq')}
     ${item('settings', '더보기', path === 'settings')}
   </div></nav>`;
 }
