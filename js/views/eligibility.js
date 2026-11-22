@@ -218,7 +218,7 @@ export default {
         .join('')}
 
       <section class="card">
-        <h2>② 과목으로 확인할 수 없는 요건</h2>
+        <h2>② 과목 외 확인 요건</h2>
         <div class="checks">
           ${E.otherRequirements
             .map(
