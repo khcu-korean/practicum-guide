@@ -182,8 +182,9 @@ export const DIAGNOSIS_QUESTIONS = [
     type: 'single',
     showIf: { self: 'no' },
     options: [
-      { value: 'weekend', label: '주말에만 시간을 낼 수 있어요' },
-      { value: 'weekday', label: '평일에도 시간을 낼 수 있어요' },
+      { value: 'weekend', label: '주말에 시간을 낼 수 있어요' },
+      { value: 'weekday', label: '평일에 시간을 낼 수 있어요' },
+      { value: 'any', label: '상관없어요' },
     ],
   },
   {
@@ -221,7 +222,7 @@ export function instBadges(inst, semesterId) {
 // 추천 조건 (조건 이름, 기관이 조건에 맞는지)
 const CONDITIONS = [
   { id: 'region', label: (v) => (v === 'domestic' ? '국내에서만' : '국외 선호'), test: (i, t, v) => v === 'any' || (v === 'domestic' ? i.region === '국내' : i.region === '해외') },
-  { id: 'days', label: () => '주말에만', test: (i, t, v) => v !== 'weekend' || i.days === 'weekend' },
+  { id: 'days', label: (v) => (v === 'weekend' ? '주말' : '평일'), test: (i, t, v) => v === 'any' || i.days === v },
   { id: 'mode', label: (v) => (v === 'offline' ? '전면 오프라인' : '오프라인 + 온라인 병행'), test: (i, t, v) => v === 'any' || i.mode === v },
 ];
 
