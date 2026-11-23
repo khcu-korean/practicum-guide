@@ -160,6 +160,7 @@ export const DIAGNOSIS_QUESTIONS = [
     id: 'timing',
     text: '강의참관은 방학 중에 미리 할 수도 있어요. 언제 하고 싶나요?',
     type: 'single',
+    showIf: { self: 'no' },
     options: [
       { value: 'vacation', label: '방학 중' },
       { value: 'semester', label: '학기 중' },
