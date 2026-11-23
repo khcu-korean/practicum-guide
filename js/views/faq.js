@@ -1,4 +1,5 @@
 // 자주 묻는 질문: 검색 + 분류 + 펼쳐 보기
+const fmtDate = (iso) => iso.replace(/^(\d{4})-(\d{2})-(\d{2})$/, (m, y, mo, d) => `${y}. ${Number(mo)}. ${Number(d)}.`);
 import { FAQ, FAQ_SOURCE } from '../data/faq.js';
 import { esc } from '../utils.js';
 
@@ -39,7 +40,7 @@ export default {
     const cats = ['전체', ...new Set(FAQ.map((f) => f.category || '기타'))];
     return `
     <h1 class="page-title">자주 묻는 질문</h1>
-    <p class="muted">국립국어원 누리집의 한국어교원 자격 ‘자주 묻는 질문’을 옮겨 왔습니다. 최신 내용은 출처에서 확인하세요.</p>
+    <p class="muted">국립국어원 누리집의 한국어교원 자격 ‘자주 묻는 질문’을 옮겨 왔습니다. 매주 자동으로 확인하여 바뀐 내용을 반영합니다.${FAQ_SOURCE.updated ? ` (업데이트: ${esc(fmtDate(FAQ_SOURCE.updated))})` : ''}</p>
     ${
       FAQ.length
         ? `<div class="faqtools">
