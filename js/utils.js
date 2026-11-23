@@ -33,10 +33,18 @@ export function resolveDate(spec, semesterId) {
   return toISO(d);
 }
 
-/** 과업의 실제 마감일(ISO). 학생이 직접 입력한 날짜가 우선. 미정이면 null */
+/** 과제의 실제 날짜(ISO): 학생이 입력한 '우리 반 날짜'만 날짜로 씀 (기한은 주차로 안내하므로 기준 날짜는 계산하지 않음) */
 export function resolveDue(task, semesterId, record) {
   if (record?.customDue) return record.customDue;
-  return resolveDate(task.due, semesterId);
+  return typeof task.due === 'string' ? task.due : null;
+}
+
+/** 과제 기한 주차: { start: {week:2}, due: {week:3} } → '2~3주차', 같은 주면 '6주차' */
+export function weekLabel(task) {
+  const d = task?.due?.week;
+  if (!d) return '';
+  const s = task.start?.week;
+  return s && s !== d ? `${s}~${d}주차` : `${d}주차`;
 }
 
 /** 과업 기간 표시: '3/15(월)~4/4(일)' 또는 '3/21(일)' */

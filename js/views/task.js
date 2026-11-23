@@ -3,7 +3,7 @@ import { getTask, typesOfTask, SCHEDULE_NOTE, COMMON_GUIDE_NOTES, ALL_TYPE_IDS, 
 import { getType } from '../data/types.js';
 import { instScheduleFor } from '../selectors.js';
 import { sem, planSemesterId, update } from '../store.js';
-import { esc, resolveDue, daysLeft, ddayLabel, ddayClass, fmtDate, periodLabel, toast } from '../utils.js';
+import { esc, resolveDue, daysLeft, ddayLabel, ddayClass, fmtDate, weekLabel, toast } from '../utils.js';
 
 export default {
   title: '과제 가이드',
@@ -24,11 +24,12 @@ export default {
     ${task.note ? `<p class="notice tiny">${esc(task.note)}</p>` : ''}
 
     <section class="card row">
-      <span class="badge big ${ddayClass(left, r.done)}">${r.done ? '완료' : ddayLabel(left)}</span>
+      <span class="badge big ${r.done || left !== null ? ddayClass(left, r.done) : weekLabel(task) ? 'badge-normal' : 'badge-tbd'}">${r.done ? '완료' : left !== null ? ddayLabel(left) : weekLabel(task) || '미정'}</span>
       <div class="grow">
-        <p>${task.start && !r.customDue ? '기간' : task.due === null ? '일정' : '마감'}: <b>${due ? periodLabel(task, planSemesterId(), r) : esc(instScheduleFor(task.id)?.term.period || task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
+        <p>${task.start ? '기간' : task.due === null ? '일정' : '기한'}: <b>${weekLabel(task) ? `개강 후 ${weekLabel(task)}` : esc(instScheduleFor(task.id)?.term.period || task.dueText || '미정')}</b></p>
+        ${r.customDue ? `<p class="tiny">우리 반 날짜: <b>${fmtDate(r.customDue)}</b></p>` : ''}
         ${task.due === null && !(instScheduleFor(task.id) && !r.customDue) ? `<p class="tiny muted">${esc(task.scheduleNote || SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
-        ${task.due && !r.customDue ? '<p class="tiny muted">대략적인 기준 날짜입니다. 자세한 일정은 반별 공지사항을 확인하세요.</p>' : ''}
+        ${task.due && !r.customDue ? '<p class="tiny muted">자세한 날짜는 반별 공지사항을 확인하세요.</p>' : ''}
       </div>
     </section>
 
@@ -49,8 +50,8 @@ export default {
     })()}
 
     <section class="card">
-      <h3>${task.due === null ? '날짜 직접 입력' : '우리 반 날짜로 바꾸기'}</h3>
-      ${task.due === null ? '' : '<p class="tiny muted">반별 공지의 날짜가 기준 날짜와 다르면 입력하세요. 비우고 저장하면 기준 날짜로 돌아갑니다.</p>'}
+      <h3>우리 반 날짜 입력</h3>
+      <p class="tiny muted">반별 공지에서 날짜를 확인해 입력하면 D-day와 마감 알림이 표시됩니다. 비우고 저장하면 지워집니다.</p>
       <div class="row">
         <input type="date" id="customDue" value="${esc(r.customDue || '')}" class="grow" />
         <button class="btn" id="saveDue">저장</button>
@@ -81,7 +82,7 @@ export default {
       <table class="result">
         <tr><th>제출 방법</th><td>${esc(g.submit?.method)}</td></tr>
         <tr><th>제출 위치</th><td>${esc(g.submit?.where)}</td></tr>
-        <tr><th>기한</th><td>${esc(g.submit?.deadlineText)}${due ? `<br/><b>${periodLabel(task, planSemesterId(), r)}</b>` : ''}</td></tr>
+        <tr><th>기한</th><td>${esc(g.submit?.deadlineText)}${r.customDue ? `<br/><b>우리 반 날짜: ${fmtDate(r.customDue)}</b>` : ''}</td></tr>
       </table>
     </section>
 

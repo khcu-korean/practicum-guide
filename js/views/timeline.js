@@ -3,7 +3,7 @@ import { getType } from '../data/types.js';
 import { sem, update } from '../store.js';
 import { myTasks, instScheduleFor } from '../selectors.js';
 import { getSemester } from '../config.js';
-import { esc, ddayLabel, ddayClass, periodLabel } from '../utils.js';
+import { esc, ddayLabel, ddayClass, fmtDate, weekLabel } from '../utils.js';
 import { planSemesterId } from '../store.js';
 
 export function taskRow(t) {
@@ -13,9 +13,9 @@ export function taskRow(t) {
     <label class="checkbox"><input type="checkbox" data-done="${t.task.id}" ${t.done ? 'checked' : ''} aria-label="완료 체크"/></label>
     <a class="grow" href="#/task/${t.task.id}">
       <span class="title">${esc(t.task.title)}</span>
-      <span class="meta">${t.due ? `${periodLabel(t.task, planSemesterId(), t.record)}${t.record.customDue ? ' (직접 입력)' : ''}` : mi ? `${esc(mi.term.period)} · ${esc(mi.term.method)}` : esc(t.task.dueText || '날짜 미정')}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
+      <span class="meta">${weekLabel(t.task) ? `개강 후 ${weekLabel(t.task)}` : mi ? `${esc(mi.term.period)} · ${esc(mi.term.method)}` : esc(t.task.dueText || '날짜 미정')}${t.record.customDue ? ` · 우리 반 날짜 ${fmtDate(t.record.customDue)}` : ''}${t.task.note ? ` · ${esc(t.task.note)}` : ''}</span>
     </a>
-    <span class="badge ${ddayClass(t.left, t.done)}">${t.done ? '완료' : ddayLabel(t.left)}</span>
+    <span class="badge ${t.done || t.left !== null ? ddayClass(t.left, t.done) : weekLabel(t.task) ? 'badge-normal' : 'badge-tbd'}">${t.done ? '완료' : t.left !== null ? ddayLabel(t.left) : weekLabel(t.task) || '미정'}</span>
   </li>`;
 }
 
@@ -50,8 +50,8 @@ export default {
       <span class="badge badge-urgent">D-3 이내</span><span class="badge badge-soon">D-7 이내</span>
       <span class="badge badge-tbd">미정</span><span class="badge badge-done">완료</span>
     </div>
-    <p class="notice tiny"><b>${esc(getSemester(planSemesterId()).label)}</b> 기준의 대략적인 일정입니다. 반마다 다를 수 있으니 <b>자세한 일정은 반별 공지사항을 확인하세요.</b></p>
-    <p class="tiny muted">과제를 누르면 수행 방법을 볼 수 있어요. 우리 반 날짜를 알면 과제 화면에서 직접 바꿀 수 있습니다.</p>
+    <p class="notice tiny"><b>${esc(getSemester(planSemesterId()).label)}</b> · 과제 기한은 <b>개강 후 주차</b>로 안내합니다. 반마다 날짜가 다를 수 있으니 <b>자세한 일정은 반별 공지사항을 확인하세요.</b></p>
+    <p class="tiny muted">과제를 누르면 수행 방법을 볼 수 있어요. 우리 반 날짜를 입력하면 D-day와 마감 알림이 표시됩니다.</p>
     <ol class="steps-timeline">
       ${list
         .map(
