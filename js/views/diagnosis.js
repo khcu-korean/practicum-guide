@@ -98,7 +98,7 @@ function resultHTML(a) {
   </section>
   <section class="card next">
     <p class="muted">확정 명단이 발표되면</p>
-    <h2>STEP 3-1. 확정된 실습 유형 및 실습 기관을 입력하세요</h2>
+    <h2>STEP 3-가. 확정된 실습 유형 및 실습 기관을 입력하세요</h2>
     <p class="tiny">입력한 유형에 맞춰 유형별 과제 타임라인이 만들어집니다.</p>
     <a class="btn primary" href="#/assign">확정된 실습 유형·기관 입력하기 →</a>
   </section>`;

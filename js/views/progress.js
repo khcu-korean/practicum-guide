@@ -11,8 +11,8 @@ export default {
   title: '진행 현황',
   render() {
     if (!sem().typeId) {
-      return `<h1 class="page-title">STEP 3-3. 진행 현황</h1>
-      <section class="card next"><p>STEP 3-1에서 확정된 실습 유형을 입력하면 진행 현황을 확인할 수 있어요.</p>
+      return `<h1 class="page-title">STEP 3-다. 진행 현황</h1>
+      <section class="card next"><p>STEP 3-가에서 확정된 실습 유형을 입력하면 진행 현황을 확인할 수 있어요.</p>
       <a class="btn primary" href="#/assign">확정된 실습 유형·기관 입력하기 →</a></section>`;
     }
     const list = myTasks();
@@ -23,7 +23,7 @@ export default {
     const nStatus = notificationStatus();
 
     return `
-    <h1 class="page-title">STEP 3-3. 진행 현황</h1>
+    <h1 class="page-title">STEP 3-다. 진행 현황</h1>
     <section class="card row">
       ${ring(stats.percent)}
       <div class="grow">

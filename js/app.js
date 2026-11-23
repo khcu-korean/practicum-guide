@@ -59,7 +59,7 @@ function stepNav(path) {
   </div></nav>`;
 }
 
-// 3. 실습 유형별 과제 수행 안의 하위 메뉴 (3-1 ~ 3-4)
+// 3. 실습 유형별 과제 수행 안의 하위 메뉴 (가 ~ 라)
 function subNav(path) {
   if (!isSubstep(path) && path !== 'practice') return '';
   const active = path === 'task' ? 'timeline' : path;
