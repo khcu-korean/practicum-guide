@@ -73,7 +73,7 @@ function resultHTML(a) {
               .join('')}</ul>`
           : ''
       }
-      <p class="tiny muted">스스로 기관을 섭외하는 방법(유형 2·3)도 있습니다. 첫 문항에서 "네"를 골라 보세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>`;
+      <p class="tiny muted">스스로 기관을 섭외하는 방법(유형 2·3)도 있습니다. 첫 문항에서 "직접 섭외"를 골라 보세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>`;
   }
   const notes = [];
   if (a.timing === 'vacation' && VACATION_NOTE[a.take]) notes.push(`<b>방학 중 강의참관</b>: ${esc(VACATION_NOTE[a.take])}`);

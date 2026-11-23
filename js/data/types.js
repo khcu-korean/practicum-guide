@@ -130,11 +130,11 @@ const picked = (a, typeId) => [].concat(a.institutions || []).filter((id) => ins
 export const DIAGNOSIS_QUESTIONS = [
   {
     id: 'self',
-    text: '강의참관을 할 기관을 스스로 찾을(섭외할) 수 있나요?',
+    text: '강의참관 기관은 어떻게 정하고 싶나요?',
     type: 'single',
     options: [
-      { value: 'no', label: '아니요, 학과 협력 기관에서 하고 싶어요' },
-      { value: 'yes', label: '네, 스스로 찾을 수 있어요 (이미 섭외한 경우 포함)' },
+      { value: 'no', label: '학과 협력 기관' },
+      { value: 'yes', label: '직접 섭외 (이미 섭외한 경우 포함)' },
     ],
   },
   {
@@ -143,8 +143,8 @@ export const DIAGNOSIS_QUESTIONS = [
     type: 'single',
     showIf: { self: 'yes' },
     options: [
-      { value: 'yes', label: '강의실습까지 할 수 있어요' },
-      { value: 'no', label: '강의참관만 할 수 있어요' },
+      { value: 'yes', label: '강의실습까지 가능' },
+      { value: 'no', label: '강의참관만 가능' },
     ],
   },
   {
@@ -161,8 +161,8 @@ export const DIAGNOSIS_QUESTIONS = [
     text: '강의참관은 방학 중에 미리 할 수도 있어요. 언제 하고 싶나요?',
     type: 'single',
     options: [
-      { value: 'vacation', label: '방학 중에 미리 하고 싶어요' },
-      { value: 'semester', label: '학기 중에 하고 싶어요' },
+      { value: 'vacation', label: '방학 중' },
+      { value: 'semester', label: '학기 중' },
     ],
   },
   {
@@ -195,7 +195,7 @@ export const DIAGNOSIS_QUESTIONS = [
     options: [
       { value: 'offline', label: '전면 오프라인' },
       { value: 'mixed', label: '오프라인 + 온라인 병행' },
-      { value: 'any', label: '상관없어요' },
+      { value: 'any', label: '상관없음' },
     ],
   },
 ];
