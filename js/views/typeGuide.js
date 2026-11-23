@@ -19,8 +19,7 @@ export function typeGuideHTML({ withGlossary = false } = {}) {
       ${PRACTICUM_TYPES.map(
         (t) => `<dt>${esc(t.name)} <span class="muted">${esc(t.summary)}</span></dt>
         <dd>${esc(t.description)}
-          <div class="tiny">${t.activities.map((x) => `<span class="tag">${esc(x)}</span>`).join(' ')}
-          ${t.institutions ? ` · 기관: ${t.institutions.length ? t.institutions.map((i) => esc(i.name)).join(', ') : '추후 안내'}` : ' · 기관: 실습생이 직접 섭외'}</div>
+          <div class="tiny">기관: ${t.institutions ? (t.institutions.length ? t.institutions.map((i) => esc(i.name)).join(', ') : '추후 안내') : '실습생이 직접 섭외'}</div>
         </dd>`
       ).join('')}
     </dl>
