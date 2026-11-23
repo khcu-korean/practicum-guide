@@ -210,8 +210,8 @@ export default {
       ${E.areas
         .map(
           (a) => `
-        <section class="card">
-          <h2>${a.no}영역 ${esc(a.name)}
+        <section class="card area-card">
+          <h2 class="area-head"><span class="area-no">${a.no}영역</span> ${esc(a.name)}
             <small>${track ? `자격 기준 ${a.cert[track.id]}학점` : `자격 기준 2급 ${a.cert.major}학점 · 3급 ${a.cert.minor}학점`}${E.practicum.combinedAreaIds.includes(a.id) ? ' · 실습 수강 자격에 포함' : ''}</small></h2>
           <div class="course-list">
             ${[...a.courses]

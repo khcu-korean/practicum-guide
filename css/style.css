@@ -464,3 +464,16 @@ details.qa .ans p { margin: 0 0 8px; }
 }
 .pn-short { display: none; }
 @media (max-width: 480px) { .prevnext .pn-name { display: none; } .prevnext .pn-short { display: inline; } }
+
+/* STEP 1 영역 제목: 하위 과목과 구분되도록 색 띠 */
+.area-card { padding-top: 0; overflow: hidden; }
+.area-head {
+  margin: 0 -18px 6px; padding: 12px 18px 10px;
+  background: var(--brand-soft); color: var(--brand-dark); border-bottom: 2px solid var(--brand);
+  font-size: 1.05rem; font-weight: 800;
+}
+.area-head .area-no {
+  display: inline-block; margin-right: 4px; padding: 1px 8px; border-radius: 6px;
+  background: var(--brand); color: #fff; font-size: .82rem; vertical-align: 2px;
+}
+.area-head small { color: var(--muted); font-weight: 500; }
