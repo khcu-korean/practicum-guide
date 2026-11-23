@@ -2,7 +2,9 @@
 // 유형 이름 아래에 기관이 나열되어 있어, 학생은 기관명만 보고 고르면 유형이 함께 정해집니다.
 // 유형 2·3(직접 섭외)은 유형을 고른 뒤 기관명을 직접 입력합니다.
 import { PRACTICUM_TYPES, getType, instLine, termOf } from '../data/types.js';
-import { sem, update, semesterId } from '../store.js';
+import { sem, update, planSemesterId } from '../store.js';
+import { selectableSemesters } from '../config.js';
+import { takeId } from '../data/types.js';
 import { esc, toast } from '../utils.js';
 import { typeGuideHTML } from './typeGuide.js';
 
@@ -32,13 +34,24 @@ export default {
     const s = sem();
     const value = currentValue(s);
     const savedSelf = s.institution && !s.institution.id ? s.institution : null;
-    const sem_ = semesterId();
+    // 수강 학기: 저장된 값 → STEP 2에서 답한 수강 학기 → 현재 운영 학기
+    const termNow = s.takeSemester || (s.diagnosis?.answers?.take ? takeId(s.diagnosis.answers) : planSemesterId());
+    const sem_ = termNow;
     return `
     <h1 class="page-title">STEP 3-가. 확정된 실습 유형 및 실습 기관 입력</h1>
     <p class="muted">학과 게시판에 확정 명단이 발표되면, 나의 <b>실습 기관</b>을 고르세요. 기관을 고르면 유형도 함께 정해지고, 그 유형에 맞춰 <b>유형별 과제 타임라인</b>이 만들어집니다.</p>
 
     ${typeGuideHTML()}
     <form id="assignForm" class="stack">
+      <section class="card">
+        <h2>수강 학기</h2>
+        <p class="tiny muted">선택한 학기의 개강일을 기준으로 과제 타임라인의 날짜가 계산됩니다.</p>
+        <div class="choices">
+          ${selectableSemesters()
+            .map((x) => `<label class="choice"><input type="radio" name="term" value="${x.id}" ${termNow === x.id ? 'checked' : ''}/><span>${esc(x.label)}</span></label>`)
+            .join('')}
+        </div>
+      </section>
       ${PRACTICUM_TYPES.map((t) => {
         const head = `<h2>${esc(t.name)}<small>${esc(t.summary)}</small></h2>`;
         if (t.institutions && !t.institutions.length) {
@@ -75,6 +88,13 @@ export default {
     const form = root.querySelector('#assignForm');
     // 직접 섭외를 고르면 그 유형 아래에 기관명 입력 칸을 보여 줌
     form.addEventListener('change', (e) => {
+      // 수강 학기를 바꾸면 바로 저장 (기관별 참관 기간도 그 학기 기준으로 다시 표시)
+      if (e.target.name === 'term') {
+        const keep = form.querySelector('input[name=pick]:checked')?.value;
+        update((s) => (s.takeSemester = e.target.value));
+        if (keep) requestAnimationFrame(() => document.querySelector(`input[name=pick][value="${keep}"]`)?.click());
+        return;
+      }
       if (e.target.name !== 'pick') return;
       form.querySelectorAll('.self-inputs').forEach((el) => {
         el.outerHTML = `<div class="self-box"></div>`;
@@ -104,7 +124,10 @@ export default {
       }
       const cur = sem().typeId;
       if (cur && cur !== typeId && !confirm('실습 유형이 바뀌면 타임라인이 새 유형에 맞게 바뀝니다. 바꿀까요?\n(공통 과제의 완료 기록은 유지됩니다)')) return;
+      const term = form.querySelector('input[name=term]:checked')?.value;
+      if (!term) return toast('수강 학기를 선택하세요.');
       update((s) => {
+        s.takeSemester = term;
         s.typeId = typeId;
         s.institution = institution;
         s.assignedAt = new Date().toISOString();

@@ -1,3 +1,4 @@
+import { CONFIG, selectableSemesters } from '../config.js';
 // =====================================================================
 // ③ 용어 정의 + 실습 유형 진단 문항 + 유형 정의 + 추천 규칙
 // =====================================================================
@@ -151,10 +152,7 @@ export const DIAGNOSIS_QUESTIONS = [
     id: 'take',
     text: '<한국어교육현장실습> 과목을 언제 수강하고 싶나요?',
     type: 'single',
-    options: [
-      { value: '1', label: '1학기' },
-      { value: '2', label: '2학기' },
-    ],
+    options: selectableSemesters().map((x) => ({ value: x.id, label: x.label })),
   },
   {
     id: 'timing',
@@ -234,20 +232,24 @@ const CONDITIONS = [
  *   relax: 결과가 없을 때, 조건 하나를 빼면 몇 곳이 맞는지
  */
 // 수강 학기(1·2학기)에 해당하는 학기 id (기관 참관 달은 매년 같으므로 어느 학기든 계산 가능)
+// 예전 답변('1'·'2')은 현재 학년도의 학기로 바꿔 읽음
+export const takeId = (a, currentId = CONFIG.currentSemesterId) =>
+  !a.take ? currentId : /^\d$/.test(a.take) ? `${currentId.split('-')[0]}-${a.take}` : a.take;
+export const takeHalf = (a) => (takeId(a).endsWith('-2') ? '2' : '1');
+
 export function targetSemester(a, currentId) {
-  const [year] = currentId.split('-');
-  const want = a.take ? `${year}-${a.take}` : currentId;
+  const want = takeId(a, currentId);
   return { id: want, want, fallback: false };
 }
 
 /** 학생이 고른 수강 학기·참관 시기의 달 */
 export const monthsFor = (a) => {
-  const M = MONTHS[a.take === '2' ? 2 : 1];
+  const M = MONTHS[takeHalf(a)];
   return a.timing === 'vacation' ? M.vacation : a.timing === 'semester' ? M.semester : [...M.vacation, ...M.semester];
 };
 
 export const SEASON_LABEL = { winter: '동계 방학', summer: '하계 방학' };
-export const seasonOf = (a) => (a.take === '2' ? 'summer' : 'winter');
+export const seasonOf = (a) => (takeHalf(a) === '2' ? 'summer' : 'winter');
 
 // 방학 중 참관 안내
 export const VACATION_NOTE = {

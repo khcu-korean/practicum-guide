@@ -43,6 +43,7 @@ const MOCK_BLOCK = '기한 안에 하지 않으면 모의수업에 참가할 수
 export const TASKS = {
   // ---------------- 모든 유형 ----------------
   orientation: {
+    shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
     title: '한국어교육현장실습 교과목 오리엔테이션 참가',
     due: null,
     dueText: '2월 중 (개강 전)',
@@ -255,6 +256,7 @@ export const TASKS = {
 
   // ---------------- 유형 2 ----------------
   'org-find': {
+    shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
     title: '실습 기관 섭외',
     due: null,
     dueText: '1월 말 (개강 전)',
@@ -266,6 +268,7 @@ export const TASKS = {
     }),
   },
   'org-apply': {
+    shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
     title: '학부에 실습 기관 신청서 작성 및 제출',
     due: null,
     dueText: '1월 말 (개강 전)',
@@ -277,6 +280,7 @@ export const TASKS = {
     }),
   },
   'org-approval': {
+    shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
     title: '학부의 실습 기관 승인 결과 확인',
     due: null,
     dueText: '2월 첫째 주',
@@ -289,6 +293,7 @@ export const TASKS = {
     }),
   },
   'result-report': {
+    shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
     title: '실습 결과 회보서 송부 확인',
     due: { week: 14, day: 'sun' },
     note: '실습 기관이 학부로 회보서를 보냅니다. 송부 여부를 실습생이 기관에 확인하세요.',
@@ -369,6 +374,17 @@ export const COMPLETION_EXTRA_CHECKS = [
 ];
 
 export const getTask = (id) => (TASKS[id] ? { id, ...TASKS[id] } : null);
+
+// 학기 전·후 일정처럼 달이 적힌 과제: 2학기에는 글 속의 달을 6개월 뒤로 바꿔 보여 줌 (예: 2월 중 → 8월 중)
+const shiftText = (v) =>
+  typeof v === 'string'
+    ? v.replace(/(\d{1,2})월/g, (m, n) => `${((Number(n) + 5) % 12) + 1}월`)
+    : Array.isArray(v)
+      ? v.map(shiftText)
+      : v && typeof v === 'object'
+        ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, k === 'due' || k === 'start' ? x : shiftText(x)]))
+        : v;
+export const localizeTask = (task, semesterId) => (task?.shiftMonths && semesterId?.endsWith('-2') ? shiftText(task) : task);
 
 /** 유형별 과업 목록 (순서대로, step = 순번) */
 export const tasksForType = (typeId) =>

@@ -18,10 +18,12 @@ export const CONFIG = {
   // 현재 운영 중인 학기 (학기가 바뀌면 여기만 수정)
   currentSemesterId: '2027-1',
 
-  // 학기 목록: startDate = 개강일(1주차 월요일). 과업 날짜는 이 날짜 기준 'n주차 요일'로 자동 계산됩니다.
+  // 학기 목록: startDate = 개강일(1주차 월요일). 과제 날짜는 이 날짜 기준 'n주차 요일'로 자동 계산됩니다.
+  // selectable: 학생이 '수강 학기'로 고를 수 있는 학기 (새 학기가 정해지면 추가)
   semesters: [
     { id: '2026-2', label: '2026학년도 2학기', startDate: '2026-08-31' },
-    { id: '2027-1', label: '2027학년도 1학기', startDate: '2027-03-01' },
+    { id: '2027-1', label: '2027학년도 1학기', startDate: '2027-03-01', selectable: true },
+    { id: '2027-2', label: '2027학년도 2학기', startDate: '2027-08-30', selectable: true },
   ],
 
   // 마감 며칠 전에 알림/강조할지
@@ -40,6 +42,8 @@ export const CONFIG = {
 };
 
 export const isServerMode = () => Boolean(CONFIG.supabase.url && CONFIG.supabase.anonKey);
+
+export const selectableSemesters = () => CONFIG.semesters.filter((s) => s.selectable);
 
 export const getSemester = (id) =>
   CONFIG.semesters.find((s) => s.id === id) || CONFIG.semesters[0];

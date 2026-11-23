@@ -101,6 +101,12 @@ export const getData = () => data;
 // 학생은 항상 관리자가 정한 현재 학기로 이용 (학기가 바뀌면 새 학기 기록으로 시작, 이전 기록은 보관)
 export const semesterId = () => CONFIG.currentSemesterId;
 
+/** 학생이 고른 수강 학기 (타임라인 날짜 계산에 사용). 고르지 않았으면 현재 운영 학기 */
+export const planSemesterId = () => {
+  const id = sem().takeSemester;
+  return CONFIG.semesters.some((x) => x.id === id) ? id : CONFIG.currentSemesterId;
+};
+
 export function sem() {
   const id = semesterId();
   return (data.semesters[id] ||= { tasks: {}, extraChecks: {} });

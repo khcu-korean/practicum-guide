@@ -44,7 +44,8 @@ export function periodLabel(task, semesterId, record) {
   const due = resolveDue(task, semesterId, record);
   if (!due) return '';
   const start = record?.customDue ? null : resolveDate(task.start, semesterId);
-  return `${start ? `${fmtDate(start)}~` : ''}${fmtDate(due)}${task.time ? ` ${task.time}` : ''}`;
+  // 반마다 일정이 달라 기준 날짜에는 '경'을 붙임 (학생이 직접 입력한 날짜는 그대로)
+  return `${start ? `${fmtDate(start)}~` : ''}${fmtDate(due)}${task.time ? ` ${task.time}` : ''}${record?.customDue ? '' : '경'}`;
 }
 
 /** 남은 일수 (오늘=0, 지남=음수) */

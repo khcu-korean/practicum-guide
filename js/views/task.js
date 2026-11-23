@@ -1,17 +1,17 @@
 // ⑤ 과제 수행 가이드 (과업 상세)
-import { getTask, typesOfTask, SCHEDULE_NOTE, COMMON_GUIDE_NOTES, ALL_TYPE_IDS } from '../data/tasks.js';
+import { getTask, typesOfTask, SCHEDULE_NOTE, COMMON_GUIDE_NOTES, ALL_TYPE_IDS, localizeTask } from '../data/tasks.js';
 import { getType } from '../data/types.js';
 import { instScheduleFor } from '../selectors.js';
-import { sem, semesterId, update } from '../store.js';
+import { sem, planSemesterId, update } from '../store.js';
 import { esc, resolveDue, daysLeft, ddayLabel, ddayClass, fmtDate, periodLabel, toast } from '../utils.js';
 
 export default {
   title: '과제 가이드',
   render({ params }) {
-    const task = getTask(params[0]);
+    const task = localizeTask(getTask(params[0]), planSemesterId());
     if (!task) return '<p>과업을 찾을 수 없습니다.</p><a href="#/timeline">← 타임라인</a>';
     const r = sem().tasks?.[task.id] || {};
-    const due = resolveDue(task, semesterId(), r);
+    const due = resolveDue(task, planSemesterId(), r);
     const left = daysLeft(due);
     const g = task.guide || {};
     const typeIds = typesOfTask(task.id);
@@ -26,8 +26,9 @@ export default {
     <section class="card row">
       <span class="badge big ${ddayClass(left, r.done)}">${r.done ? '완료' : ddayLabel(left)}</span>
       <div class="grow">
-        <p>${task.start && !r.customDue ? '기간' : task.due === null ? '일정' : '마감'}: <b>${due ? periodLabel(task, semesterId(), r) : esc(instScheduleFor(task.id)?.term.period || task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
+        <p>${task.start && !r.customDue ? '기간' : task.due === null ? '일정' : '마감'}: <b>${due ? periodLabel(task, planSemesterId(), r) : esc(instScheduleFor(task.id)?.term.period || task.dueText || '미정')}</b> ${r.customDue ? '<span class="tiny muted">(직접 입력)</span>' : ''}</p>
         ${task.due === null && !(instScheduleFor(task.id) && !r.customDue) ? `<p class="tiny muted">${esc(task.scheduleNote || SCHEDULE_NOTE[task.schedule] || '일정이 정해지면 직접 입력하세요.')}</p>` : ''}
+        ${task.due && !r.customDue ? '<p class="tiny muted">대략적인 기준 날짜입니다. 자세한 일정은 반별 공지사항을 확인하세요.</p>' : ''}
       </div>
     </section>
 
@@ -47,17 +48,14 @@ export default {
         : '';
     })()}
 
-    ${
-      task.due === null
-        ? `<section class="card">
-        <h3>날짜 직접 입력</h3>
-        <div class="row">
-          <input type="date" id="customDue" value="${esc(r.customDue || '')}" class="grow" />
-          <button class="btn" id="saveDue">저장</button>
-        </div>
-      </section>`
-        : ''
-    }
+    <section class="card">
+      <h3>${task.due === null ? '날짜 직접 입력' : '우리 반 날짜로 바꾸기'}</h3>
+      ${task.due === null ? '' : '<p class="tiny muted">반별 공지의 날짜가 기준 날짜와 다르면 입력하세요. 비우고 저장하면 기준 날짜로 돌아갑니다.</p>'}
+      <div class="row">
+        <input type="date" id="customDue" value="${esc(r.customDue || '')}" class="grow" />
+        <button class="btn" id="saveDue">저장</button>
+      </div>
+    </section>
 
     <section class="card guide">
       <h2>과제 소개</h2>
@@ -83,7 +81,7 @@ export default {
       <table class="result">
         <tr><th>제출 방법</th><td>${esc(g.submit?.method)}</td></tr>
         <tr><th>제출 위치</th><td>${esc(g.submit?.where)}</td></tr>
-        <tr><th>기한</th><td>${esc(g.submit?.deadlineText)}${due ? `<br/><b>${periodLabel(task, semesterId(), r)}</b>` : ''}</td></tr>
+        <tr><th>기한</th><td>${esc(g.submit?.deadlineText)}${due ? `<br/><b>${periodLabel(task, planSemesterId(), r)}</b>` : ''}</td></tr>
       </table>
     </section>
 
@@ -112,7 +110,7 @@ export default {
     root.querySelector('#saveDue')?.addEventListener('click', () => {
       const v = root.querySelector('#customDue').value;
       patch((r) => (r.customDue = v || null));
-      toast(v ? '마감일을 저장했어요.' : '마감일을 지웠어요.');
+      toast(v ? '날짜를 저장했어요.' : '기준 날짜로 되돌렸어요.');
     });
     let t;
     root.querySelector('#memo')?.addEventListener('input', (e) => {

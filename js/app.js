@@ -1,7 +1,7 @@
 // 앱 시작점: 화면 전환(라우터), 공통 레이아웃, 로그인 확인
 import { CONFIG, getSemester, isServerMode } from './config.js';
 import { MENUS, SUBSTEPS, stepOf, isSubstep } from './steps.js';
-import { initStore, subscribe, getUser, semesterId, update } from './store.js';
+import { initStore, subscribe, getUser, planSemesterId, update } from './store.js';
 import { upcoming } from './selectors.js';
 import { notifyDueTasks } from './notify.js';
 import { esc, ddayLabel, toast } from './utils.js';
@@ -92,7 +92,7 @@ function layout(view, path, body) {
   <header class="band">
     <div class="band-in">
       <a href="#/" class="brand">${brandHTML()}</a>
-      <span class="sem">${esc(getSemester(semesterId()).label)}</span>
+      <span class="sem">${esc(getSemester(planSemesterId()).label)}</span>
     </div>
   </header>
   ${stepNav(path)}

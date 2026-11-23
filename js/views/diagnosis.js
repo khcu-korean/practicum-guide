@@ -1,5 +1,5 @@
 // STEP 2. 실습 유형 추천: 질문에 답하면 맞는 유형과 협력 기관을 추천
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, recommend, getType, VACATION_NOTE, SEASON_LABEL, seasonOf, ATTR_LABELS, windowsIn, monthsFor, fmtWindows } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, recommend, getType, VACATION_NOTE, takeHalf, SEASON_LABEL, seasonOf, ATTR_LABELS, windowsIn, monthsFor, fmtWindows } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
 import { getSemester } from '../config.js';
@@ -76,7 +76,7 @@ function resultHTML(a) {
       <p class="tiny muted">스스로 기관을 섭외하는 방법(유형 2·3)도 있습니다. 첫 문항에서 "직접 섭외"를 골라 보세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>`;
   }
   const notes = [];
-  if (a.timing === 'vacation' && VACATION_NOTE[a.take]) notes.push(`<b>방학 중 강의참관</b>: ${esc(VACATION_NOTE[a.take])}`);
+  if (a.timing === 'vacation') notes.push(`<b>방학 중 강의참관</b>: ${esc(VACATION_NOTE[takeHalf(a)])}`);
   if (r.target.fallback && r.kind !== 'self' && a.timing !== 'vacation') notes.push(`${a.take}학기 협력 기관과 일정은 아직 정해지지 않았습니다. 아래는 ${esc(getSemester(r.target.id).label)} 기준 정보이니 참고만 하세요.`);
   return `
   <section class="card">

@@ -1,15 +1,16 @@
 // 여러 화면에서 공통으로 쓰는 계산 로직
-import { tasksForType } from './data/tasks.js';
+import { tasksForType, localizeTask } from './data/tasks.js';
 import { getInstitution, termOf } from './data/types.js';
-import { sem, semesterId } from './store.js';
+import { sem, planSemesterId } from './store.js';
 import { resolveDue, daysLeft } from './utils.js';
 
 /** 내 유형에 해당하는 과업 목록 (마감일·완료 여부 포함) */
 export function myTasks() {
   const s = sem();
-  return tasksForType(s.typeId).map((task) => {
+  return tasksForType(s.typeId).map((t0) => {
+    const task = localizeTask(t0, planSemesterId());
     const record = s.tasks?.[task.id] || {};
-    const due = resolveDue(task, semesterId(), record);
+    const due = resolveDue(task, planSemesterId(), record);
     return { task, record, due, left: daysLeft(due), done: Boolean(record.done) };
   });
 }
@@ -33,7 +34,7 @@ const INST_SCHEDULE_TASKS = ['site-observe', 'teaching'];
 /** 내가 고른 지정 기관과 이번 학기 참관 정보 */
 export function myInstitution() {
   const inst = getInstitution(sem().institution?.id);
-  return inst ? { inst, term: termOf(inst, semesterId()) } : null;
+  return inst ? { inst, term: termOf(inst, planSemesterId()) } : null;
 }
 
 /** 과제에 붙일 기관 일정 (해당 없으면 null) */
