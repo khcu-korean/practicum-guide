@@ -178,7 +178,7 @@ export default {
     <details class="card soft">
       <summary><b>수강 자격 기준과 근거</b></summary>
       <table class="result">
-        <tr><th>공통</th><td>전체 이수 학점 105학점 이상 (4학년 1학기부터 수강 가능)</td></tr>
+        <tr><th>공통</th><td>전체 이수 학점 105학점 이상</td></tr>
         <tr><th>주전공·복수전공 (2급)</th><td>직전 학기까지 1영역·3영역 합산 8과목(24학점) 이상 이수</td></tr>
         <tr><th>부전공 (3급)</th><td>직전 학기까지 1영역·3영역 합산 4과목(12학점) 이상 이수</td></tr>
         <tr><th>영역별 최소</th><td>1영역, 3영역 모두 최소 3학점 이상 이수</td></tr>
@@ -240,6 +240,10 @@ export default {
               <span>${esc(o.label)}<small class="note">${esc(o.help)}</small></span></label>`
             )
             .join('')}
+        </div>
+        <div class="notice tiny">
+          <b>수강 시기 안내</b>
+          <ul class="bullets">${E.timingNotes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
         </div>
       </section>
 

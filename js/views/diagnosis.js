@@ -1,9 +1,9 @@
 // STEP 2. 실습 유형 추천: 질문에 답하면 맞는 유형과 협력 기관을 추천
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, recommend, getType, VACATION_NOTE, takeHalf, APPLICATION_NOTICE_SELF, SEASON_LABEL, seasonOf, ATTR_LABELS, windowsIn, monthsFor, fmtWindows } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, DIAGNOSIS_INTRO, recommend, getType, VACATION_NOTE, takeHalf, SEASON_LABEL, seasonOf, ATTR_LABELS, windowsIn, monthsFor, fmtWindows } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
 import { getSemester } from '../config.js';
-import { typeGuideHTML } from './typeGuide.js';
+import { typeGuideHTML, cautionsHTML, applicationNoticeHTML } from './typeGuide.js';
 
 const visible = (q, a) =>
   !q.showIf ||
@@ -52,7 +52,7 @@ function resultHTML(a) {
     const t = getType(r.typeId);
     ok = true;
     body = `<p>스스로 섭외한 기관에서 실습하는 경우, 나에게 맞는 유형은 다음과 같습니다.</p>
-      <div class="type-card">${typeHead(t)}<p class="muted">${esc(t.description)}</p></div>`;
+      <div class="type-card">${typeHead(t)}<p class="muted">${esc(t.description)}</p>${cautionsHTML(t)}</div>`;
   } else if (r.matches.length) {
     ok = true;
     // 기관을 유형별로 묶어서 보여 줌
@@ -61,7 +61,7 @@ function resultHTML(a) {
       ${groups
         .map(
           (t) => `<div class="type-card">${typeHead(t)}
-          <ul class="inst-list">${r.matches.filter((i) => i.type === t.id).map((i) => instItem(i, r.target.id, a)).join('')}</ul></div>`
+          <ul class="inst-list">${r.matches.filter((i) => i.type === t.id).map((i) => instItem(i, r.target.id, a)).join('')}</ul>${cautionsHTML(t)}</div>`
         )
         .join('')}`;
   } else {
@@ -84,19 +84,7 @@ function resultHTML(a) {
     <h2>추천 결과</h2>
     ${notes.map((n) => `<p class="notice tiny">${n}</p>`).join('')}
     ${body}
-    ${
-      !ok
-        ? ''
-        : r.kind === 'self' && r.typeId === '2'
-          ? `<div class="notice">
-      <b>실습 신청은 이렇게 합니다</b>
-      <ul class="bullets tiny">${APPLICATION_NOTICE_SELF(takeHalf(a)).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-    </div>`
-          : `<div class="notice">
-      <b>실습 신청은 이렇게 합니다</b>
-      <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
-    </div>`
-    }
+    ${ok ? applicationNoticeHTML({ selfApply: r.kind === 'self' }) : ''}
     <p class="tiny muted">※ 추천 결과는 기관 선택을 돕기 위한 참고 자료입니다.</p>
   </section>
   <section class="card next">

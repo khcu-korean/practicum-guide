@@ -7,7 +7,7 @@ import { CONFIG } from '../js/config.js';
 import { ELIGIBILITY as E } from '../js/data/eligibility.js';
 import {
   GLOSSARY, INSTITUTIONS, DIAGNOSIS_QUESTIONS, PRACTICUM_TYPES, APPLICATION_NOTICE, VACATION_NOTE,
-  TYPE_GUIDE_INTRO, DIAGNOSIS_INTRO, ATTR_LABELS, fmtWindows, APPLICATION_NOTICE_SELF,
+  TYPE_GUIDE_INTRO, DIAGNOSIS_INTRO, ATTR_LABELS, fmtWindows, SELF_APPLY_STEPS, SELF_APPLY_NOTE, OVERSEAS_SITES,
 } from '../js/data/types.js';
 import { TASKS, SEQUENCES, SCHEDULE_NOTE, COMMON_GUIDE_NOTES, COMPLETION_EXTRA_CHECKS, ALL_TYPE_IDS, typesOfTask } from '../js/data/tasks.js';
 import { FAQ, FAQ_SOURCE } from '../js/data/faq.js';
@@ -121,7 +121,7 @@ ${DIAGNOSIS_QUESTIONS.map((q, i) => `<tr><td>${i + 1}</td><td>${esc(q.text)}</td
 <p class="note">${esc(TYPE_GUIDE_INTRO)}</p>
 <table><tr><th>유형</th><th>할 일</th><th>설명</th><th>기관</th></tr>
 ${PRACTICUM_TYPES.map(
-  (t) => `<tr><td><b>${esc(t.name)}</b></td><td>${esc(t.summary)}</td><td>${mark(t.description)}</td>
+  (t) => `<tr><td><b>${esc(t.name)}</b></td><td>${esc(t.summary)}</td><td>${mark(t.description)}${(t.cautions || []).map((c) => `<br/>※ ${esc(c)}`).join("")}</td>
   <td>${t.institutions ? (t.institutions.length ? t.institutions.map((i) => esc(i.name)).join('<br/>') : need('추후 안내', `STEP 2: ${t.name} 협력 기관`)) : '실습생이 직접 섭외'}</td></tr>`
 ).join('')}
 </table>
@@ -135,8 +135,8 @@ ${INSTITUTIONS.map(
 ).join('')}
 </table>
 <h3>추천 결과 아래 안내</h3>
-<p><b>실습 신청은 이렇게 합니다</b> (유형 2 외 추천 시)</p>${list(APPLICATION_NOTICE)}
-<p><b>실습 신청은 이렇게 합니다</b> (유형 2 추천 시, 1학기 기준 · 2학기는 6개월 뒤 달)</p>${list(APPLICATION_NOTICE_SELF('1'))}
+<p><b>실습 신청은 이렇게 합니다</b> (모든 추천 결과)</p>${list(APPLICATION_NOTICE.map((x) => `${x.label}: ${x.text}`))}
+<p><b>유형 2·3 신청 절차</b> (직접 섭외 추천 시)</p>${list([...SELF_APPLY_STEPS, `※ ${SELF_APPLY_NOTE}`, ...OVERSEAS_SITES.map((x) => `${x.name}: ${x.url}`)])}
 <p><b>방학 중 참관을 고른 경우</b></p>${list(Object.values(VACATION_NOTE))}`;
 
 // ---------- 4. STEP 3 과제 ----------
@@ -180,9 +180,8 @@ const sec3 = `
 const cats = [...new Set(FAQ.map((f) => f.category))];
 const sec4 = `
 <h2>4. 자주 묻는 질문</h2>
-<p class="note">출처: ${esc(FAQ_SOURCE.name)} (${esc(FAQ_SOURCE.url)}) · 업데이트: ${esc(FAQ_SOURCE.updated || '')} · 총 ${FAQ.length}개<br/>
-국립국어원 원문을 매주 자동으로 가져오므로 앱에서 직접 고치는 내용이 아닙니다. 아래는 질문 목록만 정리했습니다.</p>
-${cats.map((c) => `<h4>${esc(c)} (${FAQ.filter((f) => f.category === c).length})</h4><ol>${FAQ.filter((f) => f.category === c).map((f) => `<li>${esc(f.q)}</li>`).join('')}</ol>`).join('')}`;
+<p class="note">출처: ${esc(FAQ_SOURCE.name)} · 총 ${FAQ.length}개</p>
+${cats.map((c) => `<h4>${esc(c)}</h4><ol>${FAQ.filter((f) => f.category === c).map((f) => `<li><b>${esc(f.q)}</b><br/>${esc(f.a).replace(/\n+/g, ' ')}</li>`).join('')}</ol>`).join('')}`;
 
 // ---------- 보완 필요 항목 (맨 앞) ----------
 const body = sec0 + sec1 + sec2 + sec3 + sec4;

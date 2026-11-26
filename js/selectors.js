@@ -7,7 +7,7 @@ import { resolveDue, daysLeft } from './utils.js';
 /** 내 유형에 해당하는 과업 목록 (마감일·완료 여부 포함) */
 export function myTasks() {
   const s = sem();
-  return tasksForType(s.typeId).map((t0) => {
+  return tasksForType(s.typeId, s.institution?.id || null).map((t0) => {
     const task = localizeTask(t0, planSemesterId());
     const record = s.tasks?.[task.id] || {};
     const due = resolveDue(task, planSemesterId(), record);
