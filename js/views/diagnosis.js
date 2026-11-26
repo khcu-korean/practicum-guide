@@ -53,6 +53,14 @@ function resultHTML(a) {
     ok = true;
     body = `<p>스스로 섭외한 기관에서 실습하는 경우, 나에게 맞는 유형은 다음과 같습니다.</p>
       <div class="type-card">${typeHead(t)}<p class="muted">${esc(t.description)}</p>${cautionsHTML(t)}</div>`;
+  } else if (r.kind === 'noSelfType') {
+    body = `<p class="notice">직접 섭외한 <b>국내</b> 기관에서 강의참관만 할 수 있는 경우에는 해당하는 실습 유형이 없습니다.</p>
+      <ul class="bullets tiny">
+        <li>유형 2: 실습 기관에 자격을 갖춘 실습 지도자가 있고 강의실습까지 할 수 있어야 합니다.</li>
+        <li>유형 3: 국외 기관에서 강의참관을 하는 경우만 해당합니다.</li>
+      </ul>
+      <p class="tiny">국내에서 강의참관만 한다면 <b>학과 협력 기관(유형 1·1-1)</b>에서 실습하세요.</p>
+      <button type="button" class="btn primary big" data-to-partner>학과 협력 기관으로 추천 받기 ↑</button>`;
   } else if (r.matches.length) {
     ok = true;
     // 기관을 유형별로 묶어서 보여 줌
@@ -127,6 +135,18 @@ export default {
     form.addEventListener('change', () => {
       const a = read();
       root.querySelector('#questions').innerHTML = Q.map((q) => questionHTML(q, a)).join('');
+    });
+    // 직접 섭외 국내·참관만 → 첫 문항을 '학과 협력 기관'으로 바꾸고 이어지는 질문으로 이동
+    root.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-to-partner]')) return;
+      const no = form.querySelector('input[name="self"][value="no"]');
+      if (!no) return;
+      no.checked = true;
+      form.dispatchEvent(new Event('change'));
+      const qs = root.querySelectorAll('#questions section.q');
+      qs[1]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      qs.forEach((q, i) => i > 0 && q.classList.add('retry'));
+      setTimeout(() => qs.forEach((q) => q.classList.remove('retry')), 2500);
     });
     // 추천 결과가 없을 때: 질문으로 올라가 다른 항목을 고르게 함 (고른 답은 그대로 둠)
     root.addEventListener('click', (e) => {

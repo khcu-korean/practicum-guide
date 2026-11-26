@@ -143,6 +143,16 @@ export const DIAGNOSIS_QUESTIONS = [
     ],
   },
   {
+    id: 'selfRegion',
+    text: '섭외한(섭외할) 기관은 어디에 있나요?',
+    type: 'single',
+    showIf: { self: 'yes' },
+    options: [
+      { value: 'domestic', label: '국내' },
+      { value: 'overseas', label: '국외' },
+    ],
+  },
+  {
     id: 'teachAtOrg',
     text: '그 기관에 자격을 갖춘 실습 지도자가 있고, 강의참관뿐 아니라 강의실습(한 차시 수업)까지 할 수 있나요?',
     type: 'single',
@@ -264,7 +274,12 @@ export const VACATION_NOTE = {
 export function recommend(a, currentId) {
   const target = targetSemester(a, currentId);
   const semesterId = target.id;
-  if (a.self === 'yes') return { kind: 'self', typeId: a.teachAtOrg === 'yes' ? '2' : '3', target };
+  if (a.self === 'yes') {
+    if (a.teachAtOrg === 'yes') return { kind: 'self', typeId: '2', target };
+    // 유형 3은 국외 기관만: 국내 기관에서 강의참관만 가능하면 해당 유형 없음
+    if (a.selfRegion === 'domestic') return { kind: 'noSelfType', target };
+    return { kind: 'self', typeId: '3', target };
+  }
   // 강의참관 시기: 방학 중이면 수강 학기에 맞는 방학(1학기 → 동계, 2학기 → 하계)에 참관할 수 있는 기관
   const season = seasonOf(a);
   const timingCond = a.timing && {
