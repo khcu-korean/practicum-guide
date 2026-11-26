@@ -232,7 +232,7 @@ export const TASKS = {
     }),
   },
   'final-plan': {
-    title: '최종 교안 및 성찰 일지 제출',
+    title: '최종 교안(자기성찰 포함) 제출',
     start: { week: 14, day: 'mon' },
     due: { week: 15, day: 'sun' },
     guide: guide('모의수업 실습 후 교수 피드백 및 평가를 반영하여 최종 교안을 작성합니다.', {
@@ -300,7 +300,7 @@ export const TASKS = {
     }),
   },
   'org-final-plan': {
-    title: '최종 교안 및 성찰 일지 제출',
+    title: '최종 교안(자기성찰 포함) 제출',
     due: null,
     dueText: '실습 기관 일정에 따름',
     schedule: 'institution',
