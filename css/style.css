@@ -477,3 +477,5 @@ details.qa .ans p { margin: 0 0 8px; }
   background: var(--brand); color: #fff; font-size: .82rem; vertical-align: 2px;
 }
 .area-head small { color: var(--muted); font-weight: 500; }
+section.q { scroll-margin-top: 70px; transition: box-shadow .3s; }
+section.q.retry { box-shadow: 0 0 0 2px var(--brand); }

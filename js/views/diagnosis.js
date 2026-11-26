@@ -73,7 +73,8 @@ function resultHTML(a) {
               .join('')}</ul>`
           : ''
       }
-      <p class="tiny muted">스스로 기관을 섭외하는 방법(유형 2·3)도 있습니다. 첫 문항에서 "직접 섭외"를 골라 보세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>`;
+      <p class="tiny muted">스스로 기관을 섭외하는 방법(유형 2·3)도 있습니다. 첫 문항에서 "직접 섭외"를 골라 보세요. 그 밖의 경우는 담당 교수(조교)에게 문의하세요.</p>
+      <button type="button" class="btn primary big" data-retry>다른 항목 선택 후 다시 추천 받기 ↑</button>`;
   }
   const notes = [];
   if (a.timing === 'vacation') notes.push(`<b>방학 중 강의참관</b>: ${esc(VACATION_NOTE[takeHalf(a)])}`);
@@ -138,6 +139,14 @@ export default {
     form.addEventListener('change', () => {
       const a = read();
       root.querySelector('#questions').innerHTML = Q.map((q) => questionHTML(q, a)).join('');
+    });
+    // 추천 결과가 없을 때: 질문으로 올라가 다른 항목을 고르게 함 (고른 답은 그대로 둠)
+    root.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-retry]')) return;
+      const first = root.querySelector('#questions section.q');
+      first?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      root.querySelectorAll('#questions section.q').forEach((q) => q.classList.add('retry'));
+      setTimeout(() => root.querySelectorAll('#questions section.q').forEach((q) => q.classList.remove('retry')), 2500);
     });
     form.addEventListener('submit', (e) => {
       e.preventDefault();
