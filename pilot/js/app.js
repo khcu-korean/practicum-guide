@@ -107,6 +107,7 @@ function layout(view, path, body) {
   ${prevNext(path)}
   <footer class="foot container">
     <p>${esc(CONFIG.appName)} · ${esc(CONFIG.school.name)} ${esc(CONFIG.school.dept)}</p>
+    <p>문의: ${esc(CONFIG.contact.label)} ${esc(CONFIG.contact.phone)} / <a class="link" href="mailto:${esc(CONFIG.contact.email)}">${esc(CONFIG.contact.email)}</a></p>
     <p>이 앱의 안내와 진단 결과는 참고용이며, 최종 기준은 학교의 공식 학사 안내와 학과 공지를 따릅니다.</p>
   </footer>`;
 }

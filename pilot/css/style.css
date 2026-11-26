@@ -480,3 +480,6 @@ details.qa .ans p { margin: 0 0 8px; }
 section.q { scroll-margin-top: 70px; transition: box-shadow .3s; }
 section.q.retry { box-shadow: 0 0 0 2px var(--brand); }
 .pilot-band { background: #1e2430; color: #fff; text-align: center; font-size: .78rem; padding: 6px 12px; }
+.caution { color: var(--danger); margin-top: 6px; }
+.steps-ol { margin: 6px 0 6px 1.2em; padding: 0; }
+.steps-ol li { margin: 2px 0; }

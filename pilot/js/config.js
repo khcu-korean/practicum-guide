@@ -12,6 +12,9 @@ export const CONFIG = {
   storagePrefix: 'pg-pilot',
   subtitle: '한국어교육실습 수강생을 위한 실습 안내',
 
+  // 실습 문의처 (화면 아래와 자주 묻는 질문에 표시)
+  contact: { label: '실습 조교', phone: '02-3299-1350', email: 'korean92@khcu.ac.kr' },
+
   // 학교 표시 (logo에 이미지 경로를 넣으면 글자 표시 대신 로고가 나옵니다. 예: 'icons/khcu-logo.png')
   school: {
     name: '경희사이버대학교',

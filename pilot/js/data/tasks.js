@@ -52,6 +52,17 @@ export const TASKS = {
       submit: { method: '오리엔테이션 참가', where: '학과 공지 확인', deadlineText: '2월 중 (날짜는 추후 공지)' },
     }),
   },
+  // 유형 1-1 중 경희사이버대학교 한국어센터에서 참관하는 실습생만
+  'center-orientation': {
+    title: '기관 소개 및 강의참관 온라인 오리엔테이션 참여',
+    onlyInstitution: 'khcu-center',
+    due: { week: 1, day: 'sun' },
+    note: '경희사이버대학교 한국어센터 참관생',
+    guide: guide('경희사이버대학교 한국어센터에서 진행하는 기관 소개 및 강의참관 온라인 오리엔테이션입니다. 참관 방법과 일지 작성 방법을 안내합니다.', {
+      important: ['한국어센터에서 참관하는 실습생은 반드시 참여해야 합니다.'],
+      submit: { method: '온라인 오리엔테이션 참여', where: '한국어센터 안내 확인', deadlineText: '개강 후 1주차' },
+    }),
+  },
   'seminar-1': {
     title: '1차 온라인 세미나 참여',
     due: null,
@@ -329,39 +340,64 @@ export const TASKS = {
   // ---------------- 유형 2 ----------------
   'org-find': {
     shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
-    title: '실습 기관 섭외',
+    title: '실습 기관 섭외 (실습 허가 받기)',
     due: null,
     dueText: '1월 말 (개강 전)',
     schedule: 'course',
-    scheduleNote: '1월 말까지 섭외를 마치고 기관 신청서를 제출하세요.',
-    guide: guide('강의참관과 강의실습을 모두 할 수 있는 실습 기관을 실습생이 직접 섭외합니다.', {
-      important: ['기관에서 강의참관뿐 아니라 한 차시 강의실습까지 할 수 있는지 꼭 확인하세요.', '섭외가 끝나면 1월 말까지 학부에 실습 기관 신청서를 제출해야 합니다.'],
-      submit: { method: '실습 기관 섭외', where: '실습생이 직접 섭외', deadlineText: '1월 말 (개강 전)' },
+    scheduleNote: '1월 말까지 섭외를 마치고 실습 신청서를 제출하세요.',
+    guide: guide('실습생이 직접 현지 실습 기관에 연락하여 실습 허가를 받습니다.', {
+      important: [
+        '국립국어원의 한국어 교육경력 인정 기관에서만 실습할 수 있습니다.',
+        '유형 2: 실습 기관에 자격을 갖춘 실습 지도자가 있고, 강의참관뿐 아니라 한 차시 강의실습까지 할 수 있어야 합니다. 실습 지도자가 없으면 유형 3으로 신청합니다.',
+        '유형 3: 국외 한국어 교육기관에서 강의참관을 합니다.',
+        '해외 한국어 교육기관 찾기: 세종학당재단 홈페이지(https://www.ksif.or.kr/ste/ksf/hkd/lochkd.do?menuNo=20101800), 국립국어원 한국어교원 홈페이지 경력기관 게시판(https://kteacher.korean.go.kr/career/list), 스터디코리안 한글학교 정보(https://study.korean.net/servlet/action.kei.HsiAction?p_menuCd=m40261&p_year_id=2025)',
+      ],
+      submit: { method: '실습 기관에서 실습 허가 받기', where: '실습생이 직접 섭외', deadlineText: '1월 말 (개강 전)' },
     }),
   },
   'org-apply': {
     shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
-    title: '학부에 실습 기관 신청서 작성 및 제출',
+    title: '학부 홈페이지에서 실습 신청서(모아폼) 작성 및 제출',
     due: null,
     dueText: '1월 말 (개강 전)',
     schedule: 'course',
-    scheduleNote: '1월 말까지 제출하세요. 정확한 날짜는 학과 공지를 확인하세요.',
-    guide: guide('섭외한 실습 기관의 정보를 실습 기관 신청서에 작성하여 학부에 제출합니다.', {
-      templates: [{ name: '실습 기관 신청서 양식', url: '' }],
-      submit: { method: '실습 기관 신청서 제출', where: '학과 공지 확인', deadlineText: '1월 말 (개강 전)' },
+    scheduleNote: '정확한 신청 기간은 학부 홈페이지 공지를 확인하세요.',
+    guide: guide('학부 홈페이지에서 실습 신청 공지를 확인하고 ‘실습 신청서’(모아폼)를 작성하여 제출합니다.', {
+      submit: { method: '실습 신청서(모아폼) 제출', where: '학부 홈페이지', deadlineText: '1월 말 (개강 전)' },
+    }),
+  },
+  'org-confirm': {
+    shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
+    title: '실습 기관 확인 요청서 작성 및 제출',
+    due: null,
+    dueText: '1월 말 (개강 전)',
+    schedule: 'course',
+    guide: guide('실습 조교에게 ‘실습 기관 확인 요청서’ 양식을 요청해 작성한 뒤 제출합니다.', {
+      important: ['문의: 실습 조교 02-3299-1350 / korean92@khcu.ac.kr'],
+      submit: { method: '실습 기관 확인 요청서 제출', where: '실습 조교', deadlineText: '1월 말 (개강 전)' },
     }),
   },
   'org-approval': {
     shiftMonths: true, // 2학기에는 글 속의 달을 6개월 뒤로 (예: 2월 → 8월)
-    title: '학부의 실습 기관 승인 결과 확인',
+    title: '학부의 최종 실습 가능 여부 확인',
     due: null,
     dueText: '2월 첫째 주',
     schedule: 'course',
-    scheduleNote: '2월 첫째 주에 학부에서 승인 결과를 통보합니다.',
-    note: '학부에서 승인 결과를 통보합니다',
-    guide: guide('학부에서 통보하는 실습 기관 승인 결과를 확인합니다.', {
+    scheduleNote: '2월 첫째 주에 학부에서 결과를 통보합니다.',
+    note: '학부에서 결과를 통보합니다',
+    guide: guide('학부에서 제출 서류를 검토하여 최종 실습 가능 여부를 확정합니다.', {
       important: ['승인된 실습 기관에는 학교에서 공문을 보냅니다.'],
-      submit: { method: '승인 결과 확인', where: '학부 통보', deadlineText: '2월 첫째 주' },
+      submit: { method: '결과 확인', where: '학부 통보', deadlineText: '2월 첫째 주' },
+    }),
+  },
+  // 유형 2·2-1: 학기 말 증빙서류
+  evidence: {
+    title: '현장 수업 참관·강의실습 증빙서류 제출',
+    due: null,
+    dueText: '학기 말 (반별 공지 확인)',
+    schedule: 'course',
+    guide: guide('학기 말에 9시간 이상의 현장 수업 참관과 1회 이상의 강의실습을 진행했다는 증빙서류를 제출합니다. (유형 2, 유형 2-1)', {
+      submit: { method: '증빙서류 제출', where: '반별 공지 확인', deadlineText: '학기 말' },
     }),
   },
   'result-report': {
@@ -399,16 +435,16 @@ const SEQ_MOCK = [
   'final-plan',
 ];
 
+const ORG_APPLY = ['org-find', 'org-apply', 'org-confirm', 'org-approval'];
+
 export const SEQUENCES = {
   1: SEQ_MOCK,
-  '1-1': SEQ_MOCK,
+  '1-1': ['orientation', 'center-orientation', ...SEQ_MOCK.slice(1)],
   '1-2': SEQ_MOCK,
-  3: SEQ_MOCK,
+  3: ['orientation', ...ORG_APPLY, ...SEQ_MOCK.slice(1)],
   2: [
     'orientation',
-    'org-find',
-    'org-apply',
-    'org-approval',
+    ...ORG_APPLY,
     'seminar-1',
     'seminar-2',
     'plan-org',
@@ -422,6 +458,7 @@ export const SEQUENCES = {
     'org-revise-2',
     'teaching',
     'org-final-plan',
+    'evidence',
     'result-report',
   ],
   '2-1': [
@@ -439,6 +476,7 @@ export const SEQUENCES = {
     'org-revise-2',
     'teaching',
     'org-final-plan',
+    'evidence',
   ],
 };
 
@@ -468,8 +506,11 @@ const shiftText = (v) =>
 export const localizeTask = (task, semesterId) => (task?.shiftMonths && semesterId?.endsWith('-2') ? shiftText(task) : task);
 
 /** 유형별 과업 목록 (순서대로, step = 순번) */
-export const tasksForType = (typeId) =>
-  (SEQUENCES[typeId] || []).map((id, i) => ({ id, step: i + 1, ...TASKS[id] }));
+/** 유형별 과업 목록 (instId를 주면 그 기관 전용 과업만 남김) */
+export const tasksForType = (typeId, instId) =>
+  (SEQUENCES[typeId] || [])
+    .filter((id) => !TASKS[id].onlyInstitution || instId === undefined || TASKS[id].onlyInstitution === instId)
+    .map((id, i) => ({ id, step: i + 1, ...TASKS[id] }));
 
 /** 이 과업을 하는 유형 목록 */
 export const ALL_TYPE_IDS = ['1', '1-1', '1-2', '2', '2-1', '3'];

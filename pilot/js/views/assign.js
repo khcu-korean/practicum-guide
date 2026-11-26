@@ -1,7 +1,7 @@
 // STEP 3-가. 확정된 실습 유형 및 실습 기관 입력
 // 유형 이름 아래에 기관이 나열되어 있어, 학생은 기관명만 보고 고르면 유형이 함께 정해집니다.
 // 유형 2·3(직접 섭외)은 유형을 고른 뒤 기관명을 직접 입력합니다.
-import { PRACTICUM_TYPES, getType, instLine, termOf } from '../data/types.js';
+import { PRACTICUM_TYPES, getType, instLine, termOf, shownIn } from '../data/types.js';
 import { sem, update, planSemesterId } from '../store.js';
 import { selectableSemesters } from '../config.js';
 import { takeId } from '../data/types.js';
@@ -54,13 +54,14 @@ export default {
       </section>
       ${PRACTICUM_TYPES.map((t) => {
         const head = `<h2>${esc(t.name)}<small>${esc(t.summary)}</small></h2>`;
-        if (t.institutions && !t.institutions.length) {
+        const insts = t.institutions?.filter((i) => shownIn(i, sem_) || value === i.id);
+        if (insts && !insts.length) {
           return `<section class="card">${head}<p class="tiny muted">협력 기관은 추후 안내됩니다.</p></section>`;
         }
         if (t.institutions) {
           return `<section class="card">${head}
             <div class="choices col">
-              ${t.institutions
+              ${insts
                 .map((i) => {
                   const term = termOf(i, sem_);
                   return `<label class="choice"><input type="radio" name="pick" value="${i.id}" ${value === i.id ? 'checked' : ''}/>

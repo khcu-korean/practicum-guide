@@ -38,7 +38,7 @@ export const INSTITUTIONS = [
   },
   {
     id: 'honam', name: '호남대학교 한국어교육원', region: '국내', location: '광주광역시', type: '1', mode: 'offline', days: 'weekday',
-    windows: [[1, 2], [4, 5], [7, 8], [10, 11]], method: '평일 3일 오프라인 참관',
+    windows: [[3, 4], [9, 10]], method: '평일 3일 오프라인 참관',
   },
   {
     id: 'tongmyong', name: '동명대학교 부산국제대학 글로벌한국학과', region: '국내', location: '부산광역시', type: '1', mode: 'offline', days: 'weekday',
@@ -52,7 +52,7 @@ export const INSTITUTIONS = [
   },
   {
     id: 'ammi', name: '암미다문화센터', region: '국내', location: '남양주시', type: '1-1', mode: 'mixed', days: 'weekend',
-    windows: [[1, 2], [4, 5], [10, 11]], method: '일요일 2회 오프라인 참관 + 1회 온라인 참관',
+    windows: [[3, 5], [9, 10]], method: '일요일 2회 오프라인 참관 + 1회 온라인 참관',
     schedule: '일요일 2회(회당 4시간) + 온라인 1시간',
   },
   {
@@ -64,6 +64,7 @@ export const INSTITUTIONS = [
   {
     id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1-2', mode: 'offline', days: 'weekday',
     windows: [[1, 2], [9, 10]], method: '평일 3일 오프라인 참관',
+    hideIn: ['1'], // 1학기 수강생에게는 보이지 않음 (다시 보이게 하려면 이 줄 삭제)
   },
   {
     id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1-2', mode: 'offline', days: 'weekday',
@@ -72,7 +73,7 @@ export const INSTITUTIONS = [
   // 유형 2-1
   {
     id: 'dalat', name: '베트남 예르생달랏대학교', region: '해외', location: '베트남 달랏', type: '2-1', mode: 'offline', days: 'weekday',
-    windows: [[5, 5], [11, 11]], method: '평일 3일 오프라인 참관 + 1일 강의실습',
+    windows: [[5, 5], [11, 11]], method: '평일 3일 오프라인 참관 + 1일 강의실습 (일주일 이상)',
     note: '현지 체류 일정은 협의할 수 있습니다.',
   },
 ];
@@ -112,6 +113,9 @@ export const instLine = (inst, semesterId) => {
 
 export const getInstitution = (id) => INSTITUTIONS.find((i) => i.id === id);
 
+/** 이 학기('2027-1') 수강생에게 보여 줄 기관인지 (hideIn: ['1'] → 1학기에는 숨김) */
+export const shownIn = (inst, semesterId) => !(inst.hideIn || []).includes(String(semesterId).split('-')[1]);
+
 // 유형 이름과 할 일 (이름: '유형 1 (국내외 지정 기관)', 할 일: '강의참관 + 모의수업')
 export const TYPE_LABELS = {
   1: { name: '유형 1 (국내 지정 기관 · 전면 오프라인)', work: '강의참관(전면 오프라인) + 모의수업' },
@@ -119,7 +123,7 @@ export const TYPE_LABELS = {
   '1-2': { name: '유형 1-2 (국외 지정 기관 · 전면 오프라인)', work: '강의참관(전면 오프라인) + 모의수업' },
   2: { name: '유형 2 (국내외 기관 직접 섭외)', work: '강의참관 + 강의실습' },
   '2-1': { name: '유형 2-1 (해외 협약 대학)', work: '강의참관 + 강의실습' },
-  3: { name: '유형 3 (국내외 기관 직접 섭외)', work: '강의참관 + 모의수업' },
+  3: { name: '유형 3 (국외 기관 직접 섭외)', work: '강의참관 + 모의수업' },
 };
 
 const instOf = (typeId) => INSTITUTIONS.filter((i) => i.type === typeId);
@@ -139,13 +143,23 @@ export const DIAGNOSIS_QUESTIONS = [
     ],
   },
   {
-    id: 'teachAtOrg',
-    text: '그 기관에서 강의참관뿐 아니라 강의실습(한 차시 수업)까지 할 수 있나요?',
+    id: 'selfRegion',
+    text: '섭외한(섭외할) 기관은 어디에 있나요?',
     type: 'single',
     showIf: { self: 'yes' },
     options: [
-      { value: 'yes', label: '강의실습까지 가능' },
-      { value: 'no', label: '강의참관만 가능' },
+      { value: 'domestic', label: '국내' },
+      { value: 'overseas', label: '국외' },
+    ],
+  },
+  {
+    id: 'teachAtOrg',
+    text: '그 기관에 자격을 갖춘 실습 지도자가 있고, 강의참관뿐 아니라 강의실습(한 차시 수업)까지 할 수 있나요?',
+    type: 'single',
+    showIf: { self: 'yes' },
+    options: [
+      { value: 'yes', label: '예 (실습 지도자가 있고 강의실습까지 가능)' },
+      { value: 'no', label: '아니요 (강의참관만 가능)' },
     ],
   },
   {
@@ -260,7 +274,12 @@ export const VACATION_NOTE = {
 export function recommend(a, currentId) {
   const target = targetSemester(a, currentId);
   const semesterId = target.id;
-  if (a.self === 'yes') return { kind: 'self', typeId: a.teachAtOrg === 'yes' ? '2' : '3', target };
+  if (a.self === 'yes') {
+    if (a.teachAtOrg === 'yes') return { kind: 'self', typeId: '2', target };
+    // 유형 3은 국외 기관만: 국내 기관에서 강의참관만 가능하면 해당 유형 없음
+    if (a.selfRegion === 'domestic') return { kind: 'noSelfType', target };
+    return { kind: 'self', typeId: '3', target };
+  }
   // 강의참관 시기: 방학 중이면 수강 학기에 맞는 방학(1학기 → 동계, 2학기 → 하계)에 참관할 수 있는 기관
   const season = seasonOf(a);
   const timingCond = a.timing && {
@@ -270,12 +289,13 @@ export function recommend(a, currentId) {
   };
   const active = [...CONDITIONS.filter((c) => a[c.id]), ...(timingCond ? [timingCond] : [])];
   const fits = (i, conds) => conds.every((c) => c.test(i, termOf(i, semesterId) || {}, a[c.id]));
-  const matches = INSTITUTIONS.filter((i) => fits(i, active));
+  const pool = INSTITUTIONS.filter((i) => shownIn(i, semesterId));
+  const matches = pool.filter((i) => fits(i, active));
   const relax = matches.length
     ? []
     : active
         .filter((c) => a[c.id] !== 'any')
-        .map((c) => ({ label: c.label(a[c.id]), count: INSTITUTIONS.filter((i) => fits(i, active.filter((x) => x !== c))).length }))
+        .map((c) => ({ label: c.label(a[c.id]), count: pool.filter((i) => fits(i, active.filter((x) => x !== c))).length }))
         .filter((r) => r.count > 0);
   return { kind: 'partner', matches, relax, target };
 }
@@ -290,6 +310,7 @@ export const PRACTICUM_TYPES = [
     name: TYPE_LABELS['1'].name,
     summary: TYPE_LABELS['1'].work,
     description: '국내 현장 실습 기관에서 전면 오프라인으로 강의참관을 하고, 모의수업을 하는 유형입니다. 기관마다 참관 일정이 다릅니다.',
+    cautions: ['반드시 현장 수업 참관 전체 일정에 참석해야 합니다.'],
     activities: ['강의참관 (전면 오프라인)', '모의수업'],
     institutions: instOf('1'),
     match: (a) => {
@@ -332,6 +353,10 @@ export const PRACTICUM_TYPES = [
     name: TYPE_LABELS['2'].name,
     summary: TYPE_LABELS['2'].work,
     description: '실습생이 국내 또는 해외의 기관을 직접 섭외하여 강의참관과 강의실습까지 하는 유형입니다. 일부 일정은 실습 기관의 일정을 따릅니다.',
+    cautions: [
+      '국립국어원의 한국어 교육경력 인정 기관이어야 합니다.',
+      '실습 기관에 자격을 갖춘 실습 지도자가 있는 경우에만 선택할 수 있습니다. 실습 지도자가 없으면 유형 3으로 신청합니다.',
+    ],
     activities: ['강의참관', '강의실습'],
     institutions: null,
     match: (a) => {
@@ -350,6 +375,11 @@ export const PRACTICUM_TYPES = [
     name: TYPE_LABELS['2-1'].name,
     summary: TYPE_LABELS['2-1'].work,
     description: '해외 협약 대학(베트남 예르생달랏대학교)에서 강의참관과 강의실습을 모두 하는 유형입니다. 일정은 현지 학사 일정을 따릅니다.',
+    cautions: [
+      '교통비(항공), 숙박비, 식비 등의 비용은 개인이 부담해야 합니다.',
+      '현지 대학 사정에 따라 온라인 참관으로 바뀔 수 있습니다.',
+      '선착순 10명까지 신청할 수 있습니다.',
+    ],
     activities: ['강의참관', '강의실습'],
     institutions: instOf('2-1'),
     match: (a) => {
@@ -361,7 +391,11 @@ export const PRACTICUM_TYPES = [
     id: '3',
     name: TYPE_LABELS['3'].name,
     summary: TYPE_LABELS['3'].work,
-    description: '실습생이 국내 또는 해외의 기관을 직접 섭외하여 강의참관만 하고, 모의수업을 하는 유형입니다. (유형 2와 달리 강의실습 대신 모의수업을 합니다.)',
+    description: '실습생이 국외의 기관을 직접 섭외하여 강의참관만 하고, 모의수업을 하는 유형입니다. (유형 2와 달리 강의실습 대신 모의수업을 합니다.)',
+    cautions: [
+      '국외 기관만 해당합니다. 국내 기관에서 강의참관만 할 수 있다면 학과 협력 기관(유형 1·1-1)을 선택하세요.',
+      '국립국어원의 한국어 교육경력 인정 기관이어야 합니다.',
+    ],
     activities: ['강의참관', '모의수업'],
     institutions: null,
     match: (a) => {
@@ -381,25 +415,34 @@ export const PRACTICUM_TYPES = [
 export const DIAGNOSIS_INTRO =
   '이 단계는 신청 단계가 아닙니다. 나에게 맞는 실습 기관과 유형을 고르는 데 도움을 드리는 단계입니다.';
 
-// 추천 결과와 함께 보여 줄 실제 신청 안내
+// 추천 결과와 함께 보여 줄 실습 신청 안내 (출처: 학과 안내 자료 「한국어교육 현장실습의 모든 것」)
 export const APPLICATION_NOTICE = [
-  '실제 신청은 학과 게시판 공지사항을 통해 이루어지며, 공지된 날짜에 확정 명단이 발표됩니다.',
-  '거주 지역과 관계없이, 실습할 수 있고 가고 싶은 기관(유형)을 고르면 됩니다.',
-  '기관마다 정원이 있어 신청한 곳에 모두 배정되는 것은 아닙니다. 정원은 학기마다 기관 사정에 따라 달라질 수 있습니다.',
-  '신청자 수와 실습 기관의 상황 등을 고려하여 배정합니다.',
-  '실습 기간은 매 학기 학사 일정에 따라 달라집니다.',
+  { label: '신청 시기', text: '1학기 실습은 12월에 사전 공지한 뒤 1월에, 2학기 실습은 6월에 사전 공지한 뒤 7월에 신청합니다. 대략적인 기간이며 실제 모집 기간은 바뀔 수 있으니 학교·학부 홈페이지 공지사항을 수시로 확인하세요.' },
+  { label: '신청 방법', text: '학부 홈페이지에서 실습 신청 공지를 확인하고 실습 신청서(모아폼 양식)를 작성하여 제출합니다. 학부에서 선수 과목 이수 여부를 확인한 뒤 수강 대상자 명단을 학부 홈페이지에 공지합니다.' },
+  { label: '수강 신청', text: '학생이 직접 수강 신청을 하지 않습니다. 학부에서 학교 수강신청 기간에 일괄적으로 수강 신청을 합니다. 학생은 학교 등록금 납부 기간에 실습 과목 3학점에 대한 등록금을 행정 시스템에서 직접 납부합니다.' },
+  { label: '수강 학점 주의', text: '실습 과목도 다른 과목과 같은 3학점 전공 과목입니다. 학교 수강신청 기간에 실습 학점을 염두에 두고 다른 과목을 신청하세요. (예: 최대 수강 가능 학점이 18학점이면 다른 과목은 15학점(5과목)만 신청할 수 있습니다.)' },
+  { label: '참관 실습비', text: '모든 실습생은 참관 기관에서 책정한 ‘참관 실습비’(약 20만 원)를 납부해야 합니다. 납부 방법은 기관별로 참관 시작 전에 따로 안내합니다.' },
+  { label: '배정', text: '거주 지역과 관계없이, 실습할 수 있고 가고 싶은 기관(유형)을 고르면 됩니다. 기관마다 정원이 있어 신청한 곳에 모두 배정되는 것은 아니며, 정원은 학기마다 기관 사정에 따라 달라질 수 있습니다. 신청자 수와 실습 기관의 상황 등을 고려하여 배정하며, 신청자가 많으면 총 이수 학점, 졸업 예정 학기, 신청 순서 등을 고려하여 우선 선정할 수 있습니다.' },
+  { label: '실습 기간', text: '실습 기간은 매 학기 학사 일정에 따라 달라집니다.' },
 ];
 
-// 유형 2(직접 섭외 · 강의실습) 추천 시 보여 줄 신청 안내 (1학기 기준 달, 2학기는 6개월 뒤)
-export const APPLICATION_NOTICE_SELF = (half = '1') => {
-  const m = (n) => (half === '2' ? ((n + 5) % 12) + 1 : n);
-  return [
-    `실습 기관을 직접 섭외합니다. 기관에서 강의참관뿐 아니라 한 차시 강의실습까지 할 수 있는지 꼭 확인하세요. (${m(1)}월 말까지)`,
-    `섭외가 끝나면 학부에 실습 기관 신청서를 작성하여 제출합니다. (${m(1)}월 말까지, 자세한 방법은 학과 공지 확인)`,
-    `학부에서 실습 기관 승인 결과를 통보합니다. (${m(2)}월 첫째 주) 승인된 기관에는 학교에서 공문을 보냅니다.`,
-    '실습 기간과 강의참관·강의실습 일정은 실습 기관의 일정을 따릅니다.',
-  ];
-};
+// 유형 2·3(실습생이 기관을 직접 섭외) 신청 절차
+export const SELF_APPLY_STEPS = [
+  '실습생이 직접 현지 실습 기관에 연락하여 실습 허가를 받습니다.',
+  '학부 홈페이지에서 ‘실습 신청서’(모아폼)를 작성하여 제출합니다.',
+  '실습 조교에게 ‘실습 기관 확인 요청서’ 양식을 요청해 작성한 뒤 제출합니다.',
+  '학부에서 제출 서류를 검토하여 최종 실습 가능 여부를 확정합니다.',
+];
+
+// 실습 기관 조건 (국립국어원의 한국어 교육경력 인정 기관)
+export const SELF_APPLY_NOTE = '실습은 국립국어원의 한국어 교육경력 인정 기관에서만 할 수 있습니다.';
+
+// 해외 한국어 교육기관을 찾아볼 수 있는 사이트 (유형 2·3 섭외용)
+export const OVERSEAS_SITES = [
+  { name: '세종학당재단 홈페이지', path: '재단 누리집(한국어) > 사업안내 > 세종학당 운영 및 지원', url: 'https://www.ksif.or.kr/ste/ksf/hkd/lochkd.do?menuNo=20101800' },
+  { name: '국립국어원 한국어교원 홈페이지 경력기관 게시판', path: '도움방 > 경력기관 게시판', url: 'https://kteacher.korean.go.kr/career/list' },
+  { name: '스터디코리안(한국학교, 한글학교)', path: '학교마당 > 한글학교 현황 > 한글학교 정보', url: 'https://study.korean.net/servlet/action.kei.HsiAction?p_menuCd=m40261&p_year_id=2025' },
+];
 
 // 실습 유형 안내 머리말 (STEP 2·3에서 접어 두었다가 펼쳐 보기)
 export const TYPE_GUIDE_INTRO = '실습 유형은 경희사이버대학교가 운영 방식에 따라 정한 구분입니다.';
