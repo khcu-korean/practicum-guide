@@ -231,15 +231,66 @@ export const TASKS = {
   'plan-org': {
     title: '실습계획서 제출',
     due: null,
+    dueText: '실습 기관의 일정에 따라 개별 공지 예정',
     schedule: 'institution',
-    note: ORG_PLAN_NOTE,
+    scheduleNote: '실습 기관의 일정에 따라 개별 공지할 예정입니다. 날짜가 정해지면 직접 입력하세요.',
     guide: guide(ORG_PLAN_NOTE, {
       important: [
+        '제출 기한은 실습 기관의 일정에 따라 개별 공지합니다.',
         '실습 기관: 소개, 연간 학사 일정, 교육과정, 교재, 학습자 특성 등',
         '실습 계획: 교안 작성 계획, 실습 계획, 실습에 임하는 자세 등',
       ],
       templates: [{ name: '실습계획서 양식', url: '' }],
-      submit: { method: '실습계획서 제출', where: 'LMS 리포트 게시판 (기한이 지났다면 조교에게 제출)', deadlineText: '실습 기관 일정에 맞춰' },
+      submit: { method: '실습계획서 제출', where: 'LMS 리포트 게시판 (기한이 지났다면 조교에게 제출)', deadlineText: '개별 공지 예정 (실습 기관 일정에 따름)' },
+    }),
+  },
+  // 유형 2·2-1 교안: 모두 실습 기관의 실습 지도자에게 제출
+  'org-draft-plan': {
+    title: '초벌 교안 제출',
+    due: null,
+    dueText: '실습 기관 일정에 따름',
+    schedule: 'institution',
+    note: '실습 지도자에게 제출',
+    guide: guide('강의실습을 위한 한 차시 수업 교안의 초안을 작성하여 실습 기관의 실습 지도자에게 제출합니다.', {
+      important: [TEACHING_PLAN_NOTE, '교안은 실습 기관에서 사용하는 교재와 한 차시 기준에 맞게 작성합니다.'],
+      templates: [{ name: '교안 양식', url: '' }],
+      submit: { method: '교안 제출', where: '실습 기관의 실습 지도자', deadlineText: '실습 기관 일정에 따름' },
+    }),
+  },
+  'org-revise-1': {
+    title: '1차 수정 교안 제출',
+    due: null,
+    dueText: '실습 기관 일정에 따름',
+    schedule: 'institution',
+    note: '실습 지도자에게 제출',
+    guide: guide('실습 지도자의 지도 내용을 반영하여 교안을 수정·보완해 제출합니다.', {
+      important: [TEACHING_PLAN_NOTE],
+      templates: [{ name: '교안 양식', url: '' }],
+      submit: { method: '교안 제출', where: '실습 기관의 실습 지도자', deadlineText: '실습 기관 일정에 따름' },
+    }),
+  },
+  'org-revise-2': {
+    title: '2차 수정 교안 제출',
+    due: null,
+    dueText: '실습 기관 일정에 따름',
+    schedule: 'institution',
+    note: '실습 지도자에게 제출',
+    guide: guide('실습 지도자의 지도 내용을 다시 반영하여 강의실습에 사용할 교안을 완성해 제출합니다.', {
+      important: [TEACHING_PLAN_NOTE, '2차 수정 교안으로 강의실습을 진행하므로 수정과 보완을 충실히 하세요.'],
+      templates: [{ name: '교안 양식', url: '' }],
+      submit: { method: '교안 제출', where: '실습 기관의 실습 지도자', deadlineText: '실습 기관 일정에 따름 (강의실습 전)' },
+    }),
+  },
+  'org-final-plan': {
+    title: '최종 교안 제출',
+    due: null,
+    dueText: '실습 기관 일정에 따름',
+    schedule: 'institution',
+    note: '실습 지도자에게 제출',
+    guide: guide('강의실습 후 받은 지도와 평가를 반영하여 최종 교안을 작성해 제출합니다.', {
+      important: [TEACHING_PLAN_NOTE, '반드시 "자기성찰"을 포함하여 작성하세요.'],
+      templates: [{ name: '교안 양식', url: '' }],
+      submit: { method: '교안 제출', where: '실습 기관의 실습 지도자', deadlineText: '실습 기관 일정에 따름 (강의실습 후)' },
     }),
   },
   teaching: {
@@ -343,7 +394,11 @@ export const SEQUENCES = {
     'seminar-3',
     'site-observe',
     'site-observe-log',
+    'org-draft-plan',
+    'org-revise-1',
+    'org-revise-2',
     'teaching',
+    'org-final-plan',
     'result-report',
   ],
   '2-1': [
@@ -356,7 +411,11 @@ export const SEQUENCES = {
     'seminar-3',
     'site-observe',
     'site-observe-log',
+    'org-draft-plan',
+    'org-revise-1',
+    'org-revise-2',
     'teaching',
+    'org-final-plan',
   ],
 };
 
