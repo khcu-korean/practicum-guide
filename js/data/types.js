@@ -64,6 +64,7 @@ export const INSTITUTIONS = [
   {
     id: 'kasetsart', name: '태국 까셋삿대학교', region: '해외', location: '태국', type: '1-2', mode: 'offline', days: 'weekday',
     windows: [[1, 2], [9, 10]], method: '평일 3일 오프라인 참관',
+    hideIn: ['1'], // 1학기 수강생에게는 보이지 않음 (다시 보이게 하려면 이 줄 삭제)
   },
   {
     id: 'nus', name: '싱가포르 국립대학교(NUS)', region: '해외', location: '싱가포르', type: '1-2', mode: 'offline', days: 'weekday',
@@ -111,6 +112,9 @@ export const instLine = (inst, semesterId) => {
 };
 
 export const getInstitution = (id) => INSTITUTIONS.find((i) => i.id === id);
+
+/** 이 학기('2027-1') 수강생에게 보여 줄 기관인지 (hideIn: ['1'] → 1학기에는 숨김) */
+export const shownIn = (inst, semesterId) => !(inst.hideIn || []).includes(String(semesterId).split('-')[1]);
 
 // 유형 이름과 할 일 (이름: '유형 1 (국내외 지정 기관)', 할 일: '강의참관 + 모의수업')
 export const TYPE_LABELS = {
@@ -270,12 +274,13 @@ export function recommend(a, currentId) {
   };
   const active = [...CONDITIONS.filter((c) => a[c.id]), ...(timingCond ? [timingCond] : [])];
   const fits = (i, conds) => conds.every((c) => c.test(i, termOf(i, semesterId) || {}, a[c.id]));
-  const matches = INSTITUTIONS.filter((i) => fits(i, active));
+  const pool = INSTITUTIONS.filter((i) => shownIn(i, semesterId));
+  const matches = pool.filter((i) => fits(i, active));
   const relax = matches.length
     ? []
     : active
         .filter((c) => a[c.id] !== 'any')
-        .map((c) => ({ label: c.label(a[c.id]), count: INSTITUTIONS.filter((i) => fits(i, active.filter((x) => x !== c))).length }))
+        .map((c) => ({ label: c.label(a[c.id]), count: pool.filter((i) => fits(i, active.filter((x) => x !== c))).length }))
         .filter((r) => r.count > 0);
   return { kind: 'partner', matches, relax, target };
 }
