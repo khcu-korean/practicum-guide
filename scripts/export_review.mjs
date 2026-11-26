@@ -7,7 +7,7 @@ import { CONFIG } from '../js/config.js';
 import { ELIGIBILITY as E } from '../js/data/eligibility.js';
 import {
   GLOSSARY, INSTITUTIONS, DIAGNOSIS_QUESTIONS, PRACTICUM_TYPES, APPLICATION_NOTICE, VACATION_NOTE,
-  TYPE_GUIDE_INTRO, DIAGNOSIS_INTRO, ATTR_LABELS, fmtWindows,
+  TYPE_GUIDE_INTRO, DIAGNOSIS_INTRO, ATTR_LABELS, fmtWindows, APPLICATION_NOTICE_SELF,
 } from '../js/data/types.js';
 import { TASKS, SEQUENCES, SCHEDULE_NOTE, COMMON_GUIDE_NOTES, COMPLETION_EXTRA_CHECKS, ALL_TYPE_IDS, typesOfTask } from '../js/data/tasks.js';
 import { FAQ, FAQ_SOURCE } from '../js/data/faq.js';
@@ -135,8 +135,8 @@ ${INSTITUTIONS.map(
 ).join('')}
 </table>
 <h3>추천 결과 아래 안내</h3>
-<p><b>실습 신청은 이렇게 합니다</b> (유형 1·1-1·1-2·2-1·3 추천 시)</p>${list(APPLICATION_NOTICE)}
-<p><b>유형 2 추천 시</b>: ${need('신청 방법 준비 중', 'STEP 2: 유형 2(직접 섭외 · 강의실습) 신청 안내 내용')}</p>
+<p><b>실습 신청은 이렇게 합니다</b> (유형 2 외 추천 시)</p>${list(APPLICATION_NOTICE)}
+<p><b>실습 신청은 이렇게 합니다</b> (유형 2 추천 시, 1학기 기준 · 2학기는 6개월 뒤 달)</p>${list(APPLICATION_NOTICE_SELF('1'))}
 <p><b>방학 중 참관을 고른 경우</b></p>${list(Object.values(VACATION_NOTE))}`;
 
 // ---------- 4. STEP 3 과제 ----------

@@ -216,14 +216,29 @@ export const TASKS = {
       submit: { method: '모의수업 진행', where: '지정된 강의실', deadlineText: '12~13주차 토·일 중 지정일' },
     }),
   },
+  'mock-observe-log': {
+    title: '모의수업 참관 일지 제출',
+    due: null,
+    dueText: '모의수업 참관 다음 날',
+    schedule: 'course',
+    scheduleNote: '모의수업을 참관한 다음 날까지 제출합니다. 참관한 날이 정해지면 다음 날 날짜를 입력하세요.',
+    guide: guide('동료의 모의수업을 참관하고 모의수업 참관 일지를 작성하여 제출합니다.', {
+      important: [
+        '모의수업을 참관한 다음 날까지 제출합니다.',
+        '자신의 모의수업 날 외에 동료의 모의수업 1일을 반드시 추가로 참관해야 합니다.',
+      ],
+      templates: [{ name: '모의수업 참관 일지 양식', url: '' }],
+      submit: { method: '모의수업 참관 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '모의수업 참관 다음 날까지' },
+    }),
+  },
   'final-plan': {
-    title: '최종 교안 제출',
+    title: '최종 교안 및 성찰 일지 제출',
     start: { week: 14, day: 'mon' },
     due: { week: 15, day: 'sun' },
-    guide: guide('모의수업 후 받은 교수 피드백과 평가를 반영하여 최종 교안을 작성합니다.', {
-      important: ['반드시 "자기성찰"을 포함하여 작성하세요.'],
-      templates: [{ name: '교안 양식', url: '' }],
-      submit: { method: '교안 제출', where: 'LMS 리포트 게시판', deadlineText: '15주차 일요일까지' },
+    guide: guide('모의수업 후 받은 교수 피드백과 평가를 반영하여 최종 교안을 작성하고, 모의수업에 대한 성찰 일지를 함께 제출합니다.', {
+      important: ['최종 교안과 성찰 일지를 함께 제출합니다.', '성찰 일지에는 모의수업을 돌아보며 잘된 점과 고칠 점을 구체적으로 적으세요.'],
+      templates: [{ name: '교안 양식', url: '' }, { name: '성찰 일지 양식', url: '' }],
+      submit: { method: '최종 교안 및 성찰 일지 제출', where: 'LMS 리포트 게시판', deadlineText: '15주차 일요일까지' },
     }),
   },
 
@@ -282,15 +297,15 @@ export const TASKS = {
     }),
   },
   'org-final-plan': {
-    title: '최종 교안 제출',
+    title: '최종 교안 및 성찰 일지 제출',
     due: null,
     dueText: '실습 기관 일정에 따름',
     schedule: 'institution',
     note: '실습 지도자에게 제출',
-    guide: guide('강의실습 후 받은 지도와 평가를 반영하여 최종 교안을 작성해 제출합니다.', {
-      important: [TEACHING_PLAN_NOTE, '반드시 "자기성찰"을 포함하여 작성하세요.'],
-      templates: [{ name: '교안 양식', url: '' }],
-      submit: { method: '교안 제출', where: '실습 기관의 실습 지도자', deadlineText: '실습 기관 일정에 따름 (강의실습 후)' },
+    guide: guide('강의실습 후 받은 지도와 평가를 반영하여 최종 교안을 작성하고, 강의실습에 대한 성찰 일지를 함께 제출합니다.', {
+      important: [TEACHING_PLAN_NOTE, '최종 교안과 성찰 일지를 함께 제출합니다.', '성찰 일지에는 강의실습을 돌아보며 잘된 점과 고칠 점을 구체적으로 적으세요.'],
+      templates: [{ name: '교안 양식', url: '' }, { name: '성찰 일지 양식', url: '' }],
+      submit: { method: '최종 교안 및 성찰 일지 제출', where: '실습 기관의 실습 지도자', deadlineText: '실습 기관 일정에 따름 (강의실습 후)' },
     }),
   },
   teaching: {
@@ -373,6 +388,7 @@ const SEQ_MOCK = [
   'revise-2',
   'site-observe-log',
   'mock-class',
+  'mock-observe-log',
   'final-plan',
 ];
 

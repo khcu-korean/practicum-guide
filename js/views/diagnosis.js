@@ -1,5 +1,5 @@
 // STEP 2. 실습 유형 추천: 질문에 답하면 맞는 유형과 협력 기관을 추천
-import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, recommend, getType, VACATION_NOTE, takeHalf, SEASON_LABEL, seasonOf, ATTR_LABELS, windowsIn, monthsFor, fmtWindows } from '../data/types.js';
+import { DIAGNOSIS_QUESTIONS as Q, PRACTICUM_TYPES, APPLICATION_NOTICE, DIAGNOSIS_INTRO, recommend, getType, VACATION_NOTE, takeHalf, APPLICATION_NOTICE_SELF, SEASON_LABEL, seasonOf, ATTR_LABELS, windowsIn, monthsFor, fmtWindows } from '../data/types.js';
 import { sem, update, semesterId } from '../store.js';
 import { esc, toast } from '../utils.js';
 import { getSemester } from '../config.js';
@@ -87,8 +87,10 @@ function resultHTML(a) {
       !ok
         ? ''
         : r.kind === 'self' && r.typeId === '2'
-          ? // TODO: 유형 2(직접 섭외 · 강의실습) 신청 안내 — 자료를 받으면 교체
-            `<div class="notice"><b>실습 신청은 이렇게 합니다</b><p class="tiny">유형 2(직접 섭외 · 강의실습)의 신청 방법은 준비 중입니다. 학과 공지를 확인하세요.</p></div>`
+          ? `<div class="notice">
+      <b>실습 신청은 이렇게 합니다</b>
+      <ul class="bullets tiny">${APPLICATION_NOTICE_SELF(takeHalf(a)).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+    </div>`
           : `<div class="notice">
       <b>실습 신청은 이렇게 합니다</b>
       <ul class="bullets tiny">${APPLICATION_NOTICE.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
