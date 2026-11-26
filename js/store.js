@@ -20,8 +20,9 @@
 
 import { CONFIG, isServerMode } from './config.js';
 
-const LS_SESSION = 'pg:session';
-const LS_DATA = (key) => `pg:data:${key}`;
+const P = CONFIG.storagePrefix || 'pg';
+const LS_SESSION = `${P}:session`;
+const LS_DATA = (key) => `${P}:data:${key}`;
 const GUEST = 'guest';
 
 let supabase = null;

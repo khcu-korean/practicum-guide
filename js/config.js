@@ -5,6 +5,11 @@
 
 export const CONFIG = {
   appName: '한국어교육현장실습 길잡이',
+
+  // 시범 운영 사본(pilot/)에서만 true: 화면 위 '시범 운영 중' 띠 표시
+  pilot: false,
+  // 브라우저 저장 이름 앞부분 (시범 사본은 'pg-pilot'으로 따로 저장)
+  storagePrefix: 'pg',
   subtitle: '한국어교육실습 수강생을 위한 실습 안내',
 
   // 학교 표시 (logo에 이미지 경로를 넣으면 글자 표시 대신 로고가 나옵니다. 예: 'icons/khcu-logo.png')

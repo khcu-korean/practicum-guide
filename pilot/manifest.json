@@ -1,0 +1,9 @@
+{
+  "name": "한국어교육현장실습 길잡이",
+  "short_name": "실습 길잡이",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7f5f2",
+  "theme_color": "#8b1e3f",
+  "icons": [{ "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

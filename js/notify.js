@@ -20,7 +20,7 @@ export async function enableNotifications() {
 /** 앱 접속 시 호출: 알림 기준일(7·3·1일 전, 당일, 지남)에 해당하는 과업 알림 */
 export async function notifyDueTasks() {
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  const key = `pg:notified:${todayISO()}`;
+  const key = `${CONFIG.storagePrefix || 'pg'}:notified:${todayISO()}`;
   if (localStorage.getItem(key)) return;
   const targets = upcoming(Math.max(...CONFIG.alertDays)).filter(
     (t) => t.left <= 0 || CONFIG.alertDays.includes(t.left)

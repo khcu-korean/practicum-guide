@@ -89,6 +89,7 @@ function prevNext(path) {
 function layout(view, path, body) {
   const soon = upcoming(CONFIG.urgentDays);
   return `
+  ${CONFIG.pilot ? '<div class="pilot-band">시범 운영 중인 미리보기입니다. 내용과 주소는 바뀔 수 있습니다.</div>' : ''}
   <header class="band">
     <div class="band-in">
       <a href="#/" class="brand">${brandHTML()}</a>
